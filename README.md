@@ -151,9 +151,39 @@ src/
     challenges/ compare/ firms/ reviews/ tools/ learn/
     admin/              Challenges, firms, moderation, rule changes, deals, articles,
                         analytics, and the recommendation tester
+    outcomes.ts         The feedback loop: journeys, aggregation, calibration
 tests/
   engine.test.ts        Filtering, scoring, weighting, explanations, tie-breaking
+  outcomes.test.ts      Journey recording, session scoping, small-sample honesty
 ```
+
+---
+
+## The feedback loop
+
+The long-term advantage is not catalogue size — it is knowing which challenge suited which
+kind of trader, and eventually whether it worked out.
+
+A **journey** is created the moment a trader clicks through to a challenge. It freezes the
+profile they had at that instant, along with the score and position they were shown. Later
+they can report what happened at `/outcomes`: how far they got, what ended it if it failed,
+how well it suited them in hindsight, and whether they would choose it again.
+
+The profile is a frozen snapshot rather than a foreign key, deliberately. Profiles change when
+someone retakes the questionnaire, and the question this answers is *"did this challenge work
+for the person who chose it"*.
+
+`/admin/outcomes` turns that into calibration signal — pass rates by approach, the most common
+failure reason per cohort, and whether the match score actually predicted satisfaction. Two
+rules govern it:
+
+- **Outcomes never adjust the scoring automatically.** They surface for a human to review. An
+  engine that silently rewrites itself from self-reported data is one nobody can audit, which
+  is the opposite of what the methodology page promises.
+- **Small samples are labelled, not dressed up.** Below eight resolved reports an aggregate is
+  shown but explicitly marked "too small to act on". Self-reported outcomes are also heavily
+  self-selected — traders who fail are less likely to come back and say so — so they are
+  treated as a signal about our matching, never published as a statistic about a firm.
 
 ---
 

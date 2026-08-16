@@ -295,3 +295,42 @@ CREATE TABLE IF NOT EXISTS scoring_weights (
   key    TEXT PRIMARY KEY,
   weight REAL NOT NULL
 );
+
+-- ---------------------------------------------------------------------------
+-- Challenge journeys — the outcome feedback loop.
+--
+-- A row is created the moment a trader clicks through to a challenge, capturing
+-- the profile they had AT THAT MOMENT along with the score and position it was
+-- shown at. The trader can later report what actually happened.
+--
+-- The profile is a frozen JSON snapshot, not a foreign key: profiles change
+-- when someone retakes the questionnaire, and the question this table answers
+-- is "did this challenge work for the person who chose it".
+--
+-- Nothing here is read by the recommendation engine. It is measurement, and it
+-- informs a human decision to retune weights — it does not silently retune them.
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS challenge_journeys (
+  id                  TEXT PRIMARY KEY,
+  session_id          TEXT,
+  challenge_id        TEXT NOT NULL REFERENCES challenges(id) ON DELETE CASCADE,
+  profile_snapshot    TEXT,          -- JSON
+  match_score         INTEGER,
+  position            INTEGER,
+  stage               TEXT NOT NULL DEFAULT 'clicked'
+                      CHECK (stage IN ('clicked','purchased','in_progress','passed',
+                                       'failed','funded','paid_out','abandoned')),
+  failure_reason      TEXT CHECK (failure_reason IN ('max_drawdown','daily_loss','time_limit',
+                                       'consistency_rule','other_rule_violation',
+                                       'lost_motivation','other', NULL)),
+  fit_rating          INTEGER CHECK (fit_rating BETWEEN 1 AND 5),
+  would_choose_again  TEXT CHECK (would_choose_again IN ('yes','no','unsure', NULL)),
+  notes               TEXT,
+  created_at          TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at          TEXT NOT NULL DEFAULT (datetime('now')),
+  outcome_reported_at TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_journeys_session ON challenge_journeys(session_id);
+CREATE INDEX IF NOT EXISTS idx_journeys_challenge ON challenge_journeys(challenge_id);
+CREATE INDEX IF NOT EXISTS idx_journeys_stage ON challenge_journeys(stage);

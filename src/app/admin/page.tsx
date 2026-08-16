@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { allJourneys } from "@/lib/outcomes";
 import { adminOverview } from "@/lib/repo";
 import { logout } from "./actions";
 
@@ -6,6 +7,8 @@ export const dynamic = "force-dynamic";
 
 export default function AdminHome() {
   const stats = adminOverview();
+  const journeys = allJourneys();
+  const reported = journeys.filter((j) => j.outcome_reported_at !== null).length;
 
   const cards = [
     { label: "Challenges", value: stats.challenges, sub: `${stats.publishedChallenges} published`, href: "/admin/challenges" },
@@ -16,6 +19,12 @@ export default function AdminHome() {
     { label: "Quiz starts", value: stats.quizStarts, href: "/admin/analytics" },
     { label: "Quiz completions", value: stats.quizCompletions, href: "/admin/analytics" },
     { label: "Results viewed", value: stats.resultsViewed, href: "/admin/analytics" },
+    {
+      label: "Outcomes reported",
+      value: reported,
+      sub: `of ${journeys.length} journeys`,
+      href: "/admin/outcomes",
+    },
   ];
 
   const completionRate =

@@ -133,6 +133,69 @@ export const PRIORITY_LABELS: Record<Priority, string> = {
 };
 
 /**
+ * Outcome tracking.
+ *
+ * The long-term value of this product is not the size of the catalogue — it is
+ * the relationship between how someone trades, which challenge they chose, and
+ * whether that challenge actually worked for them. These are the vocabulary for
+ * the last part.
+ */
+export const JOURNEY_STAGES = [
+  "clicked",
+  "purchased",
+  "in_progress",
+  "passed",
+  "failed",
+  "funded",
+  "paid_out",
+  "abandoned",
+] as const;
+export type JourneyStage = (typeof JOURNEY_STAGES)[number];
+
+export const JOURNEY_STAGE_LABELS: Record<JourneyStage, string> = {
+  clicked: "Viewed the offer",
+  purchased: "Bought the challenge",
+  in_progress: "Currently trading it",
+  passed: "Passed the evaluation",
+  failed: "Failed the evaluation",
+  funded: "Got a funded account",
+  paid_out: "Received a payout",
+  abandoned: "Gave up on it",
+};
+
+/** Stages a trader can self-report as a terminal or near-terminal result. */
+export const REPORTABLE_STAGES: JourneyStage[] = [
+  "purchased",
+  "in_progress",
+  "passed",
+  "failed",
+  "funded",
+  "paid_out",
+  "abandoned",
+];
+
+export const FAILURE_REASONS = [
+  "max_drawdown",
+  "daily_loss",
+  "time_limit",
+  "consistency_rule",
+  "other_rule_violation",
+  "lost_motivation",
+  "other",
+] as const;
+export type FailureReason = (typeof FAILURE_REASONS)[number];
+
+export const FAILURE_REASON_LABELS: Record<FailureReason, string> = {
+  max_drawdown: "Hit the maximum drawdown",
+  daily_loss: "Hit the daily loss limit",
+  time_limit: "Ran out of time",
+  consistency_rule: "Broke the consistency rule",
+  other_rule_violation: "Broke another rule",
+  lost_motivation: "Lost motivation / stopped trading it",
+  other: "Something else",
+};
+
+/**
  * Rule status vocabulary.
  *
  * `unknown` is a real, load-bearing value. A rule we have not confirmed is
@@ -352,4 +415,36 @@ export interface RecommendationResult {
     blocked: number;
   }[];
   total_considered: number;
+}
+
+
+// ---------------------------------------------------------------------------
+// Outcome tracking
+// ---------------------------------------------------------------------------
+
+/**
+ * One trader's journey with one challenge.
+ *
+ * The profile is stored as a SNAPSHOT rather than a foreign key, deliberately.
+ * A trader retakes the questionnaire and their profile changes; the question
+ * this table answers is "did this challenge work for the person they were when
+ * they chose it", so the answer has to be frozen at the point of choice.
+ */
+export interface ChallengeJourney {
+  id: string;
+  session_id: string | null;
+  challenge_id: string;
+  /** JSON snapshot of the profile at the moment of choice. */
+  profile_snapshot: Partial<TraderProfile> | null;
+  match_score: number | null;
+  position: number | null;
+  stage: JourneyStage;
+  failure_reason: FailureReason | null;
+  /** 1-5: how well did the challenge actually suit them, in hindsight? */
+  fit_rating: number | null;
+  would_choose_again: "yes" | "no" | "unsure" | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+  outcome_reported_at: string | null;
 }

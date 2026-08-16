@@ -108,6 +108,9 @@ export function SiteHeader() {
           <Link href="/saved" className={styles.mobileLink}>
             Saved
           </Link>
+          <Link href="/outcomes" className={styles.mobileLink}>
+            How did it go?
+          </Link>
           <Link href="/profile" className={styles.mobileLink}>
             Your profile
           </Link>

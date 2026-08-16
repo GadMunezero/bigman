@@ -13,6 +13,7 @@ import {
   ScoreBreakdown,
 } from "@/components/ui";
 import { getChallengeRecommendations, PRIMARY_RESULT_THRESHOLD } from "@/lib/engine";
+import { listJourneysForSession } from "@/lib/outcomes";
 import { getOfferForChallenge, listChallengeRecords, listSaved, trackEvent } from "@/lib/repo";
 import { getCurrentProfile, getSessionId } from "@/lib/session";
 import type { Recommendation } from "@/lib/types";
@@ -35,6 +36,12 @@ export default async function ResultsPage() {
   const catalogue = listChallengeRecords();
   const result = getChallengeRecommendations(profile, catalogue);
   const saved = sessionId ? new Set(listSaved(sessionId)) : new Set<string>();
+
+  // Anyone who clicked through before and never told us how it went. Asking is
+  // the only way the engine learns whether its scores meant anything.
+  const unreported = sessionId
+    ? listJourneysForSession(sessionId).filter((j) => j.outcome_reported_at === null)
+    : [];
 
   if (sessionId) {
     trackEvent("results_viewed", sessionId, {
@@ -357,6 +364,27 @@ export default async function ResultsPage() {
               ))}
             </div>
           </details>
+        </section>
+      ) : null}
+
+      {unreported.length > 0 ? (
+        <section style={{ marginTop: "3rem" }}>
+          <div className="panel panel-accent spread">
+            <div>
+              <strong>
+                How did your last {unreported.length === 1 ? "challenge" : "challenges"} go?
+              </strong>
+              <p className="small muted">
+                You started {unreported.length}{" "}
+                {unreported.length === 1 ? "challenge" : "challenges"} through us and haven&apos;t
+                said what happened. Telling us — especially if it went badly — is what makes these
+                recommendations better.
+              </p>
+            </div>
+            <Link href="/outcomes" className="btn btn-primary">
+              Tell us what happened
+            </Link>
+          </div>
         </section>
       ) : null}
 

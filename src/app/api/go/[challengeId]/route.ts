@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
+import { recordJourneyStart } from "@/lib/outcomes";
 import { getChallengeRecordById, getOfferForChallenge, recordAffiliateClick } from "@/lib/repo";
-import { getSessionId } from "@/lib/session";
+import { getCurrentProfile, getSessionId } from "@/lib/session";
 
 export const runtime = "nodejs";
 
@@ -36,14 +37,34 @@ export async function GET(
     return Number.isFinite(parsed) ? parsed : null;
   };
 
+  const sessionId = await getSessionId();
+  const matchScore = asInt(url.searchParams.get("score"));
+  const position = asInt(url.searchParams.get("position"));
+
   recordAffiliateClick({
     challenge_id: challengeId,
-    session_id: await getSessionId(),
+    session_id: sessionId,
     page: url.searchParams.get("page"),
     placement: url.searchParams.get("placement"),
-    match_score: asInt(url.searchParams.get("score")),
-    position: asInt(url.searchParams.get("position")),
+    match_score: matchScore,
+    position,
     utm_source: url.searchParams.get("utm_source"),
+  });
+
+  /*
+   * The outbound click is the closest thing we have to "this is the one they
+   * chose", so it is where the outcome journey begins. The profile is frozen
+   * here rather than referenced, because the question we want to answer later
+   * is whether this challenge suited the person who picked it — not whoever
+   * they became after retaking the questionnaire.
+   */
+  const profile = await getCurrentProfile();
+  recordJourneyStart({
+    session_id: sessionId,
+    challenge_id: challengeId,
+    profile,
+    match_score: matchScore,
+    position,
   });
 
   if (!destination) {

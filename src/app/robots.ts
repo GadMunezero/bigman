@@ -9,7 +9,14 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       // Personal results, the admin area and the outbound redirector have no
       // business in an index.
-      disallow: ["/admin", "/api/", "/find-my-challenge/results", "/profile", "/saved"],
+      disallow: [
+        "/admin",
+        "/api/",
+        "/find-my-challenge/results",
+        "/profile",
+        "/saved",
+        "/outcomes",
+      ],
     },
     sitemap: `${BASE}/sitemap.xml`,
   };

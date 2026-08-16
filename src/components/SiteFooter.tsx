@@ -10,6 +10,7 @@ const GROUPS: { title: string; links: { href: string; label: string }[] }[] = [
       { href: "/compare", label: "Compare" },
       { href: "/psychology", label: "Trading psychology" },
       { href: "/tools", label: "Tools" },
+      { href: "/outcomes", label: "How did it go?" },
     ],
   },
   {
