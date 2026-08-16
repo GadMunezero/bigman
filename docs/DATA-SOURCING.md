@@ -148,9 +148,54 @@ information", not "delete this".
 
 ---
 
+## The futures lane: research roster
+
+`data/futures-firms-roster.csv` is the **discovery output** for the futures lane —
+sixteen firms confirmed to be listed on PropFirmMatch. It is a to-do list, not
+data. Every pricing, drawdown and rule cell is deliberately absent, because none
+of it has been read off a firm's own page yet.
+
+The `candidate_official_site_UNVERIFIED` column is exactly what it says. Those
+domains have not been opened and confirmed. Check the domain before you trust a
+single figure you read on it — prop firm names attract lookalike domains, and a
+wrong site would poison the whole row.
+
+To work through it:
+
+1. Open the firm's own rules page and pricing page. Not the PropFirmMatch page —
+   that is only how the firm got onto this list.
+2. Add one row per **account size** to your import CSV (`npm run db:template`).
+   A firm with six account sizes is six rows.
+3. Record the URL you actually read in `source_url`, leave `confidence` at
+   `needs_review`, and leave `status` at `draft`.
+4. Mark the firm `researched=yes` in the roster so the next session knows.
+
+Futures firms have two quirks worth watching for:
+
+- **Monthly subscription pricing.** Many futures evaluations bill monthly until
+  you pass or cancel, unlike the one-off fee common in forex/CFD. `price` is a
+  single number, so record the monthly figure and say so in `payout_conditions`
+  or the challenge name — otherwise the budget criterion compares a recurring
+  fee against a one-off one and gets it wrong.
+- **Dollar-denominated limits.** Futures firms usually publish targets and
+  drawdowns in dollars, not percent. The schema stores percentages, so convert
+  against the account size and double-check the arithmetic — a $3,000 drawdown
+  on a $50K account is 6%, and getting that wrong silently corrupts the single
+  most heavily weighted criterion in the engine.
+
+Firms offering **both static and trailing** evaluations (Elite Trader Funding is
+one) are separate challenges, not one challenge with a footnote. Split them.
+
+---
+
 ## What this repository will never contain
 
-No real prop firm's name, pricing or rules ship in this codebase. The demo seed
-uses firms explicitly named "(fictional)". Attaching invented numbers to a real
-company is exactly the failure this product exists to avoid, and it would be
-indistinguishable from the sites it is meant to beat.
+**No invented pricing or rules for a real company.** Ever. The demo seed uses
+firms explicitly named "(fictional)" for exactly this reason. Attaching made-up
+numbers to a real firm is the failure this product exists to avoid, and it would
+be indistinguishable from the sites it is meant to beat.
+
+Real firm *names* may appear in research scaffolding like the roster above —
+knowing that Topstep exists and sells futures evaluations is not a claim about
+what Topstep charges. The line is between naming a company and characterising
+it. Names are fine. Numbers require a source URL.
