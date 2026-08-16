@@ -50,6 +50,24 @@ export default async function FirmPage({ params }: { params: Promise<{ slug: str
   const markets = [...new Set(challenges.flatMap((c) => c.markets))];
   const platforms = [...new Set(challenges.flatMap((c) => c.platforms))];
 
+  // A firm's range is what a trader scans for first: what can I get, and what
+  // does the cheapest one cost. Computed from what is on file, so it never
+  // implies coverage we do not have.
+  const sizes = challenges.map((c) => c.account_size).filter((n): n is number => typeof n === "number");
+  const prices = challenges.map((c) => c.price).filter((n): n is number => typeof n === "number");
+  const fmtSize = (n: number) => (n >= 1000 ? `$${n / 1000}K` : `$${n}`);
+  const summary = [
+    challenges.length > 0
+      ? `${challenges.length} challenge${challenges.length === 1 ? "" : "s"}`
+      : null,
+    sizes.length > 1
+      ? `${fmtSize(Math.min(...sizes))} – ${fmtSize(Math.max(...sizes))}`
+      : sizes.length === 1
+        ? fmtSize(sizes[0])
+        : null,
+    prices.length > 0 ? `from $${Math.min(...prices)}` : null,
+  ].filter(Boolean);
+
   const keyPeople = parseKeyPeople(firm.key_people);
   const hasLeadership = Boolean(
     firm.ceo || keyPeople.length > 0 || firm.headquarters || firm.founded_year,
@@ -64,6 +82,11 @@ export default async function FirmPage({ params }: { params: Promise<{ slug: str
       <header className="stack-sm">
         <h1>{firm.name}</h1>
         {firm.description ? <p className="lede">{firm.description}</p> : null}
+        {summary.length > 0 ? (
+          <p className="small muted" style={{ marginTop: "0.35rem" }}>
+            {summary.join(" · ")}
+          </p>
+        ) : null}
         <div className="row" style={{ marginTop: "0.75rem" }}>
           {markets.map((market) => (
             <span key={market} className="pill">

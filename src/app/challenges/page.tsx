@@ -23,7 +23,9 @@ const RULE_FILTERS = [
   { key: "news", label: "News trading", field: "news_trading" },
   { key: "overnight", label: "Overnight", field: "overnight" },
   { key: "weekend", label: "Weekend", field: "weekend" },
-  { key: "ea", label: "EA allowed", field: "ea_allowed" },
+  // The word "allowed" is appended by the label renderer, so it must not be
+  // baked into the label here — that produced "EA allowed allowed".
+  { key: "ea", label: "EAs", field: "ea_allowed" },
 ] as const;
 
 export default async function ChallengesPage({ searchParams }: { searchParams: SearchParams }) {

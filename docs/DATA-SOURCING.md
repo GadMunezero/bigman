@@ -185,6 +185,34 @@ this single field silently inflates usable drawdown.
 
 ---
 
+## One row per account size
+
+A real firm sells the same evaluation at six or seven account sizes. The
+imported catalogue has **one challenge per firm**, which makes the account-size
+filter nearly useless and makes every firm page read "this firm has 1
+challenge". Nobody believes a directory that thinks Apex sells one product.
+
+```bash
+npm run db:expand-sizes -- data/account-sizes-worksheet.csv
+```
+
+This generates one row per firm per standard size (futures firms get the
+25K/50K/75K/100K/150K/250K/300K ladder, CFD firms a different one), skipping
+sizes already on file. It carries over what genuinely holds across sizes — the
+rulebook, platforms, drawdown type, phase count, profit split — and leaves
+**price, profit target and drawdown blank**.
+
+Those three are blank on purpose. They do not scale: a 150K evaluation is not
+priced at three times the 50K, and its drawdown is rarely three times either.
+Deriving them arithmetically would produce numbers that look right, sit in the
+heaviest-weighted criteria, and are wrong for every firm in a different
+direction. Read them off the pricing page.
+
+The output is a **worksheet, not an import**. Fill the blanks, then run it
+through `npm run db:import` like any other CSV.
+
+---
+
 ## The futures lane: research roster
 
 `data/futures-firms-roster.csv` is the **discovery output** for the futures lane —

@@ -17,6 +17,7 @@
     "catalogue": "npm run db:reset && npm run db:import -- data/propfirmmatch-import.csv --apply && npm run db:publish:all && next dev",
     "db:import": "tsx db/import.ts",
     "db:convert": "tsx db/convert-propfirmmatch.ts",
+    "db:expand-sizes": "tsx db/expand-sizes.ts",
     "db:publish:all": "tsx db/publish-all.ts",
     "db:template": "tsx db/import.ts --template"
   },
