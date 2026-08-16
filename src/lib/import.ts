@@ -130,6 +130,11 @@ const SOURCE_TYPES = [
   "official_faq",
   "trader_report",
   "manual_verification",
+  // Copied from a comparison site rather than read off the firm's own page. It
+  // exists so that provenance stays visible instead of being laundered into
+  // "manual_verification", which would claim a check nobody performed. Rows
+  // carrying it can never be `verified` — see the confidence rule below.
+  "aggregator_unverified",
 ];
 const CONSISTENCY = ["required", "not_required", "unknown"];
 
@@ -357,12 +362,33 @@ export function planImport(csv: string): ImportPlan {
       "needs_review",
     ) as Confidence;
 
+    const sourceType = enumValue(
+      get("source_type"),
+      SOURCE_TYPES,
+      rowNumber,
+      "source_type",
+      errors,
+      "official_rules",
+    )!;
+
     const sourceUrl = get("source_url").trim() || null;
     if (confidence === "verified" && !sourceUrl) {
       errors.push({
         row: rowNumber,
         column: "source_url",
         message: "A row marked 'verified' must cite a source URL",
+      });
+    }
+
+    // A comparison site is not a source of truth, so it cannot confer the
+    // strongest confidence level no matter what the spreadsheet claims. Without
+    // this, "aggregator_unverified" would be a label a careless row could shed.
+    if (confidence === "verified" && sourceType === "aggregator_unverified") {
+      errors.push({
+        row: rowNumber,
+        column: "confidence",
+        message:
+          "An aggregator row cannot be 'verified' — read the figure on the firm's own page and cite that URL instead",
       });
     }
 
@@ -409,7 +435,7 @@ export function planImport(csv: string): ImportPlan {
       challenge,
       rules,
       sourceUrl,
-      sourceType: enumValue(get("source_type"), SOURCE_TYPES, rowNumber, "source_type", errors, "official_rules")!,
+      sourceType,
       confidence,
       status: enumValue(get("status"), ["draft", "published", "archived"], rowNumber, "status", errors, "draft")!,
     });

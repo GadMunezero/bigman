@@ -10,7 +10,7 @@ const { getDb } = await import("@/lib/db");
 const { applyImport, parseCsv, planImport } = await import("@/lib/import");
 
 const HEADER =
-  "firm_name,challenge_name,markets,account_size,price,profit_target_pct,max_drawdown_pct,drawdown_type,news_trading,consistency_rule,source_url,confidence,status";
+  "firm_name,challenge_name,markets,account_size,price,profit_target_pct,max_drawdown_pct,drawdown_type,news_trading,consistency_rule,source_url,source_type,confidence,status";
 
 const row = (overrides: Partial<Record<string, string>> = {}) => {
   const defaults: Record<string, string> = {
@@ -25,6 +25,7 @@ const row = (overrides: Partial<Record<string, string>> = {}) => {
     news_trading: "allowed",
     consistency_rule: "not_required",
     source_url: "https://example.invalid/rules",
+    source_type: "official_rules",
     confidence: "needs_review",
     status: "published",
   };
@@ -102,6 +103,31 @@ describe("validation", () => {
     const plan = planImport(csv(row({ confidence: "verified", source_url: "" })));
 
     expect(plan.errors.some((e) => e.column === "source_url")).toBe(true);
+  });
+
+  it("refuses to let aggregator-sourced data claim 'verified'", () => {
+    const plan = planImport(
+      csv(
+        row({
+          confidence: "verified",
+          source_type: "aggregator_unverified",
+          source_url: "https://aggregator.invalid/list",
+        }),
+      ),
+    );
+
+    // The source URL is present, so the generic rule is satisfied. This must
+    // still fail: a comparison site cannot confer verification.
+    expect(plan.errors.some((e) => e.column === "confidence")).toBe(true);
+  });
+
+  it("still allows aggregator data in at a lower confidence", () => {
+    const plan = planImport(
+      csv(row({ confidence: "needs_review", source_type: "aggregator_unverified" })),
+    );
+
+    expect(plan.errors).toHaveLength(0);
+    expect(plan.rows[0].sourceType).toBe("aggregator_unverified");
   });
 
   it("catches duplicate challenges within one file", () => {

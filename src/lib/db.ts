@@ -28,6 +28,11 @@ declare global {
  * this idempotent and safe to run on every boot.
  */
 const ADDED_COLUMNS: { table: string; column: string; definition: string }[] = [
+  { table: "firms", column: "founded_year", definition: "INTEGER" },
+  { table: "firms", column: "headquarters", definition: "TEXT" },
+  { table: "firms", column: "ceo", definition: "TEXT" },
+  { table: "firms", column: "key_people", definition: "TEXT NOT NULL DEFAULT '[]'" },
+  { table: "firms", column: "leadership_source_url", definition: "TEXT" },
   { table: "challenges", column: "leverage", definition: "TEXT" },
   { table: "challenges", column: "refund_policy", definition: "TEXT" },
   { table: "challenges", column: "country_restrictions", definition: "TEXT" },
@@ -46,6 +51,42 @@ function migrate(db: Database.Database): void {
     if (columns.some((c) => c.name === column)) continue;
     db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
   }
+  widenSourceTypeCheck(db);
+}
+
+/**
+ * SQLite cannot alter a CHECK constraint in place, so widening the source_type
+ * vocabulary means rebuilding the table. Databases created before
+ * `aggregator_unverified` existed would otherwise reject those rows at write
+ * time — after the importer had already reported a clean plan.
+ */
+function widenSourceTypeCheck(db: Database.Database): void {
+  const row = db
+    .prepare(`SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'sources'`)
+    .get() as { sql: string } | undefined;
+  if (!row || row.sql.includes("aggregator_unverified")) return;
+
+  db.exec(`
+    PRAGMA foreign_keys = OFF;
+    BEGIN;
+    CREATE TABLE sources_rebuilt (
+      id           TEXT PRIMARY KEY,
+      firm_id      TEXT REFERENCES firms(id) ON DELETE CASCADE,
+      challenge_id TEXT REFERENCES challenges(id) ON DELETE CASCADE,
+      source_type  TEXT NOT NULL
+                   CHECK (source_type IN ('official_rules','official_pricing','official_faq','trader_report','manual_verification','aggregator_unverified')),
+      url          TEXT,
+      title        TEXT,
+      retrieved_at TEXT NOT NULL DEFAULT (datetime('now')),
+      confidence   TEXT NOT NULL DEFAULT 'needs_review'
+                   CHECK (confidence IN ('verified','trader_reported','needs_review','unknown'))
+    );
+    INSERT INTO sources_rebuilt SELECT id, firm_id, challenge_id, source_type, url, title, retrieved_at, confidence FROM sources;
+    DROP TABLE sources;
+    ALTER TABLE sources_rebuilt RENAME TO sources;
+    COMMIT;
+    PRAGMA foreign_keys = ON;
+  `);
 }
 
 function create(): Database.Database {

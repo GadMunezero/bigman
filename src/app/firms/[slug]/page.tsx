@@ -4,6 +4,7 @@ import { ChallengeCard } from "@/components/ui";
 import { getChallengeRecommendations } from "@/lib/engine";
 import { getFirmBySlug, listChallengeRecords, listReviews } from "@/lib/repo";
 import { getCurrentProfile } from "@/lib/session";
+import { parseKeyPeople } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -48,6 +49,11 @@ export default async function FirmPage({ params }: { params: Promise<{ slug: str
 
   const markets = [...new Set(challenges.flatMap((c) => c.markets))];
   const platforms = [...new Set(challenges.flatMap((c) => c.platforms))];
+
+  const keyPeople = parseKeyPeople(firm.key_people);
+  const hasLeadership = Boolean(
+    firm.ceo || keyPeople.length > 0 || firm.headquarters || firm.founded_year,
+  );
 
   return (
     <div className="shell section">
@@ -99,6 +105,66 @@ export default async function FirmPage({ params }: { params: Promise<{ slug: str
           </Link>
         </div>
       )}
+
+      <section style={{ marginTop: "3rem" }}>
+        <h2 className="section-heading">Who runs this firm</h2>
+        {hasLeadership ? (
+          <div className="panel stack">
+            <dl className="stack-sm" style={{ margin: 0 }}>
+              {firm.ceo ? (
+                <div className="spread">
+                  <dt className="small muted">Chief executive</dt>
+                  <dd style={{ margin: 0 }}>
+                    <strong>{firm.ceo}</strong>
+                  </dd>
+                </div>
+              ) : null}
+              {keyPeople.map((person) => (
+                <div key={`${person.name}-${person.role}`} className="spread">
+                  <dt className="small muted">{person.role || "Key person"}</dt>
+                  <dd style={{ margin: 0 }}>{person.name}</dd>
+                </div>
+              ))}
+              {firm.headquarters ? (
+                <div className="spread">
+                  <dt className="small muted">Headquarters</dt>
+                  <dd style={{ margin: 0 }}>{firm.headquarters}</dd>
+                </div>
+              ) : null}
+              {firm.founded_year ? (
+                <div className="spread">
+                  <dt className="small muted">Founded</dt>
+                  <dd style={{ margin: 0 }}>{firm.founded_year}</dd>
+                </div>
+              ) : null}
+            </dl>
+            {firm.leadership_source_url ? (
+              <p className="small muted" style={{ marginTop: "0.75rem" }}>
+                Recorded from{" "}
+                <a href={firm.leadership_source_url} rel="nofollow noopener" target="_blank">
+                  this source
+                </a>
+                . Tell us if it is out of date.
+              </p>
+            ) : (
+              <p className="small muted" style={{ marginTop: "0.75rem" }}>
+                No source recorded for this yet, so treat it as unconfirmed.
+              </p>
+            )}
+          </div>
+        ) : (
+          <div className="panel">
+            <p className="small">
+              This firm has not been recorded as publicly naming the people who run it.
+            </p>
+            <p className="small muted" style={{ marginTop: "0.5rem" }}>
+              That is not an accusation — plenty of legitimate firms keep a low profile, and we may
+              simply not have researched it yet. But when you are sending money to a company, who
+              stands behind it is worth knowing, so we show the gap rather than hiding it.
+            </p>
+          </div>
+        )}
+      </section>
 
       <section style={{ marginTop: "3rem" }}>
         <h2 className="section-heading">Available challenges</h2>

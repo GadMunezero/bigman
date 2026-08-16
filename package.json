@@ -15,6 +15,7 @@
     "demo": "npm run db:reset && npm run db:seed:demo && next dev",
     "demo:build": "npm run db:reset && npm run db:seed:demo && next build && next start",
     "db:import": "tsx db/import.ts",
+    "db:convert": "tsx db/convert-propfirmmatch.ts",
     "db:template": "tsx db/import.ts --template"
   },
   "dependencies": {

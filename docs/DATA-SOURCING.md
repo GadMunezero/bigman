@@ -148,6 +148,43 @@ information", not "delete this".
 
 ---
 
+## The aggregator import, and why it is all draft
+
+`data/propfirmmatch-import.csv` holds 50 firms converted from a PropFirmMatch-style
+export by `db/convert-propfirmmatch.ts`. Every row carries
+`source_type: aggregator_unverified`, `confidence: needs_review` and
+`status: draft`. None of it is on the public site, and the importer will refuse
+to let any of it be marked `verified` while it still cites an aggregator.
+
+**Treat these numbers as a hypothesis, not a catalogue.** The export failed its
+own internal consistency check badly:
+
+- **18 of the 28 CFD rows carry byte-identical figures** — the same $422.40
+  price, 10% drawdown, 80% split, 14-day payout, MT5/cTrader platforms. Real
+  firms do not converge on identical numbers. That is a filled-down column.
+- **8 of the 22 futures rows** likewise share one identical number set.
+- **21 of the 54 columns are blank in all 50 rows**, including
+  `minimum_trading_days`, `time_limit`, `consistency_rule_evaluation` — and,
+  critically, `official_website` and `official_rules_url`. Nothing in the file
+  points at the document a firm would actually enforce.
+- Every row's `source_type` is the aggregator itself.
+
+So it is loaded the way untrustworthy data should be loaded: visible to an
+admin, invisible to a trader, and flagged at every layer. Publishing a row means
+opening the firm's own rules page, correcting the figures, setting
+`source_type` to an `official_*` value with the URL you read, and only then
+moving it out of draft.
+
+### The daily-loss trap in this particular file
+
+20 rows have no daily loss limit. The engine reads a blank
+`daily_drawdown_pct` as **"this firm has no daily loss rule"** — which is a
+claim, not an absence, and for futures firms it is usually false. The converter
+prints the full list on every run. Confirm each one before publishing, because
+this single field silently inflates usable drawdown.
+
+---
+
 ## The futures lane: research roster
 
 `data/futures-firms-roster.csv` is the **discovery output** for the futures lane —

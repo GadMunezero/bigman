@@ -101,6 +101,7 @@ to configure it gets a locked door.
 | `npm run db:seed:demo` | Load the fictional demo catalogue                         |
 | `npm run db:template`  | Print the bulk-import CSV column template                 |
 | `npm run db:import`    | Import a CSV (dry run by default; `-- file.csv --apply`)  |
+| `npm run db:convert`   | Convert a PropFirmMatch-style export into the import template |
 
 ---
 
@@ -128,6 +129,29 @@ commit. Three behaviours are enforced by the importer itself:
   pending change to approve, which is what keeps the dated history on challenge pages true.
 - Nothing imports as `verified` without a source URL. The default is `needs_review`, because a
   spreadsheet cell is not verification.
+
+A **PropFirmMatch-style export** can be converted into that template:
+
+```bash
+npm run db:convert -- export.csv data/propfirmmatch-import.csv
+npm run db:import -- data/propfirmmatch-import.csv          # dry run
+```
+
+The converter turns dollar-denominated futures figures ($3,000 on a $50K
+account) into the percentages the schema stores, and stamps every row
+`aggregator_unverified` / `needs_review` / `draft`. **An aggregator row can
+never be marked `verified`** — the importer rejects it, because a comparison
+site is not the document a firm enforces against. Publishing means opening the
+firm's own rules page and replacing the figure with a cited one.
+
+### Who runs a firm
+
+Firm pages carry a **"Who runs this firm"** section — chief executive, other
+named people, headquarters, founding year, and the source it was recorded from.
+When nothing is recorded the page says so explicitly rather than hiding the
+section. An anonymous firm is a fact a trader can act on, so it is shown as one;
+the copy is careful to note that it may equally mean nobody has researched it
+yet. Nothing here is inferred — leadership is typed in by an admin or left empty.
 
 The schema is built for that:
 

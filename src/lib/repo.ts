@@ -77,6 +77,9 @@ export function listChallengeRecords(
     .prepare(
       `SELECT c.*, f.id AS f_id, f.name AS f_name, f.slug AS f_slug, f.logo_url AS f_logo_url,
               f.website AS f_website, f.description AS f_description, f.status AS f_status,
+              f.founded_year AS f_founded_year, f.headquarters AS f_headquarters,
+              f.ceo AS f_ceo, f.key_people AS f_key_people,
+              f.leadership_source_url AS f_leadership_source_url,
               f.created_at AS f_created_at, f.updated_at AS f_updated_at
        FROM challenges c
        JOIN firms f ON f.id = c.firm_id
@@ -115,6 +118,11 @@ export function listChallengeRecords(
       logo_url: (row.f_logo_url as string) ?? null,
       website: (row.f_website as string) ?? null,
       description: (row.f_description as string) ?? null,
+      founded_year: (row.f_founded_year as number) ?? null,
+      headquarters: (row.f_headquarters as string) ?? null,
+      ceo: (row.f_ceo as string) ?? null,
+      key_people: (row.f_key_people as string) ?? "[]",
+      leadership_source_url: (row.f_leadership_source_url as string) ?? null,
       status: row.f_status as Firm["status"],
       created_at: row.f_created_at as string,
       updated_at: row.f_updated_at as string,

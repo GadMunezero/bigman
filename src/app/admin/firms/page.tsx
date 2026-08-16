@@ -1,4 +1,5 @@
 import { listFirms } from "@/lib/repo";
+import { parseKeyPeople } from "@/lib/types";
 import { saveFirm } from "../actions";
 
 export const dynamic = "force-dynamic";
@@ -47,6 +48,65 @@ export default async function AdminFirmsPage({ searchParams }: { searchParams: S
                 <option value="archived">Archived</option>
               </select>
             </div>
+            <div>
+              <label className="field-label" htmlFor="ceo">
+                Chief executive
+              </label>
+              <input id="ceo" name="ceo" className="input" defaultValue={editing?.ceo ?? ""} />
+            </div>
+            <div>
+              <label className="field-label" htmlFor="headquarters">
+                Headquarters
+              </label>
+              <input
+                id="headquarters"
+                name="headquarters"
+                className="input"
+                defaultValue={editing?.headquarters ?? ""}
+              />
+            </div>
+            <div>
+              <label className="field-label" htmlFor="founded_year">
+                Founded (year)
+              </label>
+              <input
+                id="founded_year"
+                name="founded_year"
+                type="number"
+                className="input"
+                defaultValue={editing?.founded_year ?? ""}
+              />
+            </div>
+            <div>
+              <label className="field-label" htmlFor="leadership_source_url">
+                Leadership source URL
+              </label>
+              <input
+                id="leadership_source_url"
+                name="leadership_source_url"
+                className="input"
+                defaultValue={editing?.leadership_source_url ?? ""}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="field-label" htmlFor="key_people">
+              Other key people — one per line, as &quot;Name, Role&quot;
+            </label>
+            <textarea
+              id="key_people"
+              name="key_people"
+              className="input"
+              rows={3}
+              defaultValue={parseKeyPeople(editing?.key_people)
+                .map((p) => (p.role ? `${p.name}, ${p.role}` : p.name))
+                .join("\n")}
+            />
+            <p className="small muted" style={{ marginTop: "0.4rem" }}>
+              Leave blank if the firm does not publicly name them. The firm page says &quot;not
+              disclosed&quot;, which is worth more to a trader than a name nobody can check.
+            </p>
           </div>
 
           <div>

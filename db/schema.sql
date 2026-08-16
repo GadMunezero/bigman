@@ -21,6 +21,15 @@ CREATE TABLE IF NOT EXISTS firms (
   logo_url      TEXT,
   website       TEXT,
   description   TEXT,
+  -- Who runs the firm, and how much of that is on the record. A trader handing
+  -- a firm money is entitled to know whether anyone's name is attached to it;
+  -- an anonymous team is itself a finding, so `leadership_source_url` being
+  -- empty renders as "not disclosed" rather than being hidden.
+  founded_year  INTEGER,
+  headquarters  TEXT,
+  ceo           TEXT,
+  key_people    TEXT NOT NULL DEFAULT '[]',
+  leadership_source_url TEXT,
   status        TEXT NOT NULL DEFAULT 'draft'
                 CHECK (status IN ('draft', 'published', 'archived')),
   created_at    TEXT NOT NULL DEFAULT (datetime('now')),
@@ -130,7 +139,7 @@ CREATE TABLE IF NOT EXISTS sources (
   firm_id      TEXT REFERENCES firms(id) ON DELETE CASCADE,
   challenge_id TEXT REFERENCES challenges(id) ON DELETE CASCADE,
   source_type  TEXT NOT NULL
-               CHECK (source_type IN ('official_rules','official_pricing','official_faq','trader_report','manual_verification')),
+               CHECK (source_type IN ('official_rules','official_pricing','official_faq','trader_report','manual_verification','aggregator_unverified')),
   url          TEXT,
   title        TEXT,
   retrieved_at TEXT NOT NULL DEFAULT (datetime('now')),

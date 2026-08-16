@@ -224,9 +224,38 @@ export interface Firm {
   logo_url: string | null;
   website: string | null;
   description: string | null;
+  founded_year: number | null;
+  headquarters: string | null;
+  ceo: string | null;
+  /** JSON array of {name, role}. Empty is meaningful: nobody is named. */
+  key_people: string;
+  leadership_source_url: string | null;
   status: PublishStatus;
   created_at: string;
   updated_at: string;
+}
+
+export interface KeyPerson {
+  name: string;
+  role: string;
+}
+
+/**
+ * Leadership is never inferred. A firm whose people are not on the record shows
+ * as "not disclosed", which is information a trader can act on — not a gap to
+ * be filled with a plausible-sounding name.
+ */
+export function parseKeyPeople(raw: string | null | undefined): KeyPerson[] {
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .filter((p): p is KeyPerson => Boolean(p) && typeof p.name === "string" && p.name.trim() !== "")
+      .map((p) => ({ name: p.name.trim(), role: String(p.role ?? "").trim() }));
+  } catch {
+    return [];
+  }
 }
 
 export interface ChallengeRules {

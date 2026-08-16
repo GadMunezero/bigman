@@ -74,11 +74,30 @@ export async function saveFirm(formData: FormData) {
   const name = String(formData.get("name") ?? "").trim();
   if (!name) throw new Error("Name is required");
 
+  // "Ada Lovelace, CTO" per line. Free text rather than a picker because these
+  // are real people whose titles do not fit a fixed vocabulary.
+  const keyPeople = String(formData.get("key_people") ?? "")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const [name, ...role] = line.split(",");
+      return { name: name.trim(), role: role.join(",").trim() };
+    })
+    .filter((person) => person.name !== "");
+
+  const foundedYear = num(formData, "founded_year");
+
   const values = {
     name,
     slug: slugify(String(formData.get("slug") ?? "") || name),
     website: String(formData.get("website") ?? "").trim() || null,
     description: String(formData.get("description") ?? "").trim() || null,
+    founded_year: foundedYear,
+    headquarters: String(formData.get("headquarters") ?? "").trim() || null,
+    ceo: String(formData.get("ceo") ?? "").trim() || null,
+    key_people: JSON.stringify(keyPeople),
+    leadership_source_url: String(formData.get("leadership_source_url") ?? "").trim() || null,
     status: String(formData.get("status") ?? "draft"),
     updated_at: nowIso(),
   };
@@ -86,12 +105,16 @@ export async function saveFirm(formData: FormData) {
   if (id) {
     db.prepare(
       `UPDATE firms SET name=@name, slug=@slug, website=@website, description=@description,
+       founded_year=@founded_year, headquarters=@headquarters, ceo=@ceo,
+       key_people=@key_people, leadership_source_url=@leadership_source_url,
        status=@status, updated_at=@updated_at WHERE id=@id`,
     ).run({ ...values, id });
   } else {
     db.prepare(
-      `INSERT INTO firms (id, name, slug, website, description, status)
-       VALUES (@id, @name, @slug, @website, @description, @status)`,
+      `INSERT INTO firms (id, name, slug, website, description, founded_year, headquarters,
+        ceo, key_people, leadership_source_url, status)
+       VALUES (@id, @name, @slug, @website, @description, @founded_year, @headquarters,
+        @ceo, @key_people, @leadership_source_url, @status)`,
     ).run({ ...values, id: newId("firm") });
   }
 
