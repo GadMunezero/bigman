@@ -52,8 +52,8 @@
 .whyBox h3 { margin-bottom: 0.75rem; font-size: 0.95rem; }
 
 .caveat {
-  border-color: rgba(240, 180, 94, 0.28);
-  background: rgba(240, 180, 94, 0.05);
+  border-color: rgba(255, 159, 28, 0.28);
+  background: rgba(255, 159, 28, 0.05);
 }
 
 .actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.5rem; }
@@ -110,9 +110,9 @@
 
 .noMatch {
   padding: clamp(1.75rem, 4vw, 2.75rem);
-  border: 1px solid rgba(240, 180, 94, 0.28);
+  border: 1px solid rgba(255, 159, 28, 0.28);
   border-radius: var(--r-xl);
-  background: rgba(240, 180, 94, 0.04);
+  background: rgba(255, 159, 28, 0.04);
 }
 
 .blocker {

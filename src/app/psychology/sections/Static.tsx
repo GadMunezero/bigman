@@ -136,7 +136,7 @@ export function WinnerVsLoser() {
         </div>
 
         <div className={styles.side} style={{ "--side": "var(--accent)" } as React.CSSProperties}>
-          <span className="pill pill-accent">Green corner</span>
+          <span className="pill pill-accent">Yellow corner</span>
           <h3 style={{ marginTop: "0.6rem" }}>The professional trader</h3>
           <p className="small" style={{ marginTop: "0.5rem" }}>
             Not emotionless. Feels the pressure and still follows the operating system.
@@ -353,7 +353,7 @@ export function Principles() {
 
                   {principle.contrast ? (
                     <div className={styles.contrast}>
-                      <div className={styles.half} style={{ borderColor: "rgba(242,114,111,0.3)" }}>
+                      <div className={styles.half} style={{ borderColor: "rgba(255,90,90,0.3)" }}>
                         <div className={styles.halfLabel} style={{ color: "var(--danger)" }}>
                           {principle.contrast.badLabel}
                         </div>

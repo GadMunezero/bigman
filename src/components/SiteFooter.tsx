@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BRAND } from "@/lib/brand";
 
 const GROUPS: { title: string; links: { href: string; label: string }[] }[] = [
   {
@@ -46,7 +47,12 @@ export function SiteFooter() {
           className="footer-grid"
         >
           <div className="stack-sm">
-            <strong style={{ fontSize: "1rem" }}>Challenge Fit</strong>
+            <strong style={{ fontSize: "1rem" }}>
+              {BRAND.name}{" "}
+              <span style={{ color: "var(--accent)", fontSize: "0.7rem", letterSpacing: "0.14em", textTransform: "uppercase" }}>
+                {BRAND.tagline}
+              </span>
+            </strong>
             <p className="small muted" style={{ maxWidth: "34ch" }}>
               Tell us how you trade. We&apos;ll help you find the prop firm challenge that fits.
             </p>
@@ -88,7 +94,7 @@ export function SiteFooter() {
             .
           </p>
           <p style={{ marginTop: "0.5rem" }}>
-            © {new Date().getFullYear()} Challenge Fit. Not affiliated with any prop trading firm.
+            © {new Date().getFullYear()} {BRAND.name}. Not affiliated with any prop trading firm.
           </p>
         </div>
       </div>

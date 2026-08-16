@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader, StickyCta } from "@/components/SiteHeader";
+import { BRAND } from "@/lib/brand";
 import "./globals.css";
 
 const inter = Inter({
@@ -13,14 +14,13 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   title: {
-    default: "Challenge Fit — Find the prop firm challenge that fits how you trade",
-    template: "%s · Challenge Fit",
+    default: `${BRAND.name} — find the prop firm challenge that fits how you trade`,
+    template: `%s · ${BRAND.name}`,
   },
-  description:
-    "Answer a few questions about your trading style, budget and the rules that matter to you. We eliminate the challenges that cannot work for you and explain why the rest fit.",
+  description: BRAND.description,
   openGraph: {
     type: "website",
-    siteName: "Challenge Fit",
+    siteName: BRAND.name,
   },
   robots: { index: true, follow: true },
 };

@@ -7,32 +7,39 @@
 :root {
   color-scheme: dark;
 
-  /* Surfaces */
-  --bg: #08090c;
-  --bg-1: #0d0f14;
-  --bg-2: #12151c;
-  --bg-3: #181c25;
+  /* Surfaces — true black, so the yellow carries the whole identity. */
+  --bg: #000000;
+  --bg-1: #0c0c0c;
+  --bg-2: #141414;
+  --bg-3: #1d1d1d;
 
   /* Ink */
-  --ink: #edeff4;
-  --ink-2: #b7bcc9;
-  --muted: #7d8496;
-  --faint: #565d6e;
+  --ink: #f6f6f4;
+  --ink-2: #bdbdb8;
+  --muted: #8a8a84;
+  --faint: #5c5c58;
 
   /* Lines */
-  --line: rgba(255, 255, 255, 0.07);
-  --line-2: rgba(255, 255, 255, 0.13);
+  --line: rgba(255, 255, 255, 0.08);
+  --line-2: rgba(255, 255, 255, 0.15);
 
-  /* Accents — one primary, the rest strictly semantic */
-  --accent: #6ee7a8;
-  --accent-ink: #052c1a;
-  --accent-dim: rgba(110, 231, 168, 0.11);
-  --accent-line: rgba(110, 231, 168, 0.28);
+  /*
+   * Accents. The palette is deliberately narrow — yellow, orange, red and
+   * white on black — so the brand yellow stays meaningful. Yellow always
+   * takes near-black text on top, which is where its contrast is strongest.
+   */
+  --accent: #ffd400;
+  --accent-hi: #ffe14d;
+  --accent-ink: #100e00;
+  --accent-dim: rgba(255, 212, 0, 0.12);
+  --accent-line: rgba(255, 212, 0, 0.34);
 
-  --info: #7cc4ff;
-  --warn: #f0b45e;
-  --danger: #f2726f;
-  --violet: #a892f5;
+  /* Pale yellow for informational surfaces — reads as secondary next to the
+     full-strength accent without introducing an off-brand hue. */
+  --info: #ffec99;
+  --warn: #ff9f1c;
+  --danger: #ff5a5a;
+  --violet: #e0b84c;
 
   /* Type */
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -61,8 +68,8 @@ html {
 body {
   min-height: 100dvh;
   background:
-    radial-gradient(1100px 520px at 12% -6%, rgba(110, 231, 168, 0.055), transparent 70%),
-    radial-gradient(900px 480px at 92% 0%, rgba(168, 146, 245, 0.045), transparent 70%),
+    radial-gradient(1100px 520px at 12% -6%, rgba(255, 212, 0, 0.07), transparent 70%),
+    radial-gradient(900px 480px at 92% 0%, rgba(255, 159, 28, 0.045), transparent 70%),
     var(--bg);
   color: var(--ink);
   font-family: var(--font-sans);
@@ -216,13 +223,13 @@ button, input, select, textarea {
 .panel-quiet { background: var(--bg-2); }
 
 .panel-danger {
-  border-color: rgba(242, 114, 111, 0.28);
-  background: rgba(242, 114, 111, 0.05);
+  border-color: rgba(255, 90, 90, 0.3);
+  background: rgba(255, 90, 90, 0.05);
 }
 
 .panel-warn {
-  border-color: rgba(240, 180, 94, 0.28);
-  background: rgba(240, 180, 94, 0.05);
+  border-color: rgba(255, 159, 28, 0.3);
+  background: rgba(255, 159, 28, 0.05);
 }
 
 /* --------------------------------------------------------------- buttons */
@@ -255,7 +262,7 @@ button, input, select, textarea {
   font-weight: 650;
 }
 
-.btn-primary:hover { background: #85f0bb; }
+.btn-primary:hover { background: var(--accent-hi); }
 
 .btn-lg { min-height: 52px; padding: 0 1.75rem; font-size: 15.5px; }
 .btn-sm { min-height: 34px; padding: 0 0.8rem; font-size: 13px; }
@@ -287,10 +294,10 @@ button, input, select, textarea {
 }
 
 .pill-accent { border-color: var(--accent-line); background: var(--accent-dim); color: var(--accent); }
-.pill-info { border-color: rgba(124, 196, 255, 0.3); background: rgba(124, 196, 255, 0.09); color: var(--info); }
-.pill-warn { border-color: rgba(240, 180, 94, 0.3); background: rgba(240, 180, 94, 0.09); color: var(--warn); }
-.pill-danger { border-color: rgba(242, 114, 111, 0.3); background: rgba(242, 114, 111, 0.09); color: var(--danger); }
-.pill-violet { border-color: rgba(168, 146, 245, 0.3); background: rgba(168, 146, 245, 0.09); color: var(--violet); }
+.pill-info { border-color: rgba(255, 236, 153, 0.32); background: rgba(255, 236, 153, 0.09); color: var(--info); }
+.pill-warn { border-color: rgba(255, 159, 28, 0.32); background: rgba(255, 159, 28, 0.1); color: var(--warn); }
+.pill-danger { border-color: rgba(255, 90, 90, 0.32); background: rgba(255, 90, 90, 0.1); color: var(--danger); }
+.pill-violet { border-color: rgba(224, 184, 76, 0.32); background: rgba(224, 184, 76, 0.1); color: var(--violet); }
 
 /* ----------------------------------------------------------------- forms */
 

@@ -49,8 +49,8 @@
 }
 
 .allowed { border-color: var(--accent-line); background: var(--accent-dim); color: var(--accent); }
-.restricted { border-color: rgba(240, 180, 94, 0.3); background: rgba(240, 180, 94, 0.09); color: var(--warn); }
-.prohibited { border-color: rgba(242, 114, 111, 0.3); background: rgba(242, 114, 111, 0.09); color: var(--danger); }
+.restricted { border-color: rgba(255, 159, 28, 0.3); background: rgba(255, 159, 28, 0.09); color: var(--warn); }
+.prohibited { border-color: rgba(255, 90, 90, 0.3); background: rgba(255, 90, 90, 0.09); color: var(--danger); }
 .unknown { color: var(--faint); }
 
 /* --------------------------------------------------------- challenge card */

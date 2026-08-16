@@ -1,4 +1,4 @@
-# Challenge Fit
+# PropForm
 
 A personalised **prop firm challenge finder**. Not a directory, not a coupon site, not a
 top-ten list — a recommendation engine that asks how you trade, removes the challenges that
