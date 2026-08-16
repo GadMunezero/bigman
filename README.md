@@ -46,15 +46,27 @@ nothing is hand-written per challenge or paraphrased by a language model.
 ## Quick start
 
 ```bash
+git clone https://github.com/GadMunezero/bigman.git
+cd bigman
+git checkout claude/prop-firm-challenge-finder-frpvmc
 npm install
+ADMIN_PASSWORD=demo npm run demo
+```
+
+Open http://localhost:3000. `npm run demo` recreates the database, loads the
+fictional demo catalogue, and starts the dev server in one step.
+
+Requires Node 20 or newer.
+
+### Running it piece by piece
+
+```bash
 npm run db:reset          # create an empty database from db/schema.sql
 npm run db:seed:demo      # optional: three FICTIONAL firms to exercise the engine
 npm run dev
 ```
 
-Then open http://localhost:3000.
-
-To use the admin area, set a password first:
+The admin area needs a password, and is **disabled** without one:
 
 ```bash
 ADMIN_PASSWORD=your-password npm run dev
