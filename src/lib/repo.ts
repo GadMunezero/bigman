@@ -443,6 +443,21 @@ export function listOffers(): AffiliateOffer[] {
   return getDb().prepare(`SELECT * FROM affiliate_offers`).all() as AffiliateOffer[];
 }
 
+/**
+ * Whether any commercial relationship exists at all.
+ *
+ * The site-wide disclosure is written from this rather than hardcoded, so a
+ * site with no affiliate deals does not describe itself as monetised. Claiming
+ * commissions we do not earn invites readers to discount the rankings for a
+ * conflict of interest that is not there.
+ */
+export function hasAnyActiveOffer(): boolean {
+  const row = getDb()
+    .prepare(`SELECT COUNT(*) AS n FROM affiliate_offers WHERE active = 1`)
+    .get() as { n: number };
+  return row.n > 0;
+}
+
 export function recordAffiliateClick(data: {
   challenge_id: string | null;
   session_id: string | null;

@@ -242,6 +242,8 @@ export default async function ResultsPage() {
               <AffiliateCta
                 challengeId={first.challenge.id}
                 offer={offer}
+                firmName={first.challenge.firm.name}
+                firmWebsite={first.challenge.firm.website}
                 page="results"
                 placement="top_match"
                 score={first.match_score}
@@ -280,14 +282,24 @@ export default async function ResultsPage() {
       {second ? (
         <section style={{ marginTop: "3rem" }}>
           <h2 className="section-heading">Strong alternative</h2>
-          <AlternativeCard rec={second} position={2} saved={saved.has(second.challenge.id)} />
+          <AlternativeCard
+            rec={second}
+            position={2}
+            saved={saved.has(second.challenge.id)}
+            sponsored={Boolean(getOfferForChallenge(second.challenge.id)?.affiliate_url)}
+          />
         </section>
       ) : null}
 
       {third ? (
         <section style={{ marginTop: "2rem" }}>
           <h2 className="section-heading">Another option worth considering</h2>
-          <AlternativeCard rec={third} position={3} saved={saved.has(third.challenge.id)} />
+          <AlternativeCard
+            rec={third}
+            position={3}
+            saved={saved.has(third.challenge.id)}
+            sponsored={Boolean(getOfferForChallenge(third.challenge.id)?.affiliate_url)}
+          />
         </section>
       ) : null}
 
@@ -407,10 +419,13 @@ function AlternativeCard({
   rec,
   position,
   saved,
+  sponsored,
 }: {
   rec: Recommendation;
   position: number;
   saved: boolean;
+  /** Drives rel="sponsored", which is a claim about money and must be accurate. */
+  sponsored: boolean;
 }) {
   return (
     <div className={styles.alt}>
@@ -468,14 +483,16 @@ function AlternativeCard({
             Compare
           </Link>
           <SaveButton challengeId={rec.challenge.id} initialSaved={saved} />
-          <a
-            className="btn btn-sm"
-            href={`/api/go/${rec.challenge.id}?page=results&placement=alternative&score=${rec.match_score}&position=${position}`}
-            rel="sponsored nofollow noopener"
-            target="_blank"
-          >
-            Open at {rec.challenge.firm.name}
-          </a>
+          {rec.challenge.firm.website ? (
+            <a
+              className="btn btn-sm"
+              href={`/api/go/${rec.challenge.id}?page=results&placement=alternative&score=${rec.match_score}&position=${position}`}
+              rel={sponsored ? "sponsored nofollow noopener" : "nofollow noopener"}
+              target="_blank"
+            >
+              Open {rec.challenge.firm.name}&apos;s site
+            </a>
+          ) : null}
         </div>
       </div>
 

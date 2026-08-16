@@ -167,6 +167,32 @@ The schema is built for that:
 
 ---
 
+## Where an outbound click goes
+
+Every "go to the firm" button routes through `/api/go/[challengeId]`, which resolves the
+destination *after* the recommendation has been produced and shown:
+
+1. If the challenge has an active affiliate offer, it goes to the affiliate URL. The link is
+   marked `rel="sponsored"` and says a commission may be earned.
+2. Otherwise it goes to the firm's **own website**, with no `sponsored` marker and copy that
+   says plainly: *"This goes straight to their own website. We are not affiliated with them and
+   earn nothing if you sign up."*
+3. If neither exists, **no button is rendered.** The page says the official link is not on file
+   and tells the trader to confirm the domain themselves.
+
+That third case is deliberate. The redirect only ever uses a URL an admin stored against the
+firm — it never constructs one from the firm's name. Lookalike domains are common in this
+industry, and guessing one would hand a trader to a scam site wearing our recommendation as
+endorsement.
+
+The disclosure describes *the link you are looking at*, not the business model in general.
+Claiming a commission that is not earned would invite readers to discount the rankings for a
+conflict of interest that is not there. `/affiliate-disclosure` reads the offers table and
+states the live status; the site-wide footer line is phrased to be true either way, so it never
+needs a per-render database read and can never go stale.
+
+---
+
 ## Commercial independence
 
 The recommendation engine cannot see commercial data. This is structural, not a promise:

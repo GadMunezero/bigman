@@ -53,7 +53,7 @@ export default function HowItWorksPage() {
             heading: "6. You compare and decide",
             paragraphs: [
               "Put your top options side by side. If you have taken the questionnaire, the comparison tells you which one fits you better and explains the gap using the same score breakdowns.",
-              "When you click through to a firm, we may earn a commission. That happens after the recommendation and has no effect on it.",
+              "When you click through, you go to the firm's own website. Where we have an affiliate relationship we may earn a commission and the link says so — that happens after the recommendation and has no effect on it.",
             ],
           },
         ]}

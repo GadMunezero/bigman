@@ -15,6 +15,11 @@ export const runtime = "nodejs";
  *
  * If a challenge has no affiliate offer we still send the trader onward — to
  * the firm's own website. Monetisation never gates the destination.
+ *
+ * The redirect only ever targets a URL an admin stored against the firm. It
+ * never constructs one from the firm's name: lookalike domains are common in
+ * this industry, and guessing one would hand a trader to a scam site wearing
+ * our recommendation as endorsement. No stored URL means no redirect.
  */
 export async function GET(
   request: Request,
@@ -41,6 +46,9 @@ export async function GET(
   const matchScore = asInt(url.searchParams.get("score"));
   const position = asInt(url.searchParams.get("position"));
 
+  // Recorded for every outbound click, sponsored or not, because the funnel
+  // question ("did they act on the recommendation") is the same either way.
+  // The table name predates there being unpaid links; `offer` distinguishes them.
   recordAffiliateClick({
     challenge_id: challengeId,
     session_id: sessionId,

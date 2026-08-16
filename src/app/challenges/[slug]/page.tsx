@@ -395,6 +395,8 @@ export default async function ChallengeDetailPage({
             <AffiliateCta
               challengeId={challenge.id}
               offer={offer}
+              firmName={challenge.firm.name}
+              firmWebsite={challenge.firm.website}
               page="challenge_detail"
               placement="primary"
               score={match?.match_score}

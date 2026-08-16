@@ -82,9 +82,15 @@ export function SiteFooter() {
             this site is financial advice, and no result on this site is a prediction that you will
             pass a challenge, receive a payout, or make money.
           </p>
+          {/*
+            Deliberately true whether or not any affiliate deal exists, so this
+            never needs a database read on every page render and can never go
+            stale. The live status lives on the disclosure page, which reads it.
+          */}
           <p>
-            We may earn a commission if you buy a challenge through our links. Commission never
-            affects your compatibility score — see our{" "}
+            Outbound links go to the firm&apos;s own website. Where we have an affiliate
+            relationship the link says so, and commission never affects your compatibility score —
+            see our{" "}
             <Link href="/affiliate-disclosure" style={{ textDecoration: "underline" }}>
               affiliate disclosure
             </Link>{" "}

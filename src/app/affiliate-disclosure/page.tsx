@@ -1,5 +1,11 @@
 import Link from "next/link";
 import { ProsePage } from "@/components/Prose";
+import { hasAnyActiveOffer } from "@/lib/repo";
+
+// Reads the offers table, so it must not be frozen at build time — a stale
+// "we have no affiliate relationships" would keep asserting itself after the
+// first deal is signed.
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Affiliate disclosure",
@@ -8,12 +14,39 @@ export const metadata = {
 };
 
 export default function AffiliateDisclosurePage() {
+  const monetised = hasAnyActiveOffer();
+
   return (
     <>
+      {/*
+        The policy below is written to hold whether or not we are monetised. The
+        banner states which of the two is true *today*, read from the offers
+        table rather than from memory, so the page cannot drift out of date the
+        moment the first deal is signed or the last one lapses.
+      */}
+      <div className="shell-narrow" style={{ paddingTop: "2rem" }}>
+        <div className={`panel ${monetised ? "" : "panel-accent"}`}>
+          <strong>
+            {monetised
+              ? "Current status: we have active affiliate relationships."
+              : "Current status: we have no affiliate relationships with any prop firm."}
+          </strong>
+          <p className="small muted" style={{ marginTop: "0.5rem" }}>
+            {monetised
+              ? "Links to firms we have a deal with are marked as sponsored where they appear. Everything else goes straight to the firm's own site."
+              : "We earn nothing from any link on this site. Every outbound button goes straight to the firm's own website. The policy below describes what would change if that ever stops being true."}
+          </p>
+        </div>
+      </div>
+
       <ProsePage
         eyebrow="Trust"
         title="Affiliate disclosure"
-        lede="We earn commission on some outbound links. Here is exactly what that does and does not affect."
+        lede={
+          monetised
+            ? "We earn commission on some outbound links. Here is exactly what that does and does not affect."
+            : "We currently earn nothing from any link here. This is the policy that applies if that changes."
+        }
         sections={[
           {
             heading: "How we make money",
