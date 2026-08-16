@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { TrackEvent } from "@/components/TrackEvent";
 import styles from "./home.module.css";
 
 export const metadata = {
@@ -92,6 +93,8 @@ const FAQS = [
 export default function HomePage() {
   return (
     <>
+      <TrackEvent event="homepage_view" />
+
       {/* ---------------------------------------------------------- hero */}
       <section className="shell">
         <div className={styles.hero}>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { TrackEvent } from "@/components/TrackEvent";
 import { AccountSize, Figure, Money, RuleBadge } from "@/components/ui";
 import { getChallengeRecommendations } from "@/lib/engine";
 import { getChallengeRecordsByIds, listChallengeRecords } from "@/lib/repo";
@@ -47,6 +48,8 @@ export default async function ComparePage({ searchParams }: { searchParams: Sear
 
   return (
     <div className="shell section">
+      {selected.length >= 2 ? <TrackEvent event="compare_clicked" /> : null}
+
       <header className="stack-sm" style={{ marginBottom: "2rem" }}>
         <span className="eyebrow">Compare</span>
         <h1>Compare challenges</h1>

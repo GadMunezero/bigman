@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AffiliateCta } from "@/components/AffiliateCta";
 import { SaveButton } from "@/components/SaveButton";
+import { TrackEvent } from "@/components/TrackEvent";
 import {
   AccountSize,
   Figure,
@@ -59,6 +60,8 @@ export default async function ChallengeDetailPage({
 
   return (
     <div className="shell section">
+      <TrackEvent event="challenge_viewed" challengeId={challenge.id} />
+
       <nav className="small muted" style={{ marginBottom: "1.5rem" }}>
         <Link href="/challenges">Challenges</Link> ·{" "}
         <Link href={`/firms/${challenge.firm.slug}`}>{challenge.firm.name}</Link>
