@@ -185,6 +185,34 @@ this single field silently inflates usable drawdown.
 
 ---
 
+## Official domains, and why they are recorded separately
+
+`data/firm-websites.csv` holds official domains gathered from search-engine
+results, applied with `npm run db:firm-websites -- --apply` (dry run by
+default, and it never overwrites a website someone already typed).
+
+These came from **indexed search results, not from opening the pages** — the
+research environment cannot reach prop firm domains. That is enough to be worth
+recording and not enough to trust blindly. Confirm the domain before publishing
+a firm: a lookalike domain in an outbound link is the most damaging error this
+catalogue can make, and this industry attracts them.
+
+Two findings from that pass are worth keeping:
+
+- **Alpha Futures is `alpha-futures.com`, hyphenated.** The obvious guess
+  (`alphafutures.com`) is wrong. This is the concrete argument against ever
+  deriving a domain from a firm's name.
+- **Elite Trader Funding indexes as `.app`, and sources disagree on its account
+  range** — $10K–$150K in one place, $50K–$300K in another. Flagged in the CSV.
+  Do not record either until the firm's own page settles it.
+
+Three firms in that file — Elite Trader Funding, Alpha Futures and Bulenox —
+are **not in the catalogue at all**. The supplied export omitted them despite
+their being real, active futures firms, which is one more reason not to treat
+that export as complete.
+
+---
+
 ## One row per account size
 
 A real firm sells the same evaluation at six or seven account sizes. The
