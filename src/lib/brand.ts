@@ -7,10 +7,10 @@
  * is. Changing `TAGLINE` here is a one-line change if that ever needs to go.
  */
 export const BRAND = {
-  name: "PropForm",
+  name: "PropFirm",
   tagline: "for dummies",
   /** Used in <title> templates and the footer. */
-  full: "PropForm",
+  full: "PropFirm",
   description:
     "Answer a few questions about your trading style, budget and the rules that matter to you. We eliminate the challenges that cannot work for you and explain why the rest fit.",
 } as const;
