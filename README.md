@@ -99,6 +99,8 @@ to configure it gets a locked door.
 | `npm run typecheck`    | Types only                                                |
 | `npm run db:reset`     | Drop and recreate the local database                      |
 | `npm run db:seed:demo` | Load the fictional demo catalogue                         |
+| `npm run db:template`  | Print the bulk-import CSV column template                 |
+| `npm run db:import`    | Import a CSV (dry run by default; `-- file.csv --apply`)  |
 
 ---
 
@@ -108,8 +110,26 @@ to configure it gets a locked door.
 firms, named "(fictional)", because attaching made-up prices and rules to a real company is
 exactly the fabrication this product exists to avoid.
 
-Real data goes in through `/admin`, taken from each firm's own documentation. The schema is
-built for that:
+Real data goes in through `/admin` or the bulk importer, taken from each firm's own
+documentation. See **[docs/DATA-SOURCING.md](docs/DATA-SOURCING.md)** for where each field
+lives on a firm's site and the order of work that gets a useful catalogue fastest.
+
+```bash
+npm run db:template > data/challenges.csv   # one row per challenge
+npm run db:import -- data/challenges.csv    # dry run: reports every problem, writes nothing
+npm run db:import -- data/challenges.csv --apply
+```
+
+The same thing is available in the browser at `/admin/import`, which shows the plan before you
+commit. Three behaviours are enforced by the importer itself:
+
+- A blank cell means **not confirmed** — never zero, and it never erases a stored value.
+- Re-importing an existing challenge **does not overwrite it**. Each differing field becomes a
+  pending change to approve, which is what keeps the dated history on challenge pages true.
+- Nothing imports as `verified` without a source URL. The default is `needs_review`, because a
+  spreadsheet cell is not verification.
+
+The schema is built for that:
 
 - Every important field carries a **confidence level** — `verified`, `trader_reported`,
   `needs_review` or `unknown`. Unknown fields render as "Not confirmed" rather than being

@@ -2,8 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { ADMIN_COOKIE, checkPassword, isAdmin, sessionToken } from "@/lib/admin";
 import { getDb, newId, nowIso } from "@/lib/db";
+import { applyImport, planImport } from "@/lib/import";
 import {
   approveChange,
   moderateReview,
@@ -380,4 +382,37 @@ export async function saveArticle(formData: FormData) {
 
   revalidatePath("/admin/articles");
   revalidatePath("/learn");
+}
+
+
+// ---------------------------------------------------------------------------
+// Bulk import
+// ---------------------------------------------------------------------------
+
+/**
+ * Applies a pasted CSV.
+ *
+ * The plan is recomputed server-side rather than trusting anything the page
+ * sent back, and `applyImport` refuses to run when the plan has errors — so a
+ * crafted request cannot skip validation.
+ */
+export async function runImport(formData: FormData) {
+  await requireAdmin();
+
+  const csv = String(formData.get("csv") ?? "");
+  if (!csv.trim()) return;
+
+  const plan = planImport(csv);
+  if (plan.errors.length > 0) {
+    throw new Error(`Import has ${plan.errors.length} validation error(s).`);
+  }
+
+  applyImport(plan);
+
+  revalidatePath("/admin/import");
+  revalidatePath("/admin/challenges");
+  revalidatePath("/admin/rules");
+  revalidatePath("/challenges");
+
+  redirect("/admin/import?applied=1");
 }
