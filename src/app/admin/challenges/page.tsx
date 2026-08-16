@@ -265,6 +265,42 @@ export default async function AdminChallengesPage({
               />
             </div>
             <div>
+              <label className="field-label" htmlFor="leverage">
+                Leverage
+              </label>
+              <input
+                id="leverage"
+                name="leverage"
+                className="input"
+                placeholder="e.g. 1:30"
+                defaultValue={editing?.leverage ?? ""}
+              />
+            </div>
+            <div>
+              <label className="field-label" htmlFor="refund_policy">
+                Refund policy
+              </label>
+              <input
+                id="refund_policy"
+                name="refund_policy"
+                className="input"
+                placeholder="e.g. Fee refunded with first payout"
+                defaultValue={editing?.refund_policy ?? ""}
+              />
+            </div>
+            <div>
+              <label className="field-label" htmlFor="country_restrictions">
+                Country restrictions
+              </label>
+              <input
+                id="country_restrictions"
+                name="country_restrictions"
+                className="input"
+                placeholder="Countries not accepted"
+                defaultValue={editing?.country_restrictions ?? ""}
+              />
+            </div>
+            <div>
               <label className="field-label" htmlFor="phases">
                 Phases (0 = instant funding)
               </label>

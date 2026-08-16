@@ -20,9 +20,22 @@ never blended:
 1. **Hard filtering.** A challenge that conflicts with a stated requirement is removed
    entirely. If you need overnight positions and a challenge prohibits them, it is not a 72%
    match — it is the wrong challenge, and the results page says so with the reason.
-2. **Soft scoring.** Everything that survives is ranked on eight weighted criteria, with the
-   weights boosted toward whatever you said matters most and then renormalised to 100 so
-   scores stay comparable between traders.
+2. **Soft scoring.** Everything that survives is ranked on nine weighted criteria. The weights
+   are not fixed: they are reshaped by how you said you want to approach the challenge (pass
+   fast / normal pace / protect the account), adjusted again by your risk style, boosted toward
+   your stated priorities, and then renormalised to 100 so scores stay comparable between
+   traders.
+
+**Deal-breakers are stricter than derived requirements.** A requirement inferred from how you
+trade only eliminates on a confirmed prohibition. Something you name as a deal-breaker
+eliminates on a restriction too — and "high fees" is measured against the median price of the
+challenges matching your market, not an arbitrary number.
+
+**A bigger drawdown is not automatically better.** The engine scores *usable* drawdown: room
+relative to the profit target, discounted by the drawdown mechanic (trailing follows your
+equity up) and by how hard a daily cap rations it. A 20% intraday-trailing drawdown with a 2%
+daily cap against a 20% target can score below an 8% static drawdown with no daily rule
+against a 5% target — and it should.
 
 Every recommendation carries reasons, at least one caveat where a real trade-off exists, and
 a per-criterion score breakdown. All of it is generated from stored fields and your answers —

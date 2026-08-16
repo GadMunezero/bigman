@@ -2,6 +2,7 @@ import type { ChallengeRecord, CriterionScore, TraderProfile } from "../types";
 import { PRIORITY_LABELS } from "../types";
 import type { DerivedRequirements } from "./requirements";
 import { formatMoney, labelMarket } from "./requirements";
+import { APPROACH_LABELS } from "./weights";
 
 /**
  * Explanations are generated from the trader's answers and the challenge's
@@ -62,6 +63,30 @@ export function buildReasons(
     reasons.push(`Available on ${profile.platform}.`);
   }
 
+  // The approach the trader chose, where this challenge genuinely serves it.
+  const difficulty = by("difficulty");
+  if (difficulty && difficulty.ratio >= 0.7 && req.approach === "pass_fast") {
+    reasons.push(
+      `Structured to be cleared quickly — ${difficulty.notes.slice(0, 2).join(", ").toLowerCase()} — which matches your aim to ${APPROACH_LABELS.pass_fast}.`,
+    );
+  }
+  if (req.approach === "protect" && challenge.drawdown_type === "static") {
+    reasons.push(
+      "A static drawdown will not tighten against you as the account grows, which suits taking your time.",
+    );
+  }
+  const drawdownScore = by("drawdown");
+  if (
+    drawdownScore &&
+    drawdownScore.ratio >= 0.7 &&
+    challenge.max_drawdown_pct !== null &&
+    challenge.profit_target_pct !== null
+  ) {
+    reasons.push(
+      `Gives you ${(challenge.max_drawdown_pct / challenge.profit_target_pct).toFixed(1)}x your profit target in usable loss budget.`,
+    );
+  }
+
   // Priorities the trader named and this challenge actually delivers on.
   for (const priority of profile.priorities ?? []) {
     const delivered = priorityDelivered(priority, challenge, breakdown);
@@ -83,6 +108,17 @@ function priorityDelivered(
       const dd = by("drawdown");
       if (dd && dd.ratio >= 0.7 && challenge.max_drawdown_pct !== null) {
         return `Drawdown of ${challenge.max_drawdown_pct}% is on the roomier end of your options — one of your stated priorities.`;
+      }
+      return null;
+    }
+    case "static_drawdown":
+      return challenge.drawdown_type === "static"
+        ? "Static drawdown rather than trailing — one of your stated priorities."
+        : null;
+    case "low_profit_target": {
+      const diff = by("difficulty");
+      if (diff && diff.ratio >= 0.65 && challenge.profit_target_pct !== null) {
+        return `A ${challenge.profit_target_pct}% profit target, among the lower ones available to you — one of your stated priorities.`;
       }
       return null;
     }
@@ -161,6 +197,35 @@ export function buildWarnings(
 
   if (challenge.drawdown_type === "trailing" || challenge.drawdown_type === "intraday_trailing") {
     warnings.push("The drawdown trails your balance, so unrealised profit can move your loss limit against you.");
+  }
+
+  // A headline drawdown that shrinks once the mechanics are accounted for.
+  if (
+    challenge.max_drawdown_pct !== null &&
+    challenge.profit_target_pct !== null &&
+    challenge.max_drawdown_pct / challenge.profit_target_pct < 1
+  ) {
+    warnings.push(
+      `You have less loss budget (${challenge.max_drawdown_pct}%) than the profit you must make (${challenge.profit_target_pct}%), so the margin for error is thin.`,
+    );
+  }
+
+  if (req.approach === "pass_fast" && challenge.minimum_days !== null && challenge.minimum_days >= 10) {
+    warnings.push(
+      `You want to pass quickly, but this challenge requires at least ${challenge.minimum_days} trading days.`,
+    );
+  }
+
+  if (req.approach === "protect" && challenge.maximum_days !== null) {
+    warnings.push(
+      `You want to take your time, but this challenge must be completed within ${challenge.maximum_days} days.`,
+    );
+  }
+
+  if (req.approach === "pass_fast" && challenge.phases !== null && challenge.phases >= 2) {
+    warnings.push(
+      "This is a two-step evaluation, so there are two hurdles before any payout.",
+    );
   }
 
   if (challenge.daily_drawdown_pct !== null && (profile.priorities ?? []).includes("no_daily_loss_rule")) {

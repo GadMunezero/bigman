@@ -2,11 +2,15 @@ import { getChallengeRecommendations } from "@/lib/engine";
 import { listAccountSizes, listChallengeRecords, listPlatforms } from "@/lib/repo";
 import {
   BUDGETS,
+  CHALLENGE_APPROACHES,
+  DEAL_BREAKERS,
+  DEAL_BREAKER_LABELS,
   HOLDING_PERIODS,
   MARKETS,
   NEWS_FREQUENCIES,
   PRIORITIES,
   PRIORITY_LABELS,
+  RISK_STYLES,
   TRADING_STYLES,
   TRI_STATE,
   type TraderProfile,
@@ -47,6 +51,9 @@ export default async function TesterPage({ searchParams }: { searchParams: Searc
     holding_period: (first(params.holding_period) || null) as TraderProfile["holding_period"],
     news_trading: (first(params.news_trading) || null) as TraderProfile["news_trading"],
     overnight_required: (first(params.overnight_required) || null) as TraderProfile["overnight_required"],
+    challenge_approach: (first(params.challenge_approach) || null) as TraderProfile["challenge_approach"],
+    risk_style: (first(params.risk_style) || null) as TraderProfile["risk_style"],
+    deal_breakers: all(params.deal_breakers) as TraderProfile["deal_breakers"],
     budget: (first(params.budget) || null) as TraderProfile["budget"],
     desired_account_size: first(params.desired_account_size) || null,
     priorities: all(params.priorities) as TraderProfile["priorities"],
@@ -133,6 +140,36 @@ export default async function TesterPage({ searchParams }: { searchParams: Searc
               </select>
             </div>
             <div>
+              <label className="field-label" htmlFor="challenge_approach">
+                Approach
+              </label>
+              <select
+                id="challenge_approach"
+                name="challenge_approach"
+                defaultValue={first(params.challenge_approach)}
+              >
+                <option value="">Not set (normal)</option>
+                {CHALLENGE_APPROACHES.map((approach) => (
+                  <option key={approach} value={approach}>
+                    {approach.replace(/_/g, " ")}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="field-label" htmlFor="risk_style">
+                Risk style
+              </label>
+              <select id="risk_style" name="risk_style" defaultValue={first(params.risk_style)}>
+                <option value="">Not set (balanced)</option>
+                {RISK_STYLES.map((style) => (
+                  <option key={style} value={style}>
+                    {style}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
               <label className="field-label" htmlFor="budget">
                 Budget
               </label>
@@ -190,6 +227,24 @@ export default async function TesterPage({ searchParams }: { searchParams: Searc
                     style={{ width: 16, height: 16, minHeight: "auto" }}
                   />
                   <span className="small">{PRIORITY_LABELS[priority]}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+
+          <fieldset style={{ border: 0 }}>
+            <legend className="field-label">Deal-breakers (hard filters)</legend>
+            <div className="row">
+              {DEAL_BREAKERS.map((breaker) => (
+                <label key={breaker} className="row" style={{ gap: "0.4rem" }}>
+                  <input
+                    type="checkbox"
+                    name="deal_breakers"
+                    value={breaker}
+                    defaultChecked={all(params.deal_breakers).includes(breaker)}
+                    style={{ width: 16, height: 16, minHeight: "auto" }}
+                  />
+                  <span className="small">{DEAL_BREAKER_LABELS[breaker]}</span>
                 </label>
               ))}
             </div>

@@ -152,6 +152,9 @@ export async function saveChallenge(formData: FormData) {
     payout_split_pct: num(formData, "payout_split_pct"),
     payout_conditions: str(formData, "payout_conditions"),
     platforms: jsonList(formData, "platforms"),
+    leverage: str(formData, "leverage"),
+    refund_policy: str(formData, "refund_policy"),
+    country_restrictions: str(formData, "country_restrictions"),
     phases: num(formData, "phases"),
     status: String(formData.get("status") ?? "draft"),
     last_verified_at: str(formData, "last_verified_at"),
@@ -168,7 +171,8 @@ export async function saveChallenge(formData: FormData) {
         daily_drawdown_pct=@daily_drawdown_pct, drawdown_type=@drawdown_type,
         minimum_days=@minimum_days, maximum_days=@maximum_days,
         payout_frequency_days=@payout_frequency_days, payout_split_pct=@payout_split_pct,
-        payout_conditions=@payout_conditions, platforms=@platforms, phases=@phases,
+        payout_conditions=@payout_conditions, platforms=@platforms, leverage=@leverage,
+        refund_policy=@refund_policy, country_restrictions=@country_restrictions, phases=@phases,
         status=@status, last_verified_at=@last_verified_at, updated_at=@updated_at
        WHERE id=@id`,
     ).run({ ...values, id });
@@ -177,11 +181,11 @@ export async function saveChallenge(formData: FormData) {
       `INSERT INTO challenges (id, firm_id, name, slug, markets, account_size, price, currency,
         billing_type, profit_target_pct, max_drawdown_pct, daily_drawdown_pct, drawdown_type,
         minimum_days, maximum_days, payout_frequency_days, payout_split_pct, payout_conditions,
-        platforms, phases, status, last_verified_at)
+        platforms, leverage, refund_policy, country_restrictions, phases, status, last_verified_at)
        VALUES (@id, @firm_id, @name, @slug, @markets, @account_size, @price, @currency,
         @billing_type, @profit_target_pct, @max_drawdown_pct, @daily_drawdown_pct, @drawdown_type,
         @minimum_days, @maximum_days, @payout_frequency_days, @payout_split_pct, @payout_conditions,
-        @platforms, @phases, @status, @last_verified_at)`,
+        @platforms, @leverage, @refund_policy, @country_restrictions, @phases, @status, @last_verified_at)`,
     ).run({ ...values, id: challengeId });
   }
 

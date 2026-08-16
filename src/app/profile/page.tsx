@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getCurrentProfile } from "@/lib/session";
-import { PRIORITY_LABELS, type Priority } from "@/lib/types";
+import { DEAL_BREAKER_LABELS, PRIORITY_LABELS, type DealBreaker, type Priority } from "@/lib/types";
 import { ClearProfileButton } from "./ClearProfileButton";
 
 export const metadata = {
@@ -16,6 +16,8 @@ const LABELS: Record<string, string> = {
   holding_period: "Holding period",
   news_trading: "News trading",
   overnight_required: "Overnight required",
+  challenge_approach: "Challenge approach",
+  risk_style: "Risk style",
   budget: "Budget",
   desired_account_size: "Account size",
   platform: "Platform",
@@ -105,6 +107,25 @@ export default async function ProfilePage() {
         <p className="small muted" style={{ marginTop: "0.75rem" }}>
           Each priority increases the weight of the criterion it maps to, then all weights are
           renormalised to 100.
+        </p>
+      </div>
+
+      <div className="panel" style={{ marginTop: "1rem" }}>
+        <div className="stat-label">Your deal-breakers</div>
+        <div className="row" style={{ marginTop: "0.6rem" }}>
+          {profile.deal_breakers.length === 0 ? (
+            <span className="small muted">None — nothing is filtered out on this basis</span>
+          ) : (
+            profile.deal_breakers.map((breaker: DealBreaker) => (
+              <span key={breaker} className="pill pill-danger">
+                {DEAL_BREAKER_LABELS[breaker] ?? breaker}
+              </span>
+            ))
+          )}
+        </div>
+        <p className="small muted" style={{ marginTop: "0.75rem" }}>
+          These are hard filters. Any challenge that conflicts with one is removed entirely rather
+          than ranked lower.
         </p>
       </div>
 

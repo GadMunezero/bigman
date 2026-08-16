@@ -19,6 +19,8 @@ interface Question {
   options: Option[];
   multi?: boolean;
   maxSelections?: number;
+  /** Multi-select questions where choosing nothing is a valid answer. */
+  allowEmpty?: boolean;
   /** Only asked when this returns true — this is what makes the quiz adaptive. */
   when?: (answers: Answers) => boolean;
   narrow?: boolean;
@@ -122,6 +124,54 @@ function buildQuestions(accountSizes: number[], platforms: string[]): Question[]
       narrow: true,
     },
     {
+      key: "challenge_approach",
+      title: "How do you want to approach the challenge?",
+      help: "This changes how everything else is weighted more than any other answer.",
+      options: [
+        {
+          value: "pass_fast",
+          label: "Pass as quickly as possible",
+          hint: "Low targets, no minimum days, room to push",
+        },
+        {
+          value: "normal",
+          label: "Pass at a normal pace",
+          hint: "A balance of speed and safety",
+        },
+        {
+          value: "protect",
+          label: "Take my time and protect the account",
+          hint: "Stable drawdown, fewer ways to fail by accident",
+        },
+      ],
+    },
+    {
+      key: "risk_style",
+      title: "How would you describe your risk style?",
+      options: [
+        { value: "aggressive", label: "Aggressive", hint: "Bigger risk per trade, faster" },
+        { value: "balanced", label: "Balanced" },
+        { value: "conservative", label: "Conservative", hint: "Small risk, protect capital first" },
+      ],
+      narrow: true,
+    },
+    {
+      key: "deal_breakers",
+      title: "Anything you absolutely will not accept?",
+      help: "These are hard filters, not preferences. Anything you pick here removes challenges outright — and we'll tell you exactly which ones and why. Skip freely if nothing applies.",
+      multi: true,
+      allowEmpty: true,
+      options: [
+        { value: "trailing_drawdown", label: "Trailing drawdown" },
+        { value: "daily_loss_limit", label: "Daily loss limit" },
+        { value: "news_restrictions", label: "News restrictions" },
+        { value: "minimum_trading_days", label: "Minimum trading days" },
+        { value: "consistency_rule", label: "Consistency rule" },
+        { value: "overnight_restrictions", label: "Overnight restrictions" },
+        { value: "high_fees", label: "High fees" },
+      ],
+    },
+    {
       key: "budget",
       title: "How much do you want to spend on the challenge?",
       help: "Challenges above your ceiling are removed. Cheapest is not automatically best — we score fit, not price alone.",
@@ -164,6 +214,8 @@ function buildQuestions(accountSizes: number[], platforms: string[]): Question[]
       maxSelections: 3,
       options: [
         { value: "large_drawdown", label: "Large drawdown" },
+        { value: "static_drawdown", label: "Static, not trailing, drawdown" },
+        { value: "low_profit_target", label: "Low profit target" },
         { value: "low_price", label: "Low price" },
         { value: "fast_payouts", label: "Fast payouts" },
         { value: "no_consistency_rule", label: "No consistency rule" },
@@ -216,7 +268,9 @@ export function Quiz({
 
   const answerFor = current ? answers[current.key as string] : undefined;
   const selected = Array.isArray(answerFor) ? answerFor : answerFor ? [answerFor] : [];
-  const canContinue = current?.multi ? selected.length > 0 : selected.length === 1;
+  const canContinue = current?.multi
+    ? current.allowEmpty || selected.length > 0
+    : selected.length === 1;
 
   const choose = useCallback(
     (option: Option) => {
@@ -357,9 +411,13 @@ export function Quiz({
           })}
         </div>
 
-        {current.multi && current.maxSelections ? (
+        {current.multi ? (
           <p className={styles.limitNote}>
-            {selected.length} of {current.maxSelections} selected
+            {current.maxSelections
+              ? `${selected.length} of ${current.maxSelections} selected`
+              : selected.length === 0
+                ? "None selected — nothing will be filtered out"
+                : `${selected.length} selected`}
           </p>
         ) : null}
       </fieldset>

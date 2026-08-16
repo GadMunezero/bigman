@@ -35,6 +35,48 @@ export type NewsFrequency = (typeof NEWS_FREQUENCIES)[number];
 export const TRI_STATE = ["yes", "sometimes", "no"] as const;
 export type TriState = (typeof TRI_STATE)[number];
 
+/**
+ * How the trader wants to approach the challenge.
+ *
+ * This is the single most load-bearing answer in the questionnaire: it does
+ * not filter anything, it re-weights the entire scoring model. A trader
+ * racing for a payout and a trader protecting an account want almost
+ * opposite things from the same catalogue.
+ */
+export const CHALLENGE_APPROACHES = ["pass_fast", "normal", "protect"] as const;
+export type ChallengeApproach = (typeof CHALLENGE_APPROACHES)[number];
+
+export const RISK_STYLES = ["aggressive", "balanced", "conservative"] as const;
+export type RiskStyle = (typeof RISK_STYLES)[number];
+
+/**
+ * Deal-breakers are hard filters, not preferences.
+ *
+ * The distinction matters: a trader who dislikes trailing drawdown should see
+ * it weighted down, but a trader who names it a deal-breaker should never see
+ * a trailing-drawdown challenge at all.
+ */
+export const DEAL_BREAKERS = [
+  "trailing_drawdown",
+  "daily_loss_limit",
+  "news_restrictions",
+  "minimum_trading_days",
+  "consistency_rule",
+  "overnight_restrictions",
+  "high_fees",
+] as const;
+export type DealBreaker = (typeof DEAL_BREAKERS)[number];
+
+export const DEAL_BREAKER_LABELS: Record<DealBreaker, string> = {
+  trailing_drawdown: "Trailing drawdown",
+  daily_loss_limit: "Daily loss limit",
+  news_restrictions: "News restrictions",
+  minimum_trading_days: "Minimum trading days",
+  consistency_rule: "Consistency rule",
+  overnight_restrictions: "Overnight restrictions",
+  high_fees: "High fees",
+};
+
 export const BUDGETS = [
   "under_50",
   "50_100",
@@ -57,6 +99,8 @@ export const BUDGET_CEILING: Record<Budget, number | null> = {
 
 export const PRIORITIES = [
   "large_drawdown",
+  "static_drawdown",
+  "low_profit_target",
   "low_price",
   "fast_payouts",
   "no_consistency_rule",
@@ -73,6 +117,8 @@ export type Priority = (typeof PRIORITIES)[number];
 
 export const PRIORITY_LABELS: Record<Priority, string> = {
   large_drawdown: "Large drawdown",
+  static_drawdown: "Static, not trailing, drawdown",
+  low_profit_target: "Low profit target",
   low_price: "Low price",
   fast_payouts: "Fast payouts",
   no_consistency_rule: "No consistency rule",
@@ -155,6 +201,9 @@ export interface Challenge {
   payout_split_pct: number | null;
   payout_conditions: string | null;
   platforms: string[];
+  leverage: string | null;
+  refund_policy: string | null;
+  country_restrictions: string | null;
   phases: number | null;
   status: PublishStatus;
   last_verified_at: string | null;
@@ -179,6 +228,9 @@ export interface TraderProfile {
   holding_period: HoldingPeriod | null;
   news_trading: NewsFrequency | null;
   overnight_required: TriState | null;
+  challenge_approach: ChallengeApproach | null;
+  risk_style: RiskStyle | null;
+  deal_breakers: DealBreaker[];
   budget: Budget | null;
   /** Account size in USD, or "no_preference". */
   desired_account_size: string | null;
@@ -199,6 +251,9 @@ export type ProfileInput = Partial<
     | "holding_period"
     | "news_trading"
     | "overnight_required"
+    | "challenge_approach"
+    | "risk_style"
+    | "deal_breakers"
     | "budget"
     | "desired_account_size"
     | "priorities"
@@ -218,6 +273,7 @@ export const SCORE_CRITERIA = [
   "rules",
   "budget",
   "drawdown",
+  "difficulty",
   "payout",
   "account_size",
   "platform",
@@ -229,7 +285,8 @@ export const CRITERION_LABELS: Record<ScoreCriterion, string> = {
   trading_style: "Trading style",
   rules: "Rules",
   budget: "Budget",
-  drawdown: "Drawdown",
+  drawdown: "Usable drawdown",
+  difficulty: "Target & pace",
   payout: "Payout",
   account_size: "Account size",
   platform: "Platform",

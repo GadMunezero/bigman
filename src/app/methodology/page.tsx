@@ -27,7 +27,7 @@ export default function MethodologyPage() {
           {
             heading: "Stage one — hard filters",
             paragraphs: [
-              "A challenge is eliminated when it conflicts with a stated requirement:",
+              "A challenge is eliminated when it conflicts with a requirement derived from how you say you trade:",
             ],
             bullets: [
               "It does not cover the market you trade.",
@@ -40,6 +40,14 @@ export default function MethodologyPage() {
             ],
           },
           {
+            heading: "Deal-breakers are stricter than derived requirements",
+            paragraphs: [
+              "Anything you name as a deal-breaker is applied literally. A derived requirement only eliminates on a confirmed prohibition, because an unconfirmed rule is not evidence of a conflict. A deal-breaker eliminates on a restriction too — if you said you will not accept news restrictions, a challenge that merely restricts news trading is still removed.",
+              "Deal-breakers cover trailing drawdown, daily loss limits, news restrictions, minimum trading days, consistency rules, overnight restrictions and high fees. 'High fees' is relative: the threshold is the median price of the challenges matching your market, so it means expensive next to your actual alternatives rather than against an arbitrary number.",
+              "Every elimination is shown to you with the reason, so you can always see why a challenge was not recommended.",
+            ],
+          },
+          {
             heading: "What we do with rules we haven't confirmed",
             paragraphs: [
               "Only a confirmed prohibition eliminates a challenge. A rule we have not verified is not evidence of a conflict, so the challenge stays in — but it loses points in scoring, and you get an explicit warning that the rule is unconfirmed and matters to you.",
@@ -49,7 +57,7 @@ export default function MethodologyPage() {
           {
             heading: "Stage two — weighted scoring",
             paragraphs: [
-              "Surviving challenges are scored on eight criteria. The default weights are:",
+              "Surviving challenges are scored on nine criteria. These are the base weights, before your answers reshape them:",
             ],
           },
         ]}
@@ -68,6 +76,68 @@ export default function MethodologyPage() {
         </div>
 
         <div className="stack-lg" style={{ marginTop: "2.5rem" }}>
+          <section>
+            <h2 style={{ fontSize: "1.25rem", marginBottom: "0.75rem" }}>
+              How your approach reshapes the model
+            </h2>
+            <p style={{ marginBottom: "0.75rem" }}>
+              The weights above are a starting point, not what anyone is actually scored on. The
+              biggest single influence is how you said you want to approach the challenge, because
+              a trader racing to a payout and a trader protecting an account are asking genuinely
+              different questions of the same catalogue.
+            </p>
+            <ul className="stack-sm" style={{ paddingLeft: "1.1rem", marginBottom: "0.75rem" }}>
+              <li style={{ color: "var(--ink-2)" }}>
+                <strong>Pass as quickly as possible</strong> — target and pace weigh far more
+                heavily, along with usable drawdown. Payout terms, account size and platform matter
+                less, because they do not affect how fast you clear the evaluation.
+              </li>
+              <li style={{ color: "var(--ink-2)" }}>
+                <strong>Pass at a normal pace</strong> — the base weights, unchanged.
+              </li>
+              <li style={{ color: "var(--ink-2)" }}>
+                <strong>Take your time and protect the account</strong> — drawdown mechanics, rule
+                compatibility and data confidence weigh more; how quickly the challenge can be
+                cleared weighs less.
+              </li>
+            </ul>
+            <p>
+              Your risk style then applies a second, smaller adjustment on top. Aggressive shifts
+              weight toward room to push; conservative shifts it toward rules you cannot trip over
+              by accident.
+            </p>
+          </section>
+
+          <section>
+            <h2 style={{ fontSize: "1.25rem", marginBottom: "0.75rem" }}>
+              Why a bigger drawdown is not automatically better
+            </h2>
+            <p style={{ marginBottom: "0.75rem" }}>
+              We score <strong>usable</strong> drawdown, not the headline percentage. Three things
+              decide how much of that number you can actually spend:
+            </p>
+            <ul className="stack-sm" style={{ paddingLeft: "1.1rem", marginBottom: "0.75rem" }}>
+              <li style={{ color: "var(--ink-2)" }}>
+                <strong>Room relative to the target.</strong> 10% of drawdown against a 5% target is
+                a very different proposition from 10% against a 20% target.
+              </li>
+              <li style={{ color: "var(--ink-2)" }}>
+                <strong>The drawdown mechanic.</strong> A trailing drawdown follows your equity up,
+                so part of the headline figure is never really available to lose.
+              </li>
+              <li style={{ color: "var(--ink-2)" }}>
+                <strong>The daily cap.</strong> A tight daily limit rations the total, so you cannot
+                deploy it when you need it.
+              </li>
+            </ul>
+            <p>
+              A 20% trailing drawdown with a 2% daily cap against a 20% target can score below an 8%
+              static drawdown with no daily rule against a 5% target — and it should. How much the
+              size matters against how stable the mechanic is depends on your approach: someone
+              protecting an account is scored more on stability, someone sprinting more on room.
+            </p>
+          </section>
+
           <section>
             <h2 style={{ fontSize: "1.25rem", marginBottom: "0.75rem" }}>
               How your priorities change the weighting

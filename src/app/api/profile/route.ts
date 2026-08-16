@@ -4,10 +4,13 @@ import { clearProfile, saveProfile, trackEvent } from "@/lib/repo";
 import { getSessionId } from "@/lib/session";
 import {
   BUDGETS,
+  CHALLENGE_APPROACHES,
+  DEAL_BREAKERS,
   HOLDING_PERIODS,
   MARKETS,
   NEWS_FREQUENCIES,
   PRIORITIES,
+  RISK_STYLES,
   TRADING_STYLES,
   TRI_STATE,
 } from "@/lib/types";
@@ -25,6 +28,14 @@ const BodySchema = z.object({
   holding_period: z.enum(HOLDING_PERIODS as unknown as [string, ...string[]]).optional(),
   news_trading: z.enum(NEWS_FREQUENCIES as unknown as [string, ...string[]]).optional(),
   overnight_required: z.enum(TRI_STATE as unknown as [string, ...string[]]).optional(),
+  challenge_approach: z
+    .enum(CHALLENGE_APPROACHES as unknown as [string, ...string[]])
+    .optional(),
+  risk_style: z.enum(RISK_STYLES as unknown as [string, ...string[]]).optional(),
+  deal_breakers: z
+    .array(z.enum(DEAL_BREAKERS as unknown as [string, ...string[]]))
+    .max(DEAL_BREAKERS.length)
+    .optional(),
   budget: z.enum(BUDGETS as unknown as [string, ...string[]]).optional(),
   desired_account_size: z.string().optional(),
   priorities: z.array(z.enum(PRIORITIES as unknown as [string, ...string[]])).max(3).optional(),
@@ -67,6 +78,9 @@ export async function POST(request: Request) {
     holding_period: data.holding_period as never,
     news_trading: data.news_trading as never,
     overnight_required: data.overnight_required as never,
+    challenge_approach: data.challenge_approach as never,
+    risk_style: data.risk_style as never,
+    deal_breakers: (data.deal_breakers ?? []) as never,
     budget: data.budget as never,
     desired_account_size: data.desired_account_size || null,
     priorities: (data.priorities ?? []) as never,
@@ -80,6 +94,8 @@ export async function POST(request: Request) {
     market: profile.market,
     trading_style: profile.trading_style,
     budget: profile.budget,
+    challenge_approach: profile.challenge_approach,
+    deal_breakers: profile.deal_breakers.length,
   });
 
   return NextResponse.json({ ok: true });

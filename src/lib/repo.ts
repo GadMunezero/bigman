@@ -6,6 +6,7 @@ import type {
   ChallengeRules,
   Confidence,
   Firm,
+  DealBreaker,
   Market,
   Priority,
   ProfileInput,
@@ -186,8 +187,12 @@ export function getFirmBySlug(slug: string): Firm | null {
 // Trader profiles
 // ---------------------------------------------------------------------------
 
-type ProfileRow = Omit<TraderProfile, "priorities" | "ea_required" | "weekend_required"> & {
+type ProfileRow = Omit<
+  TraderProfile,
+  "priorities" | "deal_breakers" | "ea_required" | "weekend_required"
+> & {
   priorities: string;
+  deal_breakers: string;
   ea_required: number | null;
   weekend_required: number | null;
 };
@@ -196,6 +201,7 @@ function mapProfile(row: ProfileRow): TraderProfile {
   return {
     ...row,
     priorities: parseJsonArray(row.priorities) as Priority[],
+    deal_breakers: parseJsonArray(row.deal_breakers) as DealBreaker[],
     ea_required: row.ea_required === null ? null : row.ea_required === 1,
     weekend_required: row.weekend_required === null ? null : row.weekend_required === 1,
   };
@@ -223,6 +229,9 @@ export function saveProfile(sessionId: string, input: ProfileInput): TraderProfi
     holding_period: merged.holding_period ?? null,
     news_trading: merged.news_trading ?? null,
     overnight_required: merged.overnight_required ?? null,
+    challenge_approach: merged.challenge_approach ?? null,
+    risk_style: merged.risk_style ?? null,
+    deal_breakers: JSON.stringify(merged.deal_breakers ?? []),
     budget: merged.budget ?? null,
     desired_account_size: merged.desired_account_size ?? null,
     priorities: JSON.stringify(merged.priorities ?? []),
@@ -240,7 +249,8 @@ export function saveProfile(sessionId: string, input: ProfileInput): TraderProfi
     db.prepare(
       `UPDATE trader_profiles SET market=@market, trading_style=@trading_style,
         holding_period=@holding_period, news_trading=@news_trading,
-        overnight_required=@overnight_required, budget=@budget,
+        overnight_required=@overnight_required, challenge_approach=@challenge_approach,
+        risk_style=@risk_style, deal_breakers=@deal_breakers, budget=@budget,
         desired_account_size=@desired_account_size, priorities=@priorities,
         platform=@platform, ea_required=@ea_required, weekend_required=@weekend_required,
         updated_at=@updated_at
@@ -252,10 +262,12 @@ export function saveProfile(sessionId: string, input: ProfileInput): TraderProfi
   db.prepare(
     `INSERT INTO trader_profiles
       (id, session_id, market, trading_style, holding_period, news_trading,
-       overnight_required, budget, desired_account_size, priorities, platform,
+       overnight_required, challenge_approach, risk_style, deal_breakers,
+       budget, desired_account_size, priorities, platform,
        ea_required, weekend_required)
      VALUES (@id, @session_id, @market, @trading_style, @holding_period, @news_trading,
-       @overnight_required, @budget, @desired_account_size, @priorities, @platform,
+       @overnight_required, @challenge_approach, @risk_style, @deal_breakers,
+       @budget, @desired_account_size, @priorities, @platform,
        @ea_required, @weekend_required)`,
   ).run({ ...values, id: newId("prof"), session_id: sessionId });
 

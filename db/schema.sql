@@ -60,6 +60,10 @@ CREATE TABLE IF NOT EXISTS challenges (
   -- JSON array of platform codes: ["ninjatrader","tradingview"]
   platforms         TEXT NOT NULL DEFAULT '[]',
 
+  leverage          TEXT,             -- e.g. "1:30" or "50:1 intraday"
+  refund_policy     TEXT,             -- whether/when the fee is refunded
+  country_restrictions TEXT,          -- countries the firm will not onboard
+
   phases            INTEGER,          -- 1 = one-step, 2 = two-step, 0 = instant funding
 
   status            TEXT NOT NULL DEFAULT 'draft'
@@ -168,6 +172,9 @@ CREATE TABLE IF NOT EXISTS trader_profiles (
   holding_period      TEXT,
   news_trading        TEXT,
   overnight_required  TEXT,
+  challenge_approach  TEXT,           -- pass_fast | normal | protect
+  risk_style          TEXT,           -- aggressive | balanced | conservative
+  deal_breakers       TEXT NOT NULL DEFAULT '[]',  -- JSON array; these hard-filter
   budget              TEXT,
   desired_account_size TEXT,
   priorities          TEXT NOT NULL DEFAULT '[]',  -- JSON array

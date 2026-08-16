@@ -163,8 +163,10 @@ describe("no-match diagnostics", () => {
 
 describe("weights", () => {
   it("always sums to 100, with or without priorities", () => {
-    const plain = resolveWeights([]);
-    const boosted = resolveWeights(["fast_payouts", "low_price", "large_drawdown"]);
+    const plain = resolveWeights();
+    const boosted = resolveWeights({
+      priorities: ["fast_payouts", "low_price", "large_drawdown"],
+    });
 
     const total = (weights: Record<string, number>) =>
       SCORE_CRITERIA.reduce((sum, c) => sum + weights[c], 0);
@@ -174,29 +176,41 @@ describe("weights", () => {
   });
 
   it("increases the weight of a prioritised criterion relative to the default", () => {
-    const plain = resolveWeights([]);
-    const boosted = resolveWeights(["fast_payouts"]);
+    const plain = resolveWeights();
+    const boosted = resolveWeights({ priorities: ["fast_payouts"] });
 
     expect(boosted.weights.payout).toBeGreaterThan(plain.weights.payout);
     expect(boosted.boosted.has("payout")).toBe(true);
   });
 
-  it("lets a priority change the ranking between two otherwise-similar challenges", () => {
-    const fastPayout = challenge("fast", { payout_frequency_days: 7, max_drawdown_pct: 4 });
-    const bigDrawdown = challenge("roomy", { payout_frequency_days: 30, max_drawdown_pct: 12 });
-    const catalogue = [fastPayout, bigDrawdown];
+  it("lets a payout priority decide between challenges that differ only on payout", () => {
+    // Controlled comparison: everything except payout frequency is identical,
+    // so the priority is the only thing that can move the ranking.
+    const catalogue = [
+      challenge("slow-payout", { payout_frequency_days: 30 }),
+      challenge("fast-payout", { payout_frequency_days: 7 }),
+    ];
 
-    const payoutFirst = getChallengeRecommendations(
+    const withPriority = getChallengeRecommendations(
       { ...baseProfile, priorities: ["fast_payouts"] },
       catalogue,
     );
-    const drawdownFirst = getChallengeRecommendations(
+
+    expect(withPriority.recommendations[0].challenge.id).toBe("fast-payout");
+  });
+
+  it("lets a drawdown priority decide between challenges that differ only on drawdown", () => {
+    const catalogue = [
+      challenge("tight", { max_drawdown_pct: 5, profit_target_pct: 8, daily_drawdown_pct: null }),
+      challenge("roomy", { max_drawdown_pct: 12, profit_target_pct: 8, daily_drawdown_pct: null }),
+    ];
+
+    const withPriority = getChallengeRecommendations(
       { ...baseProfile, priorities: ["large_drawdown"] },
       catalogue,
     );
 
-    expect(payoutFirst.recommendations[0].challenge.id).toBe("fast");
-    expect(drawdownFirst.recommendations[0].challenge.id).toBe("roomy");
+    expect(withPriority.recommendations[0].challenge.id).toBe("roomy");
   });
 });
 
@@ -247,8 +261,11 @@ describe("scoring and explanations", () => {
   });
 
   it("adds a comparative caveat to an option that is worse than the alternative", () => {
-    const pricier = challenge("pricier", { price: 150 });
-    const cheaper = challenge("cheaper", { price: 60 });
+    // Healthy drawdown on both, so price is the only real differentiator and
+    // no intrinsic caveat pre-empts the comparative one.
+    const healthy = { max_drawdown_pct: 12, profit_target_pct: 6, daily_drawdown_pct: null };
+    const pricier = challenge("pricier", { ...healthy, price: 150 });
+    const cheaper = challenge("cheaper", { ...healthy, price: 60 });
 
     const result = getChallengeRecommendations(baseProfile, [pricier, cheaper]);
     const byId = new Map(result.recommendations.map((r) => [r.challenge.id, r]));
@@ -327,5 +344,235 @@ describe("commercial independence", () => {
     const b = getChallengeRecommendations(baseProfile, [withCommercials]);
 
     expect(b.recommendations[0].match_score).toBe(a.recommendations[0].match_score);
+  });
+});
+
+describe("deal-breakers", () => {
+  it("eliminates a trailing-drawdown challenge outright", () => {
+    const profile = { ...baseProfile, deal_breakers: ["trailing_drawdown" as const] };
+    const catalogue = [
+      challenge("static", { drawdown_type: "static" }),
+      challenge("trailing", { drawdown_type: "trailing" }),
+    ];
+
+    const result = getChallengeRecommendations(profile, catalogue);
+
+    expect(result.recommendations.map((r) => r.challenge.id)).toEqual(["static"]);
+    expect(result.eliminated[0].eliminations[0].requirement).toBe(
+      "deal_breaker:trailing_drawdown",
+    );
+  });
+
+  it("is stricter than a derived requirement: 'restricted' also fails", () => {
+    // A news trader is only eliminated by a confirmed prohibition…
+    const derived = getChallengeRecommendations(
+      { ...baseProfile, news_trading: "frequently" },
+      [challenge("restricted", { rules: { news_trading: "restricted" } })],
+    );
+    expect(derived.recommendations).toHaveLength(1);
+
+    // …but naming news restrictions a deal-breaker removes it.
+    const declared = getChallengeRecommendations(
+      { ...baseProfile, deal_breakers: ["news_restrictions"] },
+      [challenge("restricted", { rules: { news_trading: "restricted" } })],
+    );
+    expect(declared.recommendations).toHaveLength(0);
+  });
+
+  it("eliminates on a daily loss limit, minimum days and consistency rules", () => {
+    const catalogue = [challenge("strict", { minimum_days: 10 })];
+
+    const daily = getChallengeRecommendations(
+      { ...baseProfile, deal_breakers: ["daily_loss_limit"] },
+      catalogue,
+    );
+    const minDays = getChallengeRecommendations(
+      { ...baseProfile, deal_breakers: ["minimum_trading_days"] },
+      catalogue,
+    );
+    const consistency = getChallengeRecommendations(
+      { ...baseProfile, deal_breakers: ["consistency_rule"] },
+      [challenge("c", { rules: { consistency_rule: "required" } })],
+    );
+
+    expect(daily.recommendations).toHaveLength(0);
+    expect(minDays.recommendations).toHaveLength(0);
+    expect(consistency.recommendations).toHaveLength(0);
+  });
+
+  it("treats 'high fees' as relative to what the trader could otherwise buy", () => {
+    const profile = { ...baseProfile, deal_breakers: ["high_fees" as const] };
+    const catalogue = [
+      challenge("cheap", { price: 50 }),
+      challenge("mid", { price: 100 }),
+      challenge("dear", { price: 190 }),
+    ];
+
+    const result = getChallengeRecommendations(profile, catalogue);
+
+    // Median of 50/100/190 is 100, so only the challenge above it is removed.
+    expect(result.recommendations.map((r) => r.challenge.id).sort()).toEqual(["cheap", "mid"]);
+    expect(result.eliminated[0].challenge.id).toBe("dear");
+  });
+
+  it("labels a deal-breaker clearly on the no-match screen", () => {
+    const result = getChallengeRecommendations(
+      { ...baseProfile, deal_breakers: ["trailing_drawdown"] },
+      [challenge("t", { drawdown_type: "trailing" })],
+    );
+
+    expect(result.blocking_requirements[0].label).toBe("Deal-breaker: Trailing drawdown");
+  });
+
+  it("changes nothing when no deal-breakers are chosen", () => {
+    const catalogue = [challenge("a", { drawdown_type: "trailing", minimum_days: 10 })];
+
+    expect(
+      getChallengeRecommendations({ ...baseProfile, deal_breakers: [] }, catalogue)
+        .recommendations,
+    ).toHaveLength(1);
+  });
+});
+
+describe("approach-driven weighting", () => {
+  it("weights pace and drawdown differently for each approach", () => {
+    const fast = resolveWeights({ approach: "pass_fast" });
+    const normal = resolveWeights({ approach: "normal" });
+    const protect = resolveWeights({ approach: "protect" });
+
+    expect(fast.weights.difficulty).toBeGreaterThan(normal.weights.difficulty);
+    expect(protect.weights.difficulty).toBeLessThan(normal.weights.difficulty);
+    expect(protect.weights.data_confidence).toBeGreaterThan(normal.weights.data_confidence);
+  });
+
+  it("keeps every approach and risk style normalised to 100", () => {
+    const total = (weights: Record<string, number>) =>
+      SCORE_CRITERIA.reduce((sum, c) => sum + weights[c], 0);
+
+    for (const approach of ["pass_fast", "normal", "protect"] as const) {
+      for (const riskStyle of ["aggressive", "balanced", "conservative"] as const) {
+        const resolved = resolveWeights({
+          approach,
+          riskStyle,
+          priorities: ["low_profit_target", "static_drawdown"],
+        });
+        expect(total(resolved.weights)).toBeCloseTo(100, 6);
+      }
+    }
+  });
+
+  it("ranks a fast-to-clear challenge first for a sprinter and last for a protector", () => {
+    // Same price and account size; they differ only in how they must be passed.
+    const quick = challenge("quick", {
+      profit_target_pct: 5,
+      minimum_days: 0,
+      max_drawdown_pct: 6,
+      drawdown_type: "trailing",
+      phases: 1,
+    });
+    const steady = challenge("steady", {
+      profit_target_pct: 10,
+      minimum_days: 10,
+      max_drawdown_pct: 10,
+      drawdown_type: "static",
+      daily_drawdown_pct: null,
+      phases: 1,
+    });
+    const catalogue = [quick, steady];
+
+    const sprinter = getChallengeRecommendations(
+      { ...baseProfile, challenge_approach: "pass_fast", risk_style: "aggressive" },
+      catalogue,
+    );
+    const protector = getChallengeRecommendations(
+      { ...baseProfile, challenge_approach: "protect", risk_style: "conservative" },
+      catalogue,
+    );
+
+    expect(sprinter.recommendations[0].challenge.id).toBe("quick");
+    expect(protector.recommendations[0].challenge.id).toBe("steady");
+  });
+});
+
+describe("usable drawdown", () => {
+  it("does not treat a bigger headline drawdown as automatically better", () => {
+    // 20% sounds far better than 8% — but it trails, it is rationed by a tight
+    // daily cap, and the target is twice as large.
+    const headline = challenge("headline", {
+      max_drawdown_pct: 20,
+      profit_target_pct: 20,
+      daily_drawdown_pct: 2,
+      drawdown_type: "intraday_trailing",
+    });
+    const honest = challenge("honest", {
+      max_drawdown_pct: 8,
+      profit_target_pct: 5,
+      daily_drawdown_pct: null,
+      drawdown_type: "static",
+    });
+
+    const result = getChallengeRecommendations(
+      { ...baseProfile, priorities: ["large_drawdown"] },
+      [headline, honest],
+    );
+
+    const scores = new Map(
+      result.recommendations.map((r) => [r.challenge.id, r.match_score]),
+    );
+    expect(scores.get("honest")!).toBeGreaterThan(scores.get("headline")!);
+  });
+
+  it("warns when the loss budget is smaller than the required profit", () => {
+    const thin = challenge("thin", { max_drawdown_pct: 4, profit_target_pct: 10 });
+    const result = getChallengeRecommendations(baseProfile, [thin]);
+
+    expect(result.recommendations[0].warnings.join(" ")).toMatch(
+      /less loss budget .* than the profit you must make/i,
+    );
+  });
+
+  it("prefers stability over size when the trader prioritises static drawdown", () => {
+    const roomyTrailing = challenge("roomy", {
+      max_drawdown_pct: 14,
+      drawdown_type: "trailing",
+    });
+    const tightStatic = challenge("tight", {
+      max_drawdown_pct: 7,
+      drawdown_type: "static",
+    });
+
+    const result = getChallengeRecommendations(
+      { ...baseProfile, priorities: ["static_drawdown"] },
+      [roomyTrailing, tightStatic],
+    );
+
+    expect(result.recommendations[0].challenge.id).toBe("tight");
+  });
+});
+
+describe("difficulty criterion", () => {
+  it("rewards a low profit target when the trader prioritises one", () => {
+    const easy = challenge("easy", { profit_target_pct: 5 });
+    const hard = challenge("hard", { profit_target_pct: 15 });
+
+    const result = getChallengeRecommendations(
+      { ...baseProfile, priorities: ["low_profit_target"] },
+      [easy, hard],
+    );
+
+    expect(result.recommendations[0].challenge.id).toBe("easy");
+    expect(result.recommendations[0].reasons.join(" ")).toMatch(/5% profit target/i);
+  });
+
+  it("warns a sprinter about minimum days and two-step evaluations", () => {
+    const slow = challenge("slow", { minimum_days: 15, phases: 2 });
+    const result = getChallengeRecommendations(
+      { ...baseProfile, challenge_approach: "pass_fast" },
+      [slow],
+    );
+
+    const warnings = result.recommendations[0].warnings.join(" ");
+    expect(warnings).toMatch(/at least 15 trading days/i);
+    expect(warnings).toMatch(/two-step evaluation/i);
   });
 });

@@ -26,6 +26,13 @@ export interface ScoringContext {
   payoutDaysMax: number;
   splitMin: number;
   splitMax: number;
+  targetMin: number;
+  targetMax: number;
+  minDaysMin: number;
+  minDaysMax: number;
+  /** Usable-drawdown ratios across the candidate set, for relative scoring. */
+  usableMin: number;
+  usableMax: number;
 }
 
 export function buildContext(challenges: ChallengeRecord[]): ScoringContext {
@@ -34,6 +41,9 @@ export function buildContext(challenges: ChallengeRecord[]): ScoringContext {
   const drawdowns = nums(challenges.map((c) => c.max_drawdown_pct));
   const payoutDays = nums(challenges.map((c) => c.payout_frequency_days));
   const splits = nums(challenges.map((c) => c.payout_split_pct));
+  const targets = nums(challenges.map((c) => c.profit_target_pct));
+  const minDays = nums(challenges.map((c) => c.minimum_days));
+  const usable = challenges.map(usableDrawdown).filter((v): v is number => v !== null);
 
   return {
     priceMin: prices.length ? Math.min(...prices) : 0,
@@ -44,7 +54,70 @@ export function buildContext(challenges: ChallengeRecord[]): ScoringContext {
     payoutDaysMax: payoutDays.length ? Math.max(...payoutDays) : 0,
     splitMin: splits.length ? Math.min(...splits) : 0,
     splitMax: splits.length ? Math.max(...splits) : 0,
+    targetMin: targets.length ? Math.min(...targets) : 0,
+    targetMax: targets.length ? Math.max(...targets) : 0,
+    minDaysMin: minDays.length ? Math.min(...minDays) : 0,
+    minDaysMax: minDays.length ? Math.max(...minDays) : 0,
+    usableMin: usable.length ? Math.min(...usable) : 0,
+    usableMax: usable.length ? Math.max(...usable) : 0,
   };
+}
+
+/**
+ * How much drawdown a trader can actually spend, rather than the headline number.
+ *
+ * A big drawdown is not automatically better, and this is the function that
+ * refuses to pretend otherwise. Three things decide how much of the headline
+ * figure is genuinely usable:
+ *
+ *  - Room relative to the target. 10% of drawdown against a 5% target is a very
+ *    different proposition from 10% against a 20% target.
+ *  - The drawdown mechanic. A trailing drawdown follows your equity up, so a
+ *    chunk of the headline number is never actually available to lose.
+ *  - The daily cap. A tight daily limit rations the total, so you cannot deploy
+ *    it when you need it even though the account technically holds it.
+ *
+ * Returns null when the inputs are unconfirmed — a guess here would quietly
+ * distort the ranking.
+ */
+function usableDrawdown(challenge: ChallengeRecord): number | null {
+  const { max_drawdown_pct: maxDd, profit_target_pct: target } = challenge;
+  if (maxDd === null || maxDd <= 0) return null;
+
+  // Without a confirmed target, fall back to the raw figure so the challenge
+  // is still comparable, rather than dropping it from the range entirely.
+  const headroom = target !== null && target > 0 ? maxDd / target : maxDd / 8;
+
+  const MECHANIC_FACTOR: Record<string, number> = {
+    static: 1,
+    eod_trailing: 0.8,
+    trailing: 0.68,
+    intraday_trailing: 0.58,
+  };
+  const mechanic = challenge.drawdown_type
+    ? (MECHANIC_FACTOR[challenge.drawdown_type] ?? 0.75)
+    : 0.75;
+
+  // A daily cap worth less than a third of the total rations it hard.
+  const dailyFactor =
+    challenge.daily_drawdown_pct === null
+      ? 1
+      : clamp(0.55 + (challenge.daily_drawdown_pct / maxDd) * 0.9, 0.55, 1);
+
+  return headroom * mechanic * dailyFactor;
+}
+
+/** How resistant the drawdown mechanic is to accidental failure. */
+function drawdownStability(challenge: ChallengeRecord): number {
+  const STABILITY: Record<string, number> = {
+    static: 1,
+    eod_trailing: 0.68,
+    trailing: 0.45,
+    intraday_trailing: 0.3,
+  };
+  const base = challenge.drawdown_type ? (STABILITY[challenge.drawdown_type] ?? 0.4) : 0.4;
+  // A daily limit is another way to fail an otherwise healthy account.
+  return challenge.daily_drawdown_pct === null ? base : base * 0.85;
 }
 
 /** Position of `value` in [min,max], 0..1. Returns 0.5 when the range is flat. */
@@ -258,22 +331,105 @@ const scoreBudget: Scorer = ({ challenge, req, ctx }) => {
   return { ratio: clamp(0.5 + headroom * 0.25 + relative * 0.25), notes };
 };
 
-const scoreDrawdown: Scorer = ({ challenge, ctx }) => {
+const scoreDrawdown: Scorer = ({ challenge, req, ctx, profile }) => {
   if (challenge.max_drawdown_pct === null) {
     return { ratio: 0.4, notes: ["Maximum drawdown not confirmed"] };
   }
 
   const notes = [`Maximum drawdown ${challenge.max_drawdown_pct}%`];
-  // More room to breathe scores higher.
-  let ratio = 0.35 + normalise(challenge.max_drawdown_pct, ctx.drawdownMin, ctx.drawdownMax) * 0.5;
 
-  // A static drawdown is materially easier to trade against than a trailing one.
-  if (challenge.drawdown_type === "static") {
-    ratio += 0.15;
-    notes.push("Static drawdown");
-  } else if (challenge.drawdown_type === "trailing" || challenge.drawdown_type === "intraday_trailing") {
-    notes.push("Trailing drawdown");
+  const usable = usableDrawdown(challenge);
+  const room = usable === null ? 0.5 : normalise(usable, ctx.usableMin, ctx.usableMax);
+  const stability = drawdownStability(challenge);
+
+  if (challenge.drawdown_type) {
+    notes.push(`${challenge.drawdown_type.replace(/_/g, " ")} drawdown`);
+  } else {
+    notes.push("Drawdown type not confirmed");
   }
+  if (challenge.profit_target_pct !== null) {
+    const ratio = challenge.max_drawdown_pct / challenge.profit_target_pct;
+    notes.push(`${ratio.toFixed(1)}x the profit target in loss budget`);
+  }
+
+  /*
+   * Room and stability are weighted by what the trader is trying to do, which
+   * is the whole reason a bigger headline drawdown is not automatically better.
+   * Someone racing to a payout wants room to push. Someone protecting an
+   * account wants a mechanic that will not fail them by accident — and for
+   * them a huge trailing drawdown is worse than a modest static one.
+   */
+  const prioritisesStability = (profile.priorities ?? []).includes("static_drawdown");
+  let roomWeight: number;
+  if (prioritisesStability) roomWeight = 0.3;
+  else if (req.approach === "protect" || req.riskStyle === "conservative") roomWeight = 0.4;
+  else if (req.approach === "pass_fast" || req.riskStyle === "aggressive") roomWeight = 0.7;
+  else roomWeight = 0.55;
+
+  const ratio = room * roomWeight + stability * (1 - roomWeight);
+
+  return { ratio: clamp(0.15 + ratio * 0.85), notes };
+};
+
+/**
+ * How demanding the challenge is to clear, and how well that matches the pace
+ * the trader chose.
+ *
+ * This is the criterion that gives the "pass quickly" answer something to bite
+ * on: a low profit target and no minimum trading days are what actually make a
+ * challenge fast, and neither was represented anywhere before.
+ */
+const scoreDifficulty: Scorer = ({ challenge, req, ctx }) => {
+  const notes: string[] = [];
+  const parts: { value: number; weight: number }[] = [];
+
+  if (challenge.profit_target_pct === null) {
+    notes.push("Profit target not confirmed");
+    parts.push({ value: 0.4, weight: 2 });
+  } else {
+    const ease = 1 - normalise(challenge.profit_target_pct, ctx.targetMin, ctx.targetMax);
+    notes.push(`${challenge.profit_target_pct}% profit target`);
+    parts.push({ value: ease, weight: req.approach === "pass_fast" ? 2.5 : 2 });
+  }
+
+  const minDays = challenge.minimum_days;
+  if (minDays === null) {
+    notes.push("Minimum trading days not confirmed");
+    parts.push({ value: 0.45, weight: 1 });
+  } else if (minDays === 0) {
+    notes.push("No minimum trading days");
+    parts.push({ value: 1, weight: req.approach === "pass_fast" ? 2 : 1 });
+  } else {
+    const ease = 1 - normalise(minDays, ctx.minDaysMin, ctx.minDaysMax);
+    notes.push(`${minDays} minimum trading days`);
+    parts.push({ value: ease, weight: req.approach === "pass_fast" ? 2 : 1 });
+  }
+
+  // A capped window is pressure. It barely matters to someone sprinting, and
+  // it matters a lot to someone who chose to take their time.
+  if (challenge.maximum_days !== null) {
+    notes.push(`${challenge.maximum_days} day limit to complete`);
+    parts.push({
+      value: req.approach === "protect" ? 0.25 : 0.7,
+      weight: req.approach === "protect" ? 1.5 : 0.5,
+    });
+  } else {
+    notes.push("No time limit recorded");
+    parts.push({ value: 1, weight: req.approach === "protect" ? 1.5 : 0.5 });
+  }
+
+  // The phase count is real friction: a two-step evaluation is two chances to
+  // fail before any payout.
+  if (challenge.phases !== null) {
+    const phaseEase = challenge.phases === 0 ? 1 : challenge.phases === 1 ? 0.8 : 0.5;
+    notes.push(
+      challenge.phases === 0 ? "Instant funding" : `${challenge.phases}-step evaluation`,
+    );
+    parts.push({ value: phaseEase, weight: req.approach === "pass_fast" ? 1.5 : 1 });
+  }
+
+  const totalWeight = parts.reduce((sum, p) => sum + p.weight, 0);
+  const ratio = totalWeight > 0 ? parts.reduce((sum, p) => sum + p.value * p.weight, 0) / totalWeight : 0.5;
 
   return { ratio: clamp(ratio), notes };
 };
@@ -392,6 +548,7 @@ const SCORERS: Record<ScoreCriterion, Scorer> = {
   rules: scoreRules,
   budget: scoreBudget,
   drawdown: scoreDrawdown,
+  difficulty: scoreDifficulty,
   payout: scorePayout,
   account_size: scoreAccountSize,
   platform: scorePlatform,

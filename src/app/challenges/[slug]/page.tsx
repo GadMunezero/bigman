@@ -272,6 +272,22 @@ export default async function ChallengeDetailPage({
               </dd>
             </div>
             <div className="kv">
+              <dt>Leverage</dt>
+              <dd>{challenge.leverage ?? <span className="muted">Not confirmed</span>}</dd>
+            </div>
+            <div className="kv">
+              <dt>Refund policy</dt>
+              <dd style={{ textAlign: "right", maxWidth: "28ch" }}>
+                {challenge.refund_policy ?? <span className="muted">Not confirmed</span>}
+              </dd>
+            </div>
+            <div className="kv">
+              <dt>Country restrictions</dt>
+              <dd style={{ textAlign: "right", maxWidth: "28ch" }}>
+                {challenge.country_restrictions ?? <span className="muted">Not confirmed</span>}
+              </dd>
+            </div>
+            <div className="kv">
               <dt>Payout conditions</dt>
               <dd style={{ textAlign: "right", maxWidth: "28ch" }}>
                 {challenge.payout_conditions ?? <span className="muted">Not confirmed</span>}

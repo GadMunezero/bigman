@@ -7,13 +7,18 @@ import type {
   TraderProfile,
 } from "../types";
 import { buildReasons, buildWarnings, comparativeWarning } from "./explain";
-import { deriveRequirements, hardFilter, REQUIREMENT_LABELS } from "./requirements";
+import { deriveRequirements, hardFilter, requirementLabel } from "./requirements";
 import { buildContext, scoreChallenge } from "./scoring";
 import { resolveWeights } from "./weights";
 
 export * from "./requirements";
 export * from "./explain";
-export { DEFAULT_WEIGHTS, resolveWeights } from "./weights";
+export {
+  APPROACH_LABELS,
+  DEFAULT_WEIGHTS,
+  resolveWeights,
+  RISK_STYLE_LABELS,
+} from "./weights";
 
 /** Score bands. Below 60 is withheld from the primary results by default. */
 export function matchLabel(score: number): MatchLabel {
@@ -52,8 +57,19 @@ export function getChallengeRecommendations(
   challenges: ChallengeRecord[],
   options: EngineOptions = {},
 ): RecommendationResult {
-  const req = deriveRequirements(profile);
-  const resolved = resolveWeights(profile.priorities ?? [], options.weightOverrides);
+  // "High fees" is only meaningful relative to what this trader could otherwise
+  // buy, so the threshold is the median price of the challenges that match
+  // their market — computed before filtering, since it defines a filter.
+  const req = deriveRequirements(profile, {
+    highFeeThreshold: medianPrice(challenges, profile.market ?? null),
+  });
+
+  const resolved = resolveWeights({
+    approach: profile.challenge_approach,
+    riskStyle: profile.risk_style,
+    priorities: profile.priorities ?? [],
+    overrides: options.weightOverrides,
+  });
 
   // ---- Stage 1: hard filtering -------------------------------------------
   const compatible: ChallengeRecord[] = [];
@@ -132,7 +148,7 @@ export function getChallengeRecommendations(
     .map(([requirement, value]) => ({
       requirement,
       message: value.message,
-      label: REQUIREMENT_LABELS[requirement] ?? requirement,
+      label: requirementLabel(requirement),
       blocked: value.blocked,
     }))
     .sort((a, b) => b.blocked - a.blocked);
@@ -180,4 +196,32 @@ export function scoreOne(
       score_breakdown: [],
     }
   );
+}
+
+
+/**
+ * Median price across the challenges a trader could plausibly buy.
+ *
+ * Median rather than mean so one very expensive outlier does not drag the
+ * "high fee" line upward and quietly let expensive challenges through a filter
+ * the trader asked for.
+ */
+function medianPrice(challenges: ChallengeRecord[], market: string | null): number | null {
+  const relevant = challenges.filter(
+    (c) =>
+      !market ||
+      market === "multiple" ||
+      c.markets.length === 0 ||
+      c.markets.includes(market as never),
+  );
+
+  const prices = relevant
+    .map((c) => c.price)
+    .filter((p): p is number => p !== null)
+    .sort((a, b) => a - b);
+
+  if (prices.length === 0) return null;
+
+  const mid = Math.floor(prices.length / 2);
+  return prices.length % 2 === 0 ? (prices[mid - 1] + prices[mid]) / 2 : prices[mid];
 }
