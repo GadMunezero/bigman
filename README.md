@@ -58,6 +58,26 @@ fictional demo catalogue, and starts the dev server in one step.
 
 Requires Node 20 or newer.
 
+### Clicking around the full 50-firm catalogue
+
+```bash
+ADMIN_PASSWORD=demo npm run catalogue
+```
+
+Resets the database, imports `data/propfirmmatch-import.csv`, publishes everything, and starts
+the dev server — 50 firms to exercise the questionnaire against. Admin is at `/admin`.
+
+Two things to expect, both correct behaviour rather than bugs:
+
+- **Scores cluster tightly**, around 66–70% for a futures day trader. That is the source data
+  showing through: 18 of the CFD rows and 8 of the futures rows carry identical figures, and
+  identical inputs produce identical scores. A real catalogue spreads out.
+- **Outbound buttons say "official link not on file"** for every firm, because the export had
+  no website column. Add real URLs in `/admin/firms` to exercise the redirect.
+
+`npm run db:publish:all` publishes unverified data on purpose and refuses to run with
+`NODE_ENV=production`. It is a local convenience, not a deployment step.
+
 ### Running it piece by piece
 
 ```bash
