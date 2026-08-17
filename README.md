@@ -58,6 +58,19 @@ fictional demo catalogue, and starts the dev server in one step.
 
 Requires Node 20 or newer.
 
+### A single shareable HTML file
+
+```bash
+npm run build:standalone     # -> dist/propfirm-standalone.html
+```
+
+Bundles the **real** engine (`src/lib/engine/`, unchanged) with the published catalogue embedded,
+producing one self-contained file that opens with no server and no database: the questionnaire and
+results, the filterable directory, challenge detail, firm pages and comparison.
+
+It deliberately cannot contain `/admin`, the outcome feedback loop, reviews or the psychology
+workspace — those need a server or write data. Use `npm run catalogue` for the full application.
+
 ### Clicking around the full 50-firm catalogue
 
 ```bash

@@ -21,7 +21,8 @@
     "db:firm-websites": "tsx db/apply-firm-websites.ts",
     "db:publish:all": "tsx db/publish-all.ts",
     "db:template": "tsx db/import.ts --template",
-    "db:futures": "tsx db/build-futures-catalogue.ts"
+    "db:futures": "tsx db/build-futures-catalogue.ts",
+    "build:standalone": "bash tools/standalone/build.sh"
   },
   "dependencies": {
     "better-sqlite3": "^13.0.3",
