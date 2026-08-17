@@ -1,0 +1,104 @@
+# Putting this on a real server
+
+The app is server-rendered Next.js with SQLite. It writes — admin edits, rule
+approvals, reviews, outcome journeys — so it needs a host with a **persistent
+disk**, not a serverless platform whose filesystem resets between requests.
+
+That rules out plain Vercel/Netlify functions and rules in Railway, Render,
+Fly.io, a DigitalOcean droplet, or any VPS running Docker.
+
+---
+
+## The fastest path: Docker
+
+```bash
+docker build -t propfirm .
+docker run -d --name propfirm \
+  -p 3000:3000 \
+  -v propfirm-data:/data \
+  -e ADMIN_PASSWORD='choose-a-real-password' \
+  -e NEXT_PUBLIC_SITE_URL='https://your-domain.com' \
+  propfirm
+```
+
+On first boot the entrypoint creates the schema and loads the catalogue — 52
+firms and 215 challenges — then starts the server. On every boot after that it
+finds an existing database and leaves it alone, so a restart never overwrites
+work done in `/admin`.
+
+Everything seeds as **draft**. Add `-e SEED_PUBLISH=1` to publish it on first
+boot, which is what a demo wants and what a production deployment must not do
+until a human has verified the figures.
+
+The volume is the whole database. Back it up:
+
+```bash
+docker run --rm -v propfirm-data:/data -v "$PWD":/backup alpine \
+  cp /data/app.db /backup/app-$(date +%F).db
+```
+
+---
+
+## Environment
+
+| Variable | Required | Purpose |
+| -------- | -------- | ------- |
+| `ADMIN_PASSWORD` | **yes, in practice** | Enables and gates `/admin`. Unset means admin is **locked**, not open — but then nothing can be verified or published. |
+| `DATABASE_PATH` | no | Defaults to `/data/app.db` in the image. |
+| `NEXT_PUBLIC_SITE_URL` | for production | Canonical origin for the sitemap, robots and metadata. |
+| `ADMIN_SECRET` | no | Signs admin cookies, so sessions can be invalidated without changing the password. |
+| `ANTHROPIC_API_KEY` | no | Generates fresh psychology drill scenarios. Without it the drills fall back to a local scenario bank and a transparent rubric. |
+| `SEED_PUBLISH` | no | `1` publishes the seeded catalogue on first boot. Demo only. |
+
+---
+
+## Without Docker
+
+Any Node 22 host works:
+
+```bash
+npm ci
+npm run build
+DATABASE_PATH=/var/lib/propfirm/app.db npx tsx db/migrate-or-create.ts
+DATABASE_PATH=/var/lib/propfirm/app.db npx tsx db/seed-if-empty.ts
+DATABASE_PATH=/var/lib/propfirm/app.db ADMIN_PASSWORD=… npm start
+```
+
+`better-sqlite3` is a native module, so the host needs a build toolchain
+(`python3`, `make`, `g++`) during `npm ci`. The Dockerfile installs these in a
+build stage and ships only the compiled binding.
+
+---
+
+## Before you point traders at it
+
+The catalogue is not verified. Two of the columns that matter most are
+substantially empty, and the site says so on every affected page — but a
+public deployment is a different promise from a local demo.
+
+1. **Do not set `SEED_PUBLISH=1`.** Publish challenges in `/admin/challenges`
+   as you verify them, so the public catalogue only ever contains figures a
+   person has checked against the firm's own page.
+2. **126 of the 215 challenges have no price, profit target or drawdown.**
+   They come from a product matrix that listed which plans exist at which
+   account sizes, not what they cost. They rank last by design, and there is a
+   test enforcing that, but they are not ready to show as recommendations.
+3. **Only 10 of 52 firms have a website on file.** Outbound buttons correctly
+   say "official link not on file" for the rest rather than guessing a domain.
+4. **The aggregator rows are templated.** 18 of the CFD rows share identical
+   figures — see `docs/DATA-SOURCING.md`. Treat every one as a hypothesis.
+
+`/admin/challenges` is the queue for all of this.
+
+---
+
+## Health check
+
+```
+GET /            200
+GET /challenges  200
+GET /admin       200 (login form, or the locked notice when ADMIN_PASSWORD is unset)
+```
+
+Point your platform's health check at `/` — it renders without touching a
+session or a write.

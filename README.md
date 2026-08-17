@@ -58,20 +58,7 @@ fictional demo catalogue, and starts the dev server in one step.
 
 Requires Node 20 or newer.
 
-### A single shareable HTML file
-
-```bash
-npm run build:standalone     # -> dist/propfirm-standalone.html
-```
-
-Bundles the **real** engine (`src/lib/engine/`, unchanged) with the published catalogue embedded,
-producing one self-contained file that opens with no server and no database: the questionnaire and
-results, the filterable directory, challenge detail, firm pages and comparison.
-
-It deliberately cannot contain `/admin`, the outcome feedback loop, reviews or the psychology
-workspace — those need a server or write data. Use `npm run catalogue` for the full application.
-
-### Clicking around the full 50-firm catalogue
+### Clicking around the full catalogue
 
 ```bash
 ADMIN_PASSWORD=demo npm run catalogue
@@ -80,6 +67,9 @@ ADMIN_PASSWORD=demo npm run catalogue
 Builds the whole catalogue and starts the dev server: **52 firms, 215 challenges** across five
 account sizes (25K / 50K / 75K / 100K / 150K), with official websites applied. Admin is at
 `/admin`.
+
+To put it on a real server, see **[docs/DEPLOY.md](docs/DEPLOY.md)** — there is a Dockerfile
+that seeds the catalogue on first boot and a persistent volume for the database.
 
 Two things to expect, both correct behaviour rather than bugs:
 
