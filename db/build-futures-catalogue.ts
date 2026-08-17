@@ -1,129 +1,144 @@
 /**
- * Expands data/futures-products.csv into one import row per firm × product × size.
+ * Expands data/futures-specs.json into one import row per firm × product × size.
  *
- * This replaces the guessed account-size ladder in db/expand-sizes.ts with the
- * real one: which products a firm actually sells, and which sizes each product
- * actually comes in. A firm does not offer one generic ladder — Goat's Sprint
- * Challenge stops at 100K while its Instant Funded goes to 150K, and no
- * derived ladder would ever get that right.
+ * The specs file records figures exactly as the firm states them — usually in
+ * dollars, against a named account size. This converts them to the percentages
+ * the schema stores, which is what makes a $50K and a $150K account comparable
+ * at all.
  *
- * What it carries and what it leaves blank:
+ * The conversion is always against the size on the same row. Nothing is
+ * derived across sizes, because nothing scales: Tradeify Growth runs a $2,000
+ * drawdown on 50K (4%) and $3,500 on 100K (3.5%), and Blue Guardian Standard
+ * runs 6% on 25K against 3.33% on 150K. A ladder assumed from one size would
+ * be wrong for most of the others, and wrong in the criterion the engine
+ * weights most heavily.
  *
- *   - Where an existing challenge already covers the same firm AND size, its
- *     price, profit target and drawdown are carried over as a STARTING POINT.
- *     Those came from an unverified aggregator export, so they are a hypothesis
- *     to check, not an answer. They are only carried to the matching size.
- *   - Every other size gets NO price, NO profit target, NO drawdown. Those do
- *     not scale between sizes and must be read off the firm's own page.
- *   - Instant-funding and direct-funding products get phases 0 and no profit
- *     target at all, because there is no evaluation to pass.
+ * Three states are kept distinct, because collapsing them is how a catalogue
+ * starts lying:
  *
- * The `evidence` column is preserved as confidence:
- *   cited/listed -> a source URL is recorded and source_type is official_faq
- *   assumed      -> no source URL; the row says so rather than implying one
+ *   figure present   -> recorded
+ *   no daily rule    -> blank, which the engine correctly reads as "none"
+ *   daily rule exists, figure unknown (`dailyUnknown`)
+ *                    -> blank is a false claim here, so the row is flagged in
+ *                       payout_conditions and kept out of the published set
+ *
+ * Products marked `uncertain` carry their sizes and nothing else. The source
+ * said explicitly not to rely on their figures, so there are none to convert.
  *
  *   npx tsx db/build-futures-catalogue.ts <out.csv>
  */
 import fs from "node:fs";
 import path from "node:path";
-import { getDb } from "../src/lib/db";
-import { CHALLENGE_COLUMNS, parseCsv } from "../src/lib/import";
+import { CHALLENGE_COLUMNS } from "../src/lib/import";
+
+interface SizeSpec { target?: number; dd?: number; daily?: number }
+interface Product {
+  firm: string;
+  product: string;
+  program: string;
+  drawdown_type?: string;
+  consistency?: string;
+  consistency_pct?: number;
+  min_days?: number;
+  max_days?: number;
+  split?: number;
+  news?: string;
+  payout_days?: number;
+  /** Percentages stated directly by the firm rather than as dollars. */
+  target_pct?: number;
+  dd_pct?: number;
+  daily_pct?: number;
+  uncertain?: boolean;
+  dailyUnknown?: boolean;
+  notes?: string;
+  sizes: Record<string, SizeSpec>;
+}
 
 const outPath = process.argv[2] ?? "data/futures-catalogue.csv";
+const specs = JSON.parse(
+  fs.readFileSync(path.join(process.cwd(), "data", "futures-specs.json"), "utf8"),
+) as { products: Product[] };
 
-const table = parseCsv(fs.readFileSync(path.join(process.cwd(), "data", "futures-products.csv"), "utf8"));
-const header = table[0].map((h) => h.trim());
-const col = (row: string[], name: string) => (row[header.indexOf(name)] ?? "").trim();
-
-const db = getDb();
-
-/** Existing rows, keyed firm+size, so known figures land on the right size only. */
-const existing = new Map<string, Record<string, unknown>>();
-for (const row of db
-  .prepare(
-    `SELECT f.name AS firm, c.account_size, c.price, c.profit_target_pct, c.max_drawdown_pct,
-            c.daily_drawdown_pct, c.drawdown_type, c.platforms, c.payout_split_pct, c.currency,
-            r.news_trading, r.overnight, r.weekend, r.ea_allowed, r.copy_trading,
-            r.scalping, r.hedging, r.consistency_rule
-     FROM challenges c
-     JOIN firms f ON f.id = c.firm_id
-     LEFT JOIN challenge_rules r ON r.challenge_id = c.id`,
-  )
-  .all() as Record<string, unknown>[]) {
-  existing.set(`${String(row.firm).toLowerCase()}|${row.account_size}`, row);
+/**
+ * Dollars against an account size.
+ *
+ * Three decimal places, not two. At two, a $5,000 drawdown on a $150K account
+ * stores as 3.33% and reads back as $4,995 — a $5 discrepancy against the
+ * figure the firm publishes. That is immaterial to ranking and corrosive to a
+ * site whose whole claim is that you can check its numbers. Three places puts
+ * the round-trip error under a dollar.
+ */
+function asPercent(dollars: number | undefined, size: number): string {
+  if (dollars === undefined) return "";
+  return String(Math.round((dollars / size) * 100000) / 1000);
 }
-
-/** Rules apply per firm, so any known row for the firm seeds them. */
-const firmRules = new Map<string, Record<string, unknown>>();
-for (const [key, row] of existing) {
-  const firm = key.split("|")[0];
-  if (!firmRules.has(firm)) firmRules.set(firm, row);
-}
-
-const clean = (v: unknown) =>
-  v === null || v === undefined ? "" : String(v).replace(/[[\]"]/g, "").split(",").filter(Boolean).join(";");
 
 const out: string[][] = [CHALLENGE_COLUMNS.slice()];
-let carried = 0;
-let blank = 0;
+let withFigures = 0;
+let sizesOnly = 0;
+const flagged: string[] = [];
 
-for (let i = 1; i < table.length; i++) {
-  const firm = col(table[i], "firm_name");
-  if (!firm) continue;
+for (const p of specs.products) {
+  const isInstant = p.program === "instant_funding" || p.program === "direct_funding";
 
-  const program = col(table[i], "program_type");
-  const product = col(table[i], "product_name");
-  const evidence = col(table[i], "evidence");
-  const sourceUrl = col(table[i], "source_url");
-  const sizes = col(table[i], "sizes_k")
-    .split(";")
-    .map((s) => Number(s.trim()) * 1000)
-    .filter((n) => Number.isFinite(n) && n > 0);
+  for (const [sizeKey, spec] of Object.entries(p.sizes)) {
+    const size = Number(sizeKey);
 
-  const seed = firmRules.get(firm.toLowerCase());
-  // Instant and direct funding skip the evaluation entirely, so a profit
-  // target is not "unknown" for them — it does not exist.
-  const isInstant = program === "instant_funding" || program === "direct_funding";
+    // A stated percentage wins over a dollar conversion; both are the firm's
+    // own number, but the percentage needs no arithmetic to go wrong.
+    const target = p.uncertain
+      ? ""
+      : p.target_pct !== undefined
+        ? String(p.target_pct)
+        : asPercent(spec.target, size);
+    const dd = p.uncertain
+      ? ""
+      : p.dd_pct !== undefined
+        ? String(p.dd_pct)
+        : asPercent(spec.dd, size);
+    const daily = p.uncertain
+      ? ""
+      : p.daily_pct !== undefined
+        ? String(p.daily_pct)
+        : asPercent(spec.daily, size);
 
-  for (const size of sizes) {
-    const match = existing.get(`${firm.toLowerCase()}|${size}`);
-    if (match) carried++;
-    else blank++;
+    if (target || dd || daily) withFigures++;
+    else sizesOnly++;
 
-    const label = `${size / 1000}K`;
+    const conditions: string[] = [];
+    if (p.notes) conditions.push(p.notes);
+    if (p.payout_days) conditions.push(`Payouts every ${p.payout_days} day${p.payout_days === 1 ? "" : "s"}.`);
+    if (p.dailyUnknown) {
+      conditions.push(
+        "A daily loss limit applies but the figure is not recorded — do not read the blank as 'no daily rule'.",
+      );
+      flagged.push(`${p.firm} ${p.product}`);
+    }
+    if (p.uncertain) {
+      conditions.push("Figures deliberately absent: the source said not to rely on them for this product.");
+    }
+
+    const label = size >= 1000 ? `${size / 1000}K` : String(size);
     const record: Record<string, string> = {
-      firm_name: firm,
-      challenge_name: `${product} ${label}`,
+      firm_name: p.firm,
+      challenge_name: `${p.product} ${label}`,
       markets: "futures",
       account_size: String(size),
       currency: "USD",
-      // Carried only onto the size they were actually recorded against.
-      price: match ? String(match.price ?? "") : "",
-      profit_target_pct: isInstant ? "" : match ? String(match.profit_target_pct ?? "") : "",
-      max_drawdown_pct: match ? String(match.max_drawdown_pct ?? "") : "",
-      daily_drawdown_pct: match ? String(match.daily_drawdown_pct ?? "") : "",
-      drawdown_type: String((match ?? seed)?.drawdown_type ?? ""),
-      payout_split_pct: String((match ?? seed)?.payout_split_pct ?? ""),
-      platforms: clean((match ?? seed)?.platforms),
+      price: "",
+      profit_target_pct: isInstant ? "" : target,
+      max_drawdown_pct: dd,
+      daily_drawdown_pct: daily,
+      drawdown_type: p.drawdown_type ?? "",
+      minimum_days: p.min_days !== undefined ? String(p.min_days) : "",
+      maximum_days: p.max_days !== undefined ? String(p.max_days) : "",
+      payout_split_pct: p.split !== undefined ? String(p.split) : "",
+      payout_conditions: conditions.join(" "),
       phases: isInstant ? "0" : "1",
-      news_trading: String(seed?.news_trading ?? ""),
-      overnight: String(seed?.overnight ?? ""),
-      weekend: String(seed?.weekend ?? ""),
-      ea_allowed: String(seed?.ea_allowed ?? ""),
-      copy_trading: String(seed?.copy_trading ?? ""),
-      scalping: String(seed?.scalping ?? ""),
-      hedging: String(seed?.hedging ?? ""),
-      consistency_rule: String(seed?.consistency_rule ?? ""),
-      payout_conditions:
-        program === "instant_funding"
-          ? "Instant funding — no evaluation to pass"
-          : program === "direct_funding"
-            ? "Direct funding — no evaluation to pass"
-            : program === "funded"
-              ? "Funded account, not an evaluation"
-              : "",
-      source_url: sourceUrl,
-      source_type: sourceUrl ? "official_faq" : "aggregator_unverified",
+      news_trading: p.news ?? "",
+      consistency_rule: p.consistency ?? "",
+      consistency_pct: p.consistency_pct !== undefined ? String(p.consistency_pct) : "",
+      source_type: "trader_report",
       confidence: "needs_review",
       status: "draft",
     };
@@ -140,5 +155,13 @@ fs.mkdirSync(path.dirname(outPath), { recursive: true });
 fs.writeFileSync(outPath, csv + "\n");
 
 console.log(`Wrote ${out.length - 1} challenge rows to ${outPath}`);
-console.log(`  ${carried} inherited figures from an existing row at the same size (verify them)`);
-console.log(`  ${blank} have no price/target/drawdown yet — read them off the firm's page`);
+console.log(`  ${withFigures} carry a target, drawdown or daily limit`);
+console.log(`  ${sizesOnly} carry the size and rules only — no figures were supplied`);
+if (flagged.length) {
+  console.log(
+    `\n!! ${flagged.length} rows have a daily loss limit whose figure is unknown.\n` +
+      `   Each says so in payout_conditions rather than letting the blank read as "no daily rule":\n   ` +
+      [...new Set(flagged)].join(", "),
+  );
+}
+console.log("\nPrices are absent throughout — none were supplied. Add them per size before publishing.");

@@ -47,8 +47,11 @@ function load(file: string): void {
   );
 }
 
-load("data/propfirmmatch-import.csv");
+// Order matters. The futures specs carry real per-size figures and must claim
+// their slugs first; the importer never overwrites, so if the aggregator rows
+// landed first the real numbers would sit unapplied in the pending queue.
 load("data/futures-catalogue.csv");
+load("data/propfirmmatch-import.csv");
 
 // Websites are applied directly rather than through the importer, because the
 // importer treats an existing firm's differing field as a change to review.

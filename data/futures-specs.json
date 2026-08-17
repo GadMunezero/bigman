@@ -1,0 +1,354 @@
+{
+  "_comment": [
+    "Authoritative per-size figures for futures products, supplied as prose and",
+    "transcribed here without interpretation. Dollar values are recorded as",
+    "dollars; db/build-futures-catalogue.ts converts them to the percentages the",
+    "schema stores, against the size on the same row. Nothing is derived across",
+    "sizes — every number below was stated for the size it sits under.",
+    "",
+    "`daily` omitted means the firm was stated to have NO daily loss rule, which",
+    "is what the engine will read. `dailyUnknown: true` means a daily rule was",
+    "said to exist without a figure — that one cannot be left blank silently, so",
+    "it is flagged into payout_conditions and the row stays unpublishable.",
+    "",
+    "`uncertain: true` marks products the source explicitly said not to rely on.",
+    "Those carry sizes only, never figures."
+  ],
+
+  "products": [
+    {
+      "firm": "Lucid Trading", "product": "LucidFlex", "program": "evaluation",
+      "drawdown_type": "eod_trailing", "consistency": "not_required", "split": 90,
+      "notes": "No daily loss limit. Contract limits increase with simulated profit. Scaling on funded.",
+      "sizes": {
+        "25000": { "dd": 1000 }, "50000": { "dd": 2000 },
+        "100000": { "dd": 3000 }, "150000": { "dd": 4500 }
+      }
+    },
+    {
+      "firm": "My Funded Futures", "product": "Pro", "program": "evaluation",
+      "drawdown_type": "eod_trailing", "consistency": "required", "consistency_pct": 50,
+      "min_days": 2, "split": 80, "news": "restricted",
+      "notes": "Tier-1 news trading not allowed. No daily loss limit. No funded consistency rule. Activation fee $0.",
+      "sizes": {
+        "50000": { "target": 3000, "dd": 2000 },
+        "100000": { "target": 6000, "dd": 3000 },
+        "150000": { "target": 9000, "dd": 4500 }
+      }
+    },
+    {
+      "firm": "My Funded Futures", "product": "Rapid", "program": "evaluation",
+      "uncertain": true, "notes": "Rule structure differs from Pro and was not supplied. Do not assume Pro's figures.",
+      "sizes": { "25000": {}, "50000": {}, "100000": {}, "150000": {} }
+    },
+    {
+      "firm": "My Funded Futures", "product": "Builder", "program": "evaluation",
+      "uncertain": true, "notes": "Rule structure differs from Pro and was not supplied. Do not assume Pro's figures.",
+      "sizes": { "25000": {}, "50000": {}, "100000": {}, "150000": {} }
+    },
+    {
+      "firm": "Tradeify", "product": "SELECT", "program": "evaluation",
+      "drawdown_type": "eod_trailing", "consistency": "required", "consistency_pct": 40,
+      "min_days": 3,
+      "notes": "No daily loss limit. No time limit. On passing, choose Flex payout or Daily payout.",
+      "sizes": {
+        "25000": { "target": 1500, "dd": 1000 }, "50000": { "target": 3000, "dd": 2000 },
+        "100000": { "target": 6000, "dd": 3000 }, "150000": { "target": 9000, "dd": 4500 }
+      }
+    },
+    {
+      "firm": "Tradeify", "product": "Growth", "program": "evaluation",
+      "drawdown_type": "eod_trailing", "consistency": "not_required", "min_days": 1,
+      "notes": "Can pass in one day. The daily loss limit is a soft breach, not an account termination.",
+      "sizes": {
+        "25000": { "target": 1500, "dd": 1000, "daily": 600 },
+        "50000": { "target": 3000, "dd": 2000, "daily": 1250 },
+        "100000": { "target": 6000, "dd": 3500, "daily": 2500 },
+        "150000": { "target": 9000, "dd": 5000, "daily": 3750 }
+      }
+    },
+    {
+      "firm": "Tradeify", "product": "Lightning Funded", "program": "instant_funding",
+      "drawdown_type": "eod_trailing",
+      "notes": "Immediate simulated funding — no evaluation. The $25K account has no daily loss limit.",
+      "sizes": {
+        "25000": { "dd": 1000 }, "50000": { "dd": 2000, "daily": 1250 },
+        "100000": { "dd": 4000, "daily": 2500 }, "150000": { "dd": 5250, "daily": 3000 }
+      }
+    },
+    {
+      "firm": "FundedNext Futures", "product": "Flex", "program": "evaluation",
+      "drawdown_type": "eod_trailing", "consistency": "required", "consistency_pct": 40,
+      "split": 95, "payout_days": 5,
+      "notes": "No daily loss limit. Consistency applies during the challenge only.",
+      "sizes": {
+        "50000": { "target": 2500, "dd": 1500 }, "100000": { "target": 5000, "dd": 2500 },
+        "150000": { "target": 8000, "dd": 4000 }
+      }
+    },
+    {
+      "firm": "FundedNext Futures", "product": "Rapid Pro", "program": "evaluation",
+      "drawdown_type": "eod_trailing", "consistency": "required", "consistency_pct": 40,
+      "split": 90, "payout_days": 3,
+      "notes": "No daily loss limit by default.",
+      "sizes": {
+        "25000": { "target": 1500, "dd": 1000 }, "50000": { "target": 3000, "dd": 2000 },
+        "100000": { "target": 5000, "dd": 2500 }
+      }
+    },
+    {
+      "firm": "FundedNext Futures", "product": "Rapid Daily", "program": "evaluation",
+      "drawdown_type": "eod_trailing", "consistency": "not_required",
+      "split": 90, "payout_days": 1,
+      "sizes": {
+        "25000": { "target": 1500, "dd": 1000, "daily": 500 },
+        "50000": { "target": 3000, "dd": 2000, "daily": 1000 },
+        "100000": { "target": 5000, "dd": 2500, "daily": 1250 }
+      }
+    },
+    {
+      "firm": "FundedNext Futures", "product": "Legacy", "program": "evaluation",
+      "drawdown_type": "eod_trailing", "consistency": "required", "consistency_pct": 40, "split": 80,
+      "sizes": {
+        "25000": { "target": 1250, "dd": 1000 }, "50000": { "target": 3000, "dd": 2000 },
+        "100000": { "target": 6000, "dd": 3000 }
+      }
+    },
+    {
+      "firm": "Ylos Trading", "product": "Standard", "program": "evaluation",
+      "uncertain": true,
+      "notes": "Public documentation is less clear than other firms. Sizes unconfirmed — check the account page before relying on anything here.",
+      "sizes": { "50000": {}, "100000": {}, "150000": {} }
+    },
+    {
+      "firm": "Apex Trader Funding", "product": "Evaluation", "program": "evaluation",
+      "uncertain": true,
+      "notes": "Evaluation parameters differ by account model. Do not treat all sizes as sharing one rule set — target, trailing drawdown, contract limit and payout rules all vary.",
+      "sizes": { "25000": {}, "50000": {}, "75000": {}, "100000": {}, "150000": {} }
+    },
+    {
+      "firm": "FuturesElite", "product": "Prime", "program": "evaluation",
+      "notes": "Contract limits 3 / 8 / 12 by size. Scaling applies as profits increase. Target and drawdown not supplied.",
+      "sizes": { "50000": {}, "100000": {}, "150000": {} }
+    },
+    {
+      "firm": "FuturesElite", "product": "Elite", "program": "evaluation",
+      "notes": "Contract limits 3 / 8 / 12 by size. Scaling applies as profits increase. Target and drawdown not supplied.",
+      "sizes": { "50000": {}, "100000": {}, "150000": {} }
+    },
+    {
+      "firm": "FuturesElite", "product": "Instant Funded", "program": "instant_funding",
+      "notes": "Contract limits 2 / 4 / 8 / 12 by size. No scaling plan. Target and drawdown not supplied.",
+      "sizes": { "25000": {}, "50000": {}, "100000": {}, "150000": {} }
+    },
+    {
+      "firm": "Funded Futures Family", "product": "Velocity", "program": "evaluation",
+      "consistency": "required", "consistency_pct": 40, "min_days": 3,
+      "notes": "Profit required per payout: $1,500 / $3,000 / $6,000 / $9,000 by size. The Daily Payout add-on removes both the minimum trading days and the consistency rule.",
+      "sizes": { "25000": {}, "50000": {}, "100000": {}, "150000": {} }
+    },
+    {
+      "firm": "Top One Futures", "product": "Elite Evaluation", "program": "evaluation",
+      "drawdown_type": "eod_trailing", "target_pct": 6, "daily_pct": 2.5,
+      "consistency": "not_required", "split": 90,
+      "notes": "Activation fee $149 on top of the evaluation price. No consistency during the evaluation; 25% once funded. No time limit. Maximum drawdown not supplied.",
+      "sizes": { "25000": {}, "50000": {}, "100000": {}, "150000": {} }
+    },
+    {
+      "firm": "Top One Futures", "product": "Elite ACCESS", "program": "evaluation",
+      "drawdown_type": "eod_trailing", "target_pct": 6, "consistency": "not_required",
+      "max_days": 30, "split": 90,
+      "notes": "No daily loss limit during the evaluation. 40% consistency once funded, and 5 profitable days required for payouts. Maximum drawdown not supplied.",
+      "sizes": { "25000": {}, "50000": {}, "100000": {}, "150000": {} }
+    },
+    {
+      "firm": "Top One Futures", "product": "Ignite", "program": "instant_funding",
+      "target_pct": 5, "split": 90,
+      "notes": "No evaluation and no minimum trading days. 15% consistency for the first payout. Payout caps $500 / $1K / $1.5K / $2K by size.",
+      "sizes": {
+        "25000": { "dd": 1000, "daily": 500 }, "50000": { "dd": 2000, "daily": 1000 },
+        "100000": { "dd": 4000, "daily": 2000 }, "150000": { "dd": 6000, "daily": 3000 }
+      }
+    },
+    {
+      "firm": "Top One Futures", "product": "Instant Sim Funded", "program": "instant_funding",
+      "uncertain": true,
+      "notes": "Direct simulated funding. Payout targets of 6% / 5% / 4% depending on the payout cycle, and drawdown and consistency rules differ from Ignite. Not enough detail supplied to assign one rule set.",
+      "sizes": { "25000": {}, "50000": {}, "100000": {}, "150000": {} }
+    },
+    {
+      "firm": "Take Profit Trader", "product": "Evaluation", "program": "evaluation",
+      "notes": "Contract limits 3 / 6 / 9 / 12 / 15 by size. Drawdown not supplied.",
+      "sizes": {
+        "25000": { "target": 1500 }, "50000": { "target": 3000 }, "75000": { "target": 4500 },
+        "100000": { "target": 6000 }, "150000": { "target": 9000 }
+      }
+    },
+    {
+      "firm": "E8 Futures", "product": "E8 Zero", "program": "evaluation",
+      "drawdown_type": "static", "target_pct": 6, "dd_pct": 3,
+      "consistency": "required", "consistency_pct": 40,
+      "notes": "One phase. End-of-day drawdown, not trailing, and no daily drawdown. The 40% rule is a best-day rule during the challenge; the performance stage has no consistency rule. Daily payouts, maximum 5 payouts per account.",
+      "sizes": { "50000": {}, "100000": {}, "200000": {} }
+    },
+    {
+      "firm": "Traders Launch", "product": "Evaluation", "program": "evaluation",
+      "uncertain": true,
+      "notes": "Rules vary by account model and the exact program was not identified. Do not apply one rule set across sizes.",
+      "sizes": { "25000": {}, "50000": {}, "100000": {}, "150000": {} }
+    },
+    {
+      "firm": "TradeDay", "product": "Quick Pay EOD", "program": "evaluation",
+      "drawdown_type": "eod_trailing",
+      "notes": "Contract limits 5 / 10 / 15 by size.",
+      "sizes": {
+        "50000": { "target": 3000, "dd": 2000 }, "100000": { "target": 6000, "dd": 3000 },
+        "150000": { "target": 9000, "dd": 4500 }
+      }
+    },
+    {
+      "firm": "TradeDay", "product": "Quick Pay Intraday", "program": "evaluation",
+      "drawdown_type": "intraday_trailing",
+      "notes": "Contract limits 5 / 10 / 15 by size. Intraday trailing is materially harsher than the EOD variant at the same figures.",
+      "sizes": {
+        "50000": { "target": 3000, "dd": 2000 }, "100000": { "target": 6000, "dd": 3000 },
+        "150000": { "target": 9000, "dd": 4500 }
+      }
+    },
+    {
+      "firm": "TradeDay", "product": "Fast Pass", "program": "evaluation",
+      "notes": "Contract limits 5 / 10 / 15 by size. Drawdown mechanic not stated for this plan.",
+      "sizes": {
+        "50000": { "target": 3000, "dd": 2000 }, "100000": { "target": 6000, "dd": 3000 },
+        "150000": { "target": 9000, "dd": 4500 }
+      }
+    },
+    {
+      "firm": "DayTraders", "product": "EOD", "program": "evaluation",
+      "drawdown_type": "eod_trailing", "consistency": "required", "consistency_pct": 50, "min_days": 2,
+      "notes": "Sizes are 25K / 50K / 150K / 300K. Figures were supplied for 50K and 150K only.",
+      "sizes": {
+        "25000": {}, "50000": { "target": 3000, "dd": 2000, "daily": 1250 },
+        "150000": { "target": 8500, "dd": 4000, "daily": 2000 }, "300000": {}
+      }
+    },
+    {
+      "firm": "DayTraders", "product": "Straight to Funded", "program": "direct_funding",
+      "drawdown_type": "eod_trailing", "uncertain": true,
+      "notes": "Direct funded route with no traditional evaluation. Funded accounts carry their own payout and qualifying-day rules, which were not supplied.",
+      "sizes": { "50000": {}, "100000": {}, "150000": {} }
+    },
+    {
+      "firm": "Goat Funded Futures", "product": "EOD Challenge", "program": "evaluation",
+      "drawdown_type": "eod_trailing", "target_pct": 6,
+      "consistency": "required", "consistency_pct": 50, "split": 90,
+      "notes": "No daily loss limit during the challenge; funded accounts carry $1,250 / $2,500 / $3,750 by size. Funded consistency 30%. No activation fee. 100% of the first $10K, then 90/10. 7 winning days for a payout.",
+      "sizes": {
+        "50000": { "dd": 2000 }, "100000": { "dd": 3000 }, "150000": { "dd": 4500 }
+      }
+    },
+    {
+      "firm": "Goat Funded Futures", "product": "Sprint Challenge", "program": "evaluation",
+      "drawdown_type": "eod_trailing", "consistency": "not_required", "split": 90,
+      "dailyUnknown": true,
+      "notes": "A daily loss limit applies but the figure was not supplied. Funded consistency 35%. 90/10 from the first dollar. 5 winning days for a payout.",
+      "sizes": { "25000": {}, "50000": {}, "100000": {} }
+    },
+    {
+      "firm": "Goat Funded Futures", "product": "Instant Funded", "program": "instant_funding",
+      "drawdown_type": "intraday_trailing", "split": 90,
+      "notes": "No evaluation. 20% funded consistency. 7 days to a payout. 100% of the first $10K, then 90/10.",
+      "sizes": { "25000": {}, "50000": {}, "75000": {}, "100000": {}, "150000": {} }
+    },
+    {
+      "firm": "Goat Funded Futures", "product": "Flex Challenge", "program": "evaluation",
+      "drawdown_type": "eod_trailing", "consistency": "not_required", "split": 80,
+      "notes": "No daily loss limit, no consistency rule, no time limit, no microscalping restriction and no two-minute holding rule. 80/20 by default, 90/10 optional. 5 winning days for a payout.",
+      "sizes": { "50000": {}, "100000": {}, "150000": {} }
+    },
+    {
+      "firm": "Earn2Trade", "product": "Trader Career Path", "program": "evaluation",
+      "drawdown_type": "eod_trailing", "consistency": "required", "consistency_pct": 30,
+      "dailyUnknown": true,
+      "notes": "Daily loss limit and a maximum position-size progression ladder apply, with approved trading hours. No formal minimum trading days, but 30% consistency generally requires at least 4 profitable days.",
+      "sizes": { "25000": {}, "50000": {}, "100000": {}, "150000": {} }
+    },
+    {
+      "firm": "Earn2Trade", "product": "Gauntlet Mini", "program": "evaluation",
+      "drawdown_type": "eod_trailing", "consistency": "required", "consistency_pct": 30,
+      "dailyUnknown": true,
+      "notes": "Same core risk framework as Trader Career Path: daily loss limit, position-size progression, trading-hour restrictions.",
+      "sizes": { "25000": {}, "50000": {}, "100000": {}, "150000": {} }
+    },
+    {
+      "firm": "The5ers Futures", "product": "Futures Account", "program": "evaluation",
+      "uncertain": true,
+      "notes": "Evaluation and funded structures vary by current program. The generic size list is not a definitive rule sheet.",
+      "sizes": { "50000": {}, "100000": {}, "150000": {} }
+    },
+    {
+      "firm": "AquaFunded Futures", "product": "Evaluation", "program": "evaluation",
+      "uncertain": true,
+      "notes": "Rules depend on the selected account model and size. Not enough detail supplied to assign one rule set.",
+      "sizes": { "25000": {}, "50000": {}, "100000": {}, "150000": {} }
+    },
+    {
+      "firm": "Blue Guardian Futures", "product": "Standard", "program": "evaluation",
+      "drawdown_type": "eod_trailing", "consistency": "not_required",
+      "news": "allowed", "payout_days": 3,
+      "notes": "News trading allowed. The $25K account has no daily loss limit. 40% consistency applies once funded.",
+      "sizes": {
+        "25000": { "target": 1500, "dd": 1500 },
+        "50000": { "target": 3000, "dd": 2000, "daily": 1000 },
+        "100000": { "target": 6000, "dd": 3500, "daily": 2000 },
+        "150000": { "target": 9000, "dd": 5000, "daily": 3000 }
+      }
+    },
+    {
+      "firm": "Blue Guardian Futures", "product": "Reserve", "program": "evaluation",
+      "drawdown_type": "eod_trailing", "consistency": "required", "consistency_pct": 50,
+      "notes": "No daily loss limit. Funded scaling. 5 winning days for a payout. Drawdown figures not restated for this plan.",
+      "sizes": {
+        "25000": { "target": 1500 }, "50000": { "target": 3000 },
+        "100000": { "target": 6000 }, "150000": { "target": 9000 }
+      }
+    },
+    {
+      "firm": "Blue Guardian Futures", "product": "Express", "program": "evaluation",
+      "notes": "Full contract access during the evaluation, with contract scaling once funded. Target and drawdown not supplied.",
+      "sizes": { "25000": {}, "50000": {}, "100000": {}, "150000": {} }
+    },
+    {
+      "firm": "Blue Guardian Futures", "product": "Direct", "program": "direct_funding",
+      "notes": "No evaluation. Contract limits 1 / 4 / 8 / 12 minis by size. Follows the Standard contract structure.",
+      "sizes": { "25000": {}, "50000": {}, "100000": {}, "150000": {} }
+    },
+    {
+      "firm": "The Trading Pit Futures", "product": "Futures Prime", "program": "evaluation",
+      "notes": "Maximum contracts 5 / 10 / 15 by size. The contract allowance can decrease when the account balance falls.",
+      "sizes": { "50000": {}, "100000": {}, "150000": {} }
+    },
+    {
+      "firm": "The Trading Pit Futures", "product": "Futures Classic", "program": "evaluation",
+      "notes": "Listed sizes are 20K / 150K / 200K / 250K — not the 50K/100K/150K ladder. Figures not supplied.",
+      "sizes": { "20000": {}, "150000": {}, "200000": {}, "250000": {} }
+    },
+    {
+      "firm": "Blueberry Futures", "product": "Ascent EOD", "program": "evaluation",
+      "drawdown_type": "eod_trailing", "min_days": 2, "max_days": 30,
+      "sizes": {
+        "25000": { "target": 1500, "dd": 1000 }, "50000": { "target": 3000, "dd": 2000 },
+        "100000": { "target": 6000, "dd": 3000 }, "150000": { "target": 10000, "dd": 4500 }
+      }
+    },
+    {
+      "firm": "Blueberry Futures", "product": "Accelerated Trailing", "program": "evaluation",
+      "drawdown_type": "intraday_trailing", "min_days": 1, "max_days": 30,
+      "notes": "5 minimum funded days. Maximum contracts 1 / 2 / 6 / 9 minis by size.",
+      "sizes": {
+        "25000": { "target": 1500, "dd": 1000 }, "50000": { "target": 3000, "dd": 2000 },
+        "100000": { "target": 6000, "dd": 3000 }, "150000": { "target": 10000, "dd": 4500 }
+      }
+    }
+  ]
+}

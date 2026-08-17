@@ -26,6 +26,25 @@ import fs from "node:fs";
 import path from "node:path";
 import { parseCsv, CHALLENGE_COLUMNS } from "../src/lib/import";
 
+/**
+ * Futures firms covered by data/futures-specs.json, which carries real per-size
+ * figures. Their aggregator rows are dropped: importing both would collide on
+ * the same slugs, and because the importer never overwrites, the real figures
+ * would sit unapplied behind templated ones — the merge even proposed replacing
+ * recorded rules with "unknown".
+ *
+ * A futures firm NOT in that file is kept, because a templated row flagged
+ * `aggregator_unverified` is still better than dropping a real firm (Topstep
+ * and Hola Prime Futures both vanished when this filtered on market alone).
+ */
+const SPECS_FIRMS: ReadonlySet<string> = new Set(
+  (
+    JSON.parse(
+      fs.readFileSync(path.join(process.cwd(), "data", "futures-specs.json"), "utf8"),
+    ) as { products: { firm: string }[] }
+  ).products.map((p) => p.firm.toLowerCase()),
+);
+
 const RULE_MAP: Record<string, string> = {
   yes: "allowed",
   allowed: "allowed",
@@ -133,12 +152,18 @@ const col = (r: string[], name: string) => (r[header.indexOf(name)] ?? "").trim(
 
 const out: string[][] = [CHALLENGE_COLUMNS.slice()];
 const notes: string[] = [];
+let skippedFutures = 0;
 const unknownDaily: string[] = [];
 
 for (let i = 1; i < table.length; i++) {
   const r = table[i];
   const firm = col(r, "prop_firm");
   if (!firm) continue;
+
+  if (col(r, "category").toLowerCase() === "futures" && SPECS_FIRMS.has(firm.toLowerCase())) {
+    skippedFutures++;
+    continue;
+  }
 
   const rowNote = (m: string) => notes.push(`  ${firm}: ${m}`);
   const size = accountSize(col(r, "starting_account_size"));
@@ -229,6 +254,9 @@ fs.mkdirSync(path.dirname(outPath), { recursive: true });
 fs.writeFileSync(outPath, csv + "\n");
 
 console.log(`Wrote ${out.length - 1} rows to ${outPath}`);
+if (skippedFutures) {
+  console.log(`Skipped ${skippedFutures} futures rows whose firm is covered by data/futures-specs.json.`);
+}
 if (notes.length) {
   console.log(`\nConversion notes (${notes.length}):`);
   console.log(notes.join("\n"));
