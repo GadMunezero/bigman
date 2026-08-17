@@ -213,6 +213,47 @@ that export as complete.
 
 ---
 
+## The futures product matrix
+
+`data/futures-products.csv` is the real shape of the market: which products each
+firm sells, and which sizes each product comes in. `npm run db:futures` expands
+it into one challenge row per firm × product × size — 169 rows across 20 firms.
+
+This replaces the guessed ladder below. A generic ladder is always wrong
+somewhere: Goat's Sprint Challenge stops at 100K while its Instant Funded runs
+to 150K, and nothing derived from a firm's name would ever catch that.
+
+**Read the `evidence` column before trusting a row.**
+
+| Value | Means |
+| ----- | ----- |
+| `cited` | The source URL was given for this exact product |
+| `listed` | Same firm's help centre covers it, cited on a sibling row |
+| `assumed` | **No source.** Sizes were stated without a citation — confirm before publishing |
+
+Fifteen of the 43 product lines are `assumed`, including Apex, Take Profit
+Trader, Earn2Trade and Lucid. Those are the ones to check first.
+
+### What the expansion carries, and what it refuses to
+
+Where an existing challenge already covers the same **firm and size**, its
+price, target and drawdown are carried onto that row only — as a hypothesis
+inherited from the unverified aggregator export, not an answer. Every other
+size gets no price, no target, no drawdown. 126 of the 169 rows are in that
+state.
+
+That is deliberate, and the engine handles it correctly: those rows rank at the
+**bottom** (52%, "Weak match") while rows with known figures reach 70%. There is
+a test asserting a challenge with unknown figures can never outrank a
+comparable known one — without it, the site would silently start recommending
+the challenges it knows least about as the catalogue grew.
+
+Instant-funding and direct-funding products get `phases 0` and no profit target
+at all, because there is no evaluation to pass — that is an absence, not an
+unknown.
+
+---
+
 ## One row per account size
 
 A real firm sells the same evaluation at six or seven account sizes. The

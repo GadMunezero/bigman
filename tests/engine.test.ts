@@ -576,3 +576,38 @@ describe("difficulty criterion", () => {
     expect(warnings).toMatch(/two-step evaluation/i);
   });
 });
+
+describe("unconfirmed data never outranks confirmed data", () => {
+  /*
+   * The catalogue is filled progressively: a firm's product line arrives before
+   * its per-size pricing does, so hundreds of challenges legitimately sit there
+   * with no price, target or drawdown recorded yet.
+   *
+   * Those must rank BELOW an otherwise comparable challenge whose figures are
+   * known. If a blank row could win, the site would be recommending the
+   * challenges it knows least about — the exact opposite of what a trader is
+   * here for, and it would happen silently as the catalogue grew.
+   */
+  it("ranks a challenge with unknown figures below a comparable known one", () => {
+    const known = challenge("known", {
+      price: 150,
+      profit_target_pct: 8,
+      max_drawdown_pct: 6,
+      daily_drawdown_pct: 3,
+      drawdown_type: "static",
+    });
+    const unknown = challenge("unknown", {
+      price: null,
+      profit_target_pct: null,
+      max_drawdown_pct: null,
+      daily_drawdown_pct: null,
+      drawdown_type: null,
+    });
+
+    const result = getChallengeRecommendations(baseProfile, [known, unknown]);
+
+    const scores = new Map(result.recommendations.map((r) => [r.challenge.id, r.match_score]));
+
+    expect(scores.get("known")!).toBeGreaterThan(scores.get("unknown")!);
+  });
+});

@@ -1,0 +1,46 @@
+firm_name,program_type,product_name,sizes_k,source_url,evidence
+Lucid Trading,evaluation,Evaluation,50;100;150,,assumed
+My Funded Futures,evaluation,Rapid,25;50;100;150,https://myfundedfutures.com/plans/rapid,cited
+My Funded Futures,evaluation,Pro,25;50;100;150,,assumed
+My Funded Futures,evaluation,Builder,25;50;100;150,,assumed
+Tradeify,evaluation,Growth,25;50;100;150,https://help.tradeify.co/en/articles/14369021-tradeify-pricing-reference,listed
+Tradeify,evaluation,Select,25;50;100;150,https://help.tradeify.co/en/articles/14369021-tradeify-pricing-reference,listed
+Tradeify,instant_funding,Lightning Funded,25;50;100;150,https://help.tradeify.co/en/articles/14369021-tradeify-pricing-reference,cited
+FundedNext Futures,evaluation,Rapid Pro,25;50;100;150,https://helpfutures.fundednext.com/en/articles/15053874-what-are-the-available-account-sizes-and-their-prices-in-fundednext-futures,listed
+FundedNext Futures,evaluation,Rapid Daily,25;50;100;150,https://helpfutures.fundednext.com/en/articles/15053874-what-are-the-available-account-sizes-and-their-prices-in-fundednext-futures,listed
+FundedNext Futures,evaluation,Legacy,25;50;100;150,https://helpfutures.fundednext.com/en/articles/15053874-what-are-the-available-account-sizes-and-their-prices-in-fundednext-futures,listed
+FundedNext Futures,evaluation,Flex,25;50;100;150,https://helpfutures.fundednext.com/en/articles/15053874-what-are-the-available-account-sizes-and-their-prices-in-fundednext-futures,cited
+Ylos Trading,evaluation,Standard,50;100;150,,assumed
+Apex Trader Funding,evaluation,Evaluation,25;50;75;100;150,,assumed
+FuturesElite,evaluation,Prime,50;100;150,https://faq.futureselite.com/en/articles/16001592-what-is-the-elite-challenge,listed
+FuturesElite,evaluation,Elite,50;100;150,https://faq.futureselite.com/en/articles/16001592-what-is-the-elite-challenge,cited
+FuturesElite,instant_funding,Instant Funded,25;50;100;150,https://faq.futureselite.com/en/articles/11949359-what-are-the-contract-limits-for-each-account-size,cited
+Funded Futures Family,evaluation,Velocity,25;50;100;150,https://intercom.help/funded-futures-family/en/articles/11771280-evaluation-plans-details,cited
+Top One Futures,evaluation,Elite Evaluation,25;50;100;150,https://help.toponefutures.com/en/articles/14595016-elite-access-accounts-overview,listed
+Top One Futures,evaluation,Elite ACCESS,25;50;100;150,https://help.toponefutures.com/en/articles/14595016-elite-access-accounts-overview,cited
+Top One Futures,funded,Elite Sim Funded,25;50;100;150,https://help.toponefutures.com/en/articles/11020805-overview-of-the-instant-sim-funded-program,listed
+Top One Futures,instant_funding,Instant Sim Funded,25;50;100;150,https://help.toponefutures.com/en/articles/11020805-overview-of-the-instant-sim-funded-program,cited
+Top One Futures,instant_funding,Ignite,25;50;100;150,https://help.toponefutures.com/en/articles/10907367-maximum-payout-until-live-explained,cited
+Take Profit Trader,evaluation,Evaluation,25;50;75;100;150,,assumed
+E8 Futures,evaluation,E8 Zero,25;50;100;150,,assumed
+Traders Launch,evaluation,Evaluation,25;50;100;150,,assumed
+TradeDay,evaluation,Quick Pay EOD,50;100;150,https://tradeday.freshdesk.com/en/support/solutions/articles/103000304248-what-are-the-differences-between-each-account-size-,listed
+TradeDay,evaluation,Quick Pay Intraday,50;100;150,https://tradeday.freshdesk.com/en/support/solutions/articles/103000304248-what-are-the-differences-between-each-account-size-,listed
+TradeDay,evaluation,Fast Pass,50;100;150,https://tradeday.freshdesk.com/en/support/solutions/articles/103000304248-what-are-the-differences-between-each-account-size-,cited
+DayTraders,evaluation,Trailing,50;100;150,,assumed
+DayTraders,evaluation,EOD,50;100;150,,assumed
+Goat Funded Futures,evaluation,EOD Challenge,50;100;150,https://help.goatfundedfutures.com/en/articles/14523731-what-are-the-specifications-of-each-type-and-account-size,listed
+Goat Funded Futures,evaluation,Sprint Challenge,25;50;100,https://help.goatfundedfutures.com/en/articles/14523731-what-are-the-specifications-of-each-type-and-account-size,listed
+Goat Funded Futures,instant_funding,Instant Funded,25;50;75;100;150,https://help.goatfundedfutures.com/en/articles/14523731-what-are-the-specifications-of-each-type-and-account-size,listed
+Goat Funded Futures,evaluation,Flex Challenge,50;100;150,https://help.goatfundedfutures.com/en/articles/14523731-what-are-the-specifications-of-each-type-and-account-size,cited
+Earn2Trade,evaluation,Gauntlet Mini,25;50;100;150,,assumed
+Earn2Trade,evaluation,Trader Career Path,25;50;100;150,,assumed
+The5ers Futures,evaluation,Futures Account,50;100;150,,assumed
+AquaFunded Futures,evaluation,Evaluation,25;50;100;150,,assumed
+Blue Guardian Futures,evaluation,Standard,25;50;100;150,https://www.blueguardian.com/futures,listed
+Blue Guardian Futures,evaluation,Reserve,25;50;100;150,https://www.blueguardian.com/futures,listed
+Blue Guardian Futures,evaluation,Express,25;50;100;150,https://www.blueguardian.com/futures,listed
+Blue Guardian Futures,direct_funding,Direct,25;50;100;150,https://www.blueguardian.com/futures,cited
+The Trading Pit Futures,evaluation,Futures Challenge,50;100;150,,assumed
+Blueberry Futures,evaluation,Ascent EOD,25;50;100;150,https://help.blueberryfutures.com/en/articles/12913741-how-much-does-an-account-reset-cost-evaluation-funded,listed
+Blueberry Futures,evaluation,Accelerated Trailing,25;50;100;150,https://help.blueberryfutures.com/en/articles/12913741-how-much-does-an-account-reset-cost-evaluation-funded,cited
