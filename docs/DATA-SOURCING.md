@@ -213,6 +213,47 @@ that export as complete.
 
 ---
 
+## Doing the same for CFDs
+
+`data/cfd-specs.json` is the CFD half, in the same format and driven by the same
+builder:
+
+```bash
+npm run db:cfd        # data/cfd-specs.json -> data/cfd-catalogue.csv
+npm run db:import -- data/cfd-catalogue.csv
+```
+
+**Every product in it is `uncertain` and carries no figures.** The firm and
+product *names* came from an aggregator export — discovery, which is what an
+aggregator is legitimately for. Its *figures* did not: 18 of its 28 CFD rows
+shared byte-identical price, drawdown, split and payout values. That is a
+filled-down column, not a market, so nothing was carried across.
+
+It is deliberately **not imported yet**. Importing it now would collide with the
+aggregator rows currently live and, because the importer never overwrites, queue
+28 pending changes that replace numbers with blanks. Fill the specs file first,
+then import it — the same order that made the futures figures land.
+
+### What to supply
+
+Per product, per size, exactly as the futures data was supplied:
+
+- sizes, and `price` per size
+- profit target, max drawdown, daily loss limit
+- drawdown type, consistency rule and percentage, minimum days
+- profit split, and whether billing is monthly
+
+Two differences from futures worth planning for:
+
+- **CFD firms publish percentages, futures firms publish dollars.** Use
+  `target_pct` / `dd_pct` / `daily_pct` at product level for a figure that holds
+  across sizes, and the per-size block only for what actually varies.
+- **Two-step evaluations are common in CFD and rare in futures.** The phase count
+  changes how hard a challenge is and feeds the difficulty criterion, so record
+  it rather than flattening every product to one step.
+
+---
+
 ## The futures product matrix
 
 `data/futures-products.csv` is the real shape of the market: which products each

@@ -1,5 +1,5 @@
 /**
- * Expands data/futures-specs.json into one import row per firm × product × size.
+ * Expands a specs file into one import row per firm × product × size.
  *
  * The specs file records figures exactly as the firm states them — usually in
  * dollars, against a named account size. This converts them to the percentages
@@ -25,7 +25,7 @@
  * Products marked `uncertain` carry their sizes and nothing else. The source
  * said explicitly not to rely on their figures, so there are none to convert.
  *
- *   npx tsx db/build-futures-catalogue.ts <out.csv>
+ *   npx tsx db/build-futures-catalogue.ts <specs.json> [out.csv]
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -58,10 +58,14 @@ interface Product {
   sizes: Record<string, SizeSpec>;
 }
 
-const outPath = process.argv[2] ?? "data/futures-catalogue.csv";
-const specs = JSON.parse(
-  fs.readFileSync(path.join(process.cwd(), "data", "futures-specs.json"), "utf8"),
-) as { products: Product[] };
+const specsPath = process.argv[2] ?? "data/futures-specs.json";
+const outPath = process.argv[3] ?? specsPath.replace(/-specs\.json$/, "-catalogue.csv");
+const specs = JSON.parse(fs.readFileSync(path.join(process.cwd(), specsPath), "utf8")) as {
+  /** Written onto every row, so one builder serves futures and CFD alike. */
+  market?: string;
+  products: Product[];
+};
+const MARKET = specs.market ?? "futures";
 
 /**
  * Dollars against an account size.
@@ -128,7 +132,7 @@ for (const p of specs.products) {
     const record: Record<string, string> = {
       firm_name: p.firm,
       challenge_name: `${p.product} ${label}`,
-      markets: "futures",
+      markets: MARKET,
       account_size: String(size),
       currency: "USD",
       // Priced per size, never carried across sizes: Tradeify Growth is $145 at
@@ -166,7 +170,7 @@ const csv = out
 fs.mkdirSync(path.dirname(outPath), { recursive: true });
 fs.writeFileSync(outPath, csv + "\n");
 
-console.log(`Wrote ${out.length - 1} challenge rows to ${outPath}`);
+console.log(`Wrote ${out.length - 1} ${MARKET} challenge rows to ${outPath}`);
 console.log(`  ${withFigures} carry a target, drawdown or daily limit`);
 console.log(`  ${sizesOnly} carry the size and rules only — no figures were supplied`);
 console.log(`  ${priced} carry a price`);
