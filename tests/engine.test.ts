@@ -632,3 +632,34 @@ describe("recurring pricing is disclosed, not silently averaged", () => {
     expect(warningsFor("one-off")).not.toMatch(/charged monthly/i);
   });
 });
+
+describe("an undisclosed drawdown mechanic is never an advantage", () => {
+  /*
+   * Scoring an unknown mechanic at a midpoint let it beat a disclosed
+   * intraday-trailing rule, so a firm that published nothing outranked one that
+   * published a hard rule. That rewards opacity, which is the opposite of what
+   * this site is for. Unknown is scored as the harshest known mechanic instead —
+   * the same principle as `unknown` never reading as `allowed` in the rules.
+   */
+  it("does not let an unrecorded mechanic outscore a disclosed harsh one", () => {
+    const disclosed = challenge("disclosed", { drawdown_type: "intraday_trailing" });
+    const silent = challenge("silent", { drawdown_type: null });
+
+    const result = getChallengeRecommendations(baseProfile, [disclosed, silent]);
+    const score = (id: string) =>
+      result.recommendations.find((r) => r.challenge.id === id)!.match_score;
+
+    expect(score("silent")).toBeLessThanOrEqual(score("disclosed"));
+  });
+
+  it("still ranks a static drawdown above an unrecorded one", () => {
+    const known = challenge("static", { drawdown_type: "static" });
+    const silent = challenge("silent", { drawdown_type: null });
+
+    const result = getChallengeRecommendations(baseProfile, [known, silent]);
+    const score = (id: string) =>
+      result.recommendations.find((r) => r.challenge.id === id)!.match_score;
+
+    expect(score("static")).toBeGreaterThan(score("silent"));
+  });
+});

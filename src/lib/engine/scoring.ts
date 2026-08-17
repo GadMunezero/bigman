@@ -94,9 +94,18 @@ function usableDrawdown(challenge: ChallengeRecord): number | null {
     trailing: 0.68,
     intraday_trailing: 0.58,
   };
+  /*
+   * An unrecorded mechanic is scored as the harshest known one, never as a
+   * middling guess. At a midpoint it beat a disclosed `intraday_trailing`,
+   * which meant a firm that published nothing outranked one that published a
+   * hard rule — the site would have been rewarding opacity. This mirrors the
+   * rule vocabulary, where `unknown` never reads as `allowed`. The trader is
+   * told separately: data confidence is its own criterion.
+   */
+  const HARSHEST = Math.min(...Object.values(MECHANIC_FACTOR));
   const mechanic = challenge.drawdown_type
-    ? (MECHANIC_FACTOR[challenge.drawdown_type] ?? 0.75)
-    : 0.75;
+    ? (MECHANIC_FACTOR[challenge.drawdown_type] ?? HARSHEST)
+    : HARSHEST;
 
   // A daily cap worth less than a third of the total rations it hard.
   const dailyFactor =
@@ -115,7 +124,12 @@ function drawdownStability(challenge: ChallengeRecord): number {
     trailing: 0.45,
     intraday_trailing: 0.3,
   };
-  const base = challenge.drawdown_type ? (STABILITY[challenge.drawdown_type] ?? 0.4) : 0.4;
+  // Same rule as the mechanic factor: unknown is scored as the least stable
+  // option, so disclosure is never punished relative to silence.
+  const LEAST_STABLE = Math.min(...Object.values(STABILITY));
+  const base = challenge.drawdown_type
+    ? (STABILITY[challenge.drawdown_type] ?? LEAST_STABLE)
+    : LEAST_STABLE;
   // A daily limit is another way to fail an otherwise healthy account.
   return challenge.daily_drawdown_pct === null ? base : base * 0.85;
 }

@@ -1,4 +1,4 @@
-import { listAccountSizes, listPlatforms } from "@/lib/repo";
+import { listAccountSizes, listMarkets, listPlatforms } from "@/lib/repo";
 import { getCurrentProfile } from "@/lib/session";
 import { Quiz } from "./Quiz";
 
@@ -11,9 +11,10 @@ export const metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function FindMyChallengePage() {
-  const [accountSizes, platforms, profile] = await Promise.all([
+  const [accountSizes, platforms, markets, profile] = await Promise.all([
     Promise.resolve(listAccountSizes()),
     Promise.resolve(listPlatforms()),
+    Promise.resolve(listMarkets()),
     getCurrentProfile(),
   ]);
 
@@ -44,6 +45,11 @@ export default async function FindMyChallengePage() {
     : undefined;
 
   return (
-    <Quiz accountSizes={accountSizes} platforms={platforms} initialAnswers={initialAnswers} />
+    <Quiz
+      accountSizes={accountSizes}
+      platforms={platforms}
+      markets={markets}
+      initialAnswers={initialAnswers}
+    />
   );
 }

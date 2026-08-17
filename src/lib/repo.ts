@@ -1,5 +1,6 @@
 import "server-only";
 import { getDb, newId, nowIso } from "./db";
+import { MARKETS } from "./types";
 import type {
   Challenge,
   ChallengeRecord,
@@ -155,6 +156,32 @@ export function getChallengeRecordsByIds(ids: string[]): ChallengeRecord[] {
   return ids
     .map((id) => found.find((c) => c.id === id))
     .filter((c): c is ChallengeRecord => Boolean(c));
+}
+
+/**
+ * Markets that actually have something published.
+ *
+ * The questionnaire's first question is a hard filter, so offering a market the
+ * catalogue cannot serve sends the trader through eight more questions to reach
+ * a guaranteed no-match. Deriving the options from the data means the lane the
+ * catalogue covers is the lane the quiz offers, and adding a market later needs
+ * no code change.
+ */
+export function listMarkets(): string[] {
+  const db = getDb();
+  const rows = db
+    .prepare(`SELECT markets FROM challenges WHERE status = 'published'`)
+    .all() as { markets: string }[];
+
+  const seen = new Set<string>();
+  for (const row of rows) {
+    try {
+      for (const m of JSON.parse(row.markets) as string[]) seen.add(m);
+    } catch {
+      // A malformed markets cell must not take the questionnaire down with it.
+    }
+  }
+  return MARKETS.filter((m) => seen.has(m));
 }
 
 /** Distinct published account sizes, ascending. Drives the questionnaire options. */

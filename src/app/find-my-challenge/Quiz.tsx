@@ -35,7 +35,18 @@ const ANALYSIS_STEPS = [
   "Calculating your matches",
 ];
 
-function buildQuestions(accountSizes: number[], platforms: string[]): Question[] {
+const MARKET_OPTIONS: Record<string, Option> = {
+  futures: { value: "futures", label: "Futures", hint: "ES, NQ, CL, GC and similar" },
+  forex: { value: "forex", label: "Forex", hint: "Currency pairs" },
+  cfd: { value: "cfd", label: "CFDs", hint: "Indices, commodities, shares" },
+  crypto: { value: "crypto", label: "Crypto" },
+};
+
+function buildQuestions(
+  accountSizes: number[],
+  platforms: string[],
+  markets: string[],
+): Question[] {
   const sizeOptions: Option[] = accountSizes.map((size) => ({
     value: String(size),
     label: `$${(size / 1000).toLocaleString("en-US")}K`,
@@ -46,12 +57,15 @@ function buildQuestions(accountSizes: number[], platforms: string[]): Question[]
       key: "market",
       title: "What do you trade?",
       help: "This is the first filter. A challenge that doesn't cover your market is removed outright.",
+      // Built from what the catalogue actually covers. Offering a market with
+      // nothing published would walk the trader through the whole questionnaire
+      // to a guaranteed no-match, and "multiple markets" is only a meaningful
+      // answer when there is more than one to span.
       options: [
-        { value: "futures", label: "Futures", hint: "ES, NQ, CL, GC and similar" },
-        { value: "forex", label: "Forex", hint: "Currency pairs" },
-        { value: "cfd", label: "CFDs", hint: "Indices, commodities, shares" },
-        { value: "crypto", label: "Crypto" },
-        { value: "multiple", label: "Multiple markets", hint: "Don't narrow by market" },
+        ...markets.map((m) => MARKET_OPTIONS[m]).filter(Boolean),
+        ...(markets.length > 1
+          ? [{ value: "multiple", label: "Multiple markets", hint: "Don't narrow by market" }]
+          : []),
       ],
     },
     {
@@ -235,14 +249,19 @@ function buildQuestions(accountSizes: number[], platforms: string[]): Question[]
 export function Quiz({
   accountSizes,
   platforms,
+  markets,
   initialAnswers,
 }: {
   accountSizes: number[];
   platforms: string[];
+  markets: string[];
   initialAnswers?: Answers;
 }) {
   const router = useRouter();
-  const all = useMemo(() => buildQuestions(accountSizes, platforms), [accountSizes, platforms]);
+  const all = useMemo(
+    () => buildQuestions(accountSizes, platforms, markets),
+    [accountSizes, platforms, markets],
+  );
   const [answers, setAnswers] = useState<Answers>(initialAnswers ?? {});
   const [index, setIndex] = useState(0);
   const [submitting, setSubmitting] = useState(false);

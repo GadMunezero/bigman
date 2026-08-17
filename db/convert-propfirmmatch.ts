@@ -153,6 +153,7 @@ const col = (r: string[], name: string) => (r[header.indexOf(name)] ?? "").trim(
 const out: string[][] = [CHALLENGE_COLUMNS.slice()];
 const notes: string[] = [];
 let skippedFutures = 0;
+let skippedCfd = 0;
 const unknownDaily: string[] = [];
 
 for (let i = 1; i < table.length; i++) {
@@ -160,10 +161,16 @@ for (let i = 1; i < table.length; i++) {
   const firm = col(r, "prop_firm");
   if (!firm) continue;
 
-  if (col(r, "category").toLowerCase() === "futures" && SPECS_FIRMS.has(firm.toLowerCase())) {
-    skippedFutures++;
-    continue;
-  }
+  // The catalogue is futures-only. CFD rows are dropped outright, and futures
+  // rows are dropped where data/futures-specs.json already covers the firm with
+  // real per-size figures — importing both would collide on the same slugs and
+  // leave the real numbers stuck in the pending queue behind templated ones.
+  //
+  // What survives is the handful of futures firms the specs file does not cover
+  // (Topstep, Hola Prime Futures, AquaFutures). A row flagged
+  // `aggregator_unverified` is still better than dropping a real firm.
+  if (col(r, "category").toLowerCase() !== "futures") { skippedCfd++; continue; }
+  if (SPECS_FIRMS.has(firm.toLowerCase())) { skippedFutures++; continue; }
 
   const rowNote = (m: string) => notes.push(`  ${firm}: ${m}`);
   const size = accountSize(col(r, "starting_account_size"));
@@ -256,6 +263,7 @@ fs.writeFileSync(outPath, csv + "\n");
 console.log(`Wrote ${out.length - 1} rows to ${outPath}`);
 if (skippedFutures) {
   console.log(`Skipped ${skippedFutures} futures rows whose firm is covered by data/futures-specs.json.`);
+if (skippedCfd) console.log(`Skipped ${skippedCfd} CFD rows — this catalogue is futures-only.`);
 }
 if (notes.length) {
   console.log(`\nConversion notes (${notes.length}):`);

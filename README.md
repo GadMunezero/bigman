@@ -1,6 +1,6 @@
 # PropFirm
 
-A personalised **prop firm challenge finder**. Not a directory, not a coupon site, not a
+A personalised **futures prop firm challenge finder**. Not a directory, not a coupon site, not a
 top-ten list — a recommendation engine that asks how you trade, removes the challenges that
 cannot work for you, scores the rest, and explains every number.
 
@@ -64,8 +64,14 @@ Requires Node 20 or newer.
 ADMIN_PASSWORD=demo npm run catalogue
 ```
 
-Builds the whole catalogue and starts the dev server: **52 firms, 215 challenges** across five
-account sizes (25K / 50K / 75K / 100K / 150K), with official websites applied. Admin is at
+Builds the whole catalogue and starts the dev server: **24 futures firms, 184 challenges** across
+nine account sizes (20K to 300K), with official websites applied.
+
+The catalogue is **futures-only**. CFD and forex firms were removed deliberately: the only data
+for them was an aggregator export in which 18 of 28 rows carried byte-identical figures. The
+questionnaire reads its market options from what is actually published, so it currently offers
+Futures alone rather than walking a forex trader through nine questions to a guaranteed
+no-match — add CFD data later and the option reappears with no code change. Admin is at
 `/admin`.
 
 To put it on a real server, see **[docs/DEPLOY.md](docs/DEPLOY.md)** — there is a Dockerfile
