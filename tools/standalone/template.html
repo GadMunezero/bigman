@@ -1,5 +1,7 @@
 <title>PropFirm Challenge Finder</title>
 <style>
+__GLOBALS__
+
   /* Committed single-theme: yellow-on-black is the product's identity, not a
      default. Every colour is painted explicitly so the page holds on either
      host ground. Tokens are lifted from the app's own globals.css. */
@@ -19,8 +21,6 @@
   a:hover { text-decoration: underline; }
   :focus-visible { outline: 2px solid var(--accent-hi); outline-offset: 2px; }
 
-  .shell { max-width: 66rem; margin: 0 auto; padding: 0 1.25rem 5rem; }
-
   /* Masthead ---------------------------------------------------------- */
   .masthead { position: sticky; top:0; z-index:20; background: rgba(0,0,0,0.88); backdrop-filter: blur(8px); border-bottom:1px solid var(--line); }
   .masthead .inner { max-width:66rem; margin:0 auto; padding:0.8rem 1.25rem; display:flex; align-items:center; gap:1.25rem; flex-wrap:wrap; }
@@ -33,27 +33,12 @@
   nav.top a:hover { background:var(--bg-2); color:var(--ink); text-decoration:none; }
   nav.top a[aria-current="page"] { background:var(--bg-3); color:var(--ink); }
 
-  .eyebrow { font-family:var(--mono); font-size:0.68rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--ink-3); }
   h1 { font-size: clamp(1.55rem,3.6vw,2.2rem); line-height:1.15; margin:0.35rem 0 0; text-wrap:balance; letter-spacing:-0.02em; }
   h2 { font-size:1.1rem; margin:0 0 0.7rem; text-wrap:balance; }
   p { margin:0.5rem 0 0; color:var(--ink-2); }
-  .lede { font-size:1.05rem; }
 
-  .panel { background:var(--bg-1); border:1px solid var(--line); border-radius:0.75rem; padding:1.25rem; }
-  .panel-accent { border-color:var(--accent-line); background:linear-gradient(180deg,var(--accent-dim),transparent 60%),var(--bg-1); }
-  .stack { display:grid; gap:1.25rem; }
-  .section { padding-top:2.25rem; }
-
-  .btn { font:inherit; font-weight:600; cursor:pointer; border-radius:0.55rem; padding:0.6rem 1.1rem; border:1px solid var(--line-2); background:var(--bg-2); color:var(--ink); display:inline-block; }
-  .btn:hover { background:var(--bg-3); text-decoration:none; }
-  .btn-primary { background:var(--accent); color:var(--accent-ink); border-color:var(--accent); }
-  .btn-primary:hover { background:var(--accent-hi); }
-  .btn-sm { padding:0.35rem 0.7rem; font-size:0.85rem; }
   .actions { display:flex; gap:0.6rem; margin-top:1.4rem; flex-wrap:wrap; }
 
-  .pill { display:inline-block; font-family:var(--mono); font-size:0.64rem; letter-spacing:0.1em; text-transform:uppercase; padding:0.18rem 0.5rem; border-radius:999px; border:1px solid var(--line-2); color:var(--ink-2); }
-  .pill-accent { border-color:var(--accent-line); color:var(--accent); background:var(--accent-dim); }
-  .pill-warn { border-color:rgba(255,159,28,0.4); color:var(--warn); }
   .pill-bad { border-color:rgba(255,92,92,0.4); color:var(--bad); }
   .pills { display:flex; gap:0.35rem; flex-wrap:wrap; }
 
@@ -114,9 +99,9 @@
   .card { background:var(--bg-1); border:1px solid var(--line); border-radius:0.7rem; padding:1rem; display:flex; flex-direction:column; gap:0.6rem; }
   .card h3 { margin:0; font-size:0.98rem; }
   .card .firm { font-size:0.82rem; color:var(--ink-3); }
-  .kv { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem 0.75rem; font-size:0.82rem; }
-  .kv div span { display:block; font-family:var(--mono); font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3); }
-  .kv div b { font-weight:600; font-variant-numeric:tabular-nums; }
+
+
+
   .card .foot { margin-top:auto; display:flex; gap:0.4rem; flex-wrap:wrap; }
 
   .spec { display:grid; grid-template-columns:repeat(auto-fit,minmax(16rem,1fr)); gap:1.25rem; }
@@ -147,6 +132,7 @@
 
 <script type="application/json" id="catalogue">__CATALOGUE__</script>
 <script>__ENGINE__</script>
+<script>__ISLANDS__</script>
 <script>
 (function () {
   "use strict";
@@ -169,7 +155,8 @@
     " challenges have no price or drawdown recorded yet — those rank last, deliberately.";
 
   var ROUTES = [["#/", "Home"], ["#/find", "Find my challenge"], ["#/browse", "Browse"],
-                ["#/firms", "Firms"], ["#/compare", "Compare"]];
+                ["#/firms", "Firms"], ["#/compare", "Compare"],
+                ["#/psychology", "Psychology"], ["#/tools", "Tools"]];
 
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
@@ -577,6 +564,27 @@
     return h + "</div>";
   }
 
+  // ---- Client-side islands ---------------------------------------------
+  // The real React components from the app, not rewrites. They were always
+  // client-side, so they run here unchanged.
+  function viewPsychology() {
+    return '<div class="section"><span class="eyebrow">Trading psychology</span>' +
+      "<h1>The behavioural half of passing a challenge</h1>" +
+      "<p class='lede'>Most evaluations are lost to a moved stop, a revenge trade, or size that grew " +
+      "after a good week — not to picking the wrong firm.</p>" +
+      "<p class='unknown' style='margin-top:0.6rem'>Everything you type here stays in this browser. " +
+      "There is no server behind this page.</p>" +
+      '<div id="island-psychology" style="margin-top:1.5rem"></div></div>';
+  }
+
+  function viewTools() {
+    return '<div class="section stack"><div><span class="eyebrow">Tools</span>' +
+      "<h1>Work out the numbers before you buy</h1>" +
+      "<p class='lede'>Two calculators that answer the questions a challenge page rarely does.</p></div>" +
+      '<div class="panel"><h2>Drawdown calculator</h2><div id="island-drawdown"></div></div>' +
+      '<div class="panel"><h2>Challenge calculator</h2><div id="island-challenge"></div></div></div>';
+  }
+
   // ---- Router -----------------------------------------------------------
   function render() {
     var hash = location.hash || "#/";
@@ -590,6 +598,8 @@
     else if (key === "f") html = viewFirm(parts[1]);
     else if (key === "c") html = viewChallenge(decodeURIComponent(parts[1] || ""));
     else if (key === "compare") html = viewCompare();
+    else if (key === "psychology") html = viewPsychology();
+    else if (key === "tools") html = viewTools();
     else html = viewHome();
     app.innerHTML = html;
 
@@ -598,6 +608,16 @@
       return '<a href="' + r[0] + '"' + (on ? ' aria-current="page"' : "") + ">" + r[1] + "</a>";
     }).join("");
 
+    if (key === "psychology") {
+      var el = document.getElementById("island-psychology");
+      if (el && window.PFMount) window.PFMount(el, "psychology", {});
+    }
+    if (key === "tools") {
+      [["island-drawdown", "drawdown"], ["island-challenge", "challenge"]].forEach(function (m) {
+        var node = document.getElementById(m[0]);
+        if (node && window.PFMount) window.PFMount(node, m[1], {});
+      });
+    }
     if (key === "find") bindFind();
     if (key === "browse") {
       app.querySelectorAll("[data-f]").forEach(function (el) {

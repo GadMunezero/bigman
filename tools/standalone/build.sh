@@ -23,8 +23,16 @@ rm -f .standalone-export.cjs
 npx esbuild "$D/browser-entry.ts" --bundle --platform=browser --format=iife \
   --minify --outfile=dist/engine.js --tsconfig=tsconfig.json --log-level=error
 
+# The psychology workspace and the calculators are real "use client" React
+# components. They never needed a server, so they are bundled and mounted as
+# islands rather than rewritten in vanilla JS.
+npx esbuild "$D/islands-entry.tsx" --bundle --platform=browser --format=iife \
+  --minify-whitespace --minify-syntax --outfile=dist/islands.js \
+  --tsconfig=tsconfig.json --log-level=error \
+  --define:process.env.NODE_ENV='"production"' --loader:.css=local-css
+
 python3 - <<'PY'
-import json
+import json, os
 data = json.load(open("dist/catalogue.json"))
 for r in data:
     for k in [k for k in r if k.startswith("f_")]: del r[k]
@@ -32,10 +40,19 @@ for r in data:
     for k in ("created_at", "updated_at", "logo_url", "description", "id"): r["firm"].pop(k, None)
     for k in ("challenge_id", "updated_at", "notes"): r["rules"].pop(k, None)
 cat = json.dumps(data, separators=(",", ":")).replace("</", "<\\/")
+
+# globals.css supplies the utility classes the React islands were built
+# against (.panel, .btn, .field-label, .grid-3 ...). Inlining the real file
+# keeps them identical instead of approximating them.
+globals_css = open("src/app/globals.css").read()
+islands_css = open("dist/islands.css").read() if os.path.exists("dist/islands.css") else ""
+
 html = (open("tools/standalone/template.html").read()
+        .replace("__GLOBALS__", globals_css + "\n" + islands_css)
         .replace("__CATALOGUE__", cat)
-        .replace("__ENGINE__", open("dist/engine.js").read()))
+        .replace("__ENGINE__", open("dist/engine.js").read())
+        .replace("__ISLANDS__", open("dist/islands.js").read()))
 open("dist/propfirm-standalone.html", "w").write(html)
 print(f"dist/propfirm-standalone.html — {len(html.encode()):,} bytes, {len(data)} challenges")
 PY
-rm -f dist/catalogue.json dist/engine.js
+rm -f dist/catalogue.json dist/engine.js dist/islands.js dist/islands.css
