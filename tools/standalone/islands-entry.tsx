@@ -9,14 +9,16 @@
 import { createRoot } from "react-dom/client";
 import { createElement } from "react";
 import { PsychologyWorkspace } from "../../src/app/psychology/PsychologyWorkspace";
+import HomePage from "../../src/app/page";
 import { ChallengeCalculator, DrawdownCalculator } from "../../src/app/tools/Calculators";
 
-type Mountable = "psychology" | "drawdown" | "challenge";
+type Mountable = "psychology" | "drawdown" | "challenge" | "home";
 
 const COMPONENTS: Record<Mountable, unknown> = {
   psychology: PsychologyWorkspace,
   drawdown: DrawdownCalculator,
   challenge: ChallengeCalculator,
+  home: HomePage,
 };
 
 const roots = new Map<Element, ReturnType<typeof createRoot>>();

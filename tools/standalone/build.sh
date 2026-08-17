@@ -29,7 +29,9 @@ npx esbuild "$D/browser-entry.ts" --bundle --platform=browser --format=iife \
 npx esbuild "$D/islands-entry.tsx" --bundle --platform=browser --format=iife \
   --minify-whitespace --minify-syntax --outfile=dist/islands.js \
   --tsconfig=tsconfig.json --log-level=error \
-  --define:process.env.NODE_ENV='"production"' --loader:.css=local-css
+  --define:process.env.NODE_ENV='"production"' --loader:.css=local-css \
+  --alias:next/link="./$D/next-link-shim.tsx" \
+  --alias:@/components/TrackEvent="./$D/track-event-shim.tsx"
 
 python3 - <<'PY'
 import json, os

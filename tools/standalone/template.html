@@ -172,35 +172,10 @@ __GLOBALS__
   function ruleTone(v) { return v === "allowed" ? "" : v === "restricted" ? "pill-warn" : v === "prohibited" ? "pill-bad" : ""; }
 
   // ---- Home -------------------------------------------------------------
-  function viewHome() {
-    var sizes = {}; DATA.forEach(function (c) { if (c.account_size) sizes[c.account_size] = 1; });
-    var priced = DATA.filter(function (c) { return c.price != null; });
-    var cheapest = priced.reduce(function (a, c) { return !a || c.price < a.price ? c : a; }, null);
-    return '<div class="section stack">' +
-      '<div><span class="eyebrow">Prop firm challenge finder</span>' +
-      "<h1>Tell us how you trade. We'll tell you which challenge fits.</h1>" +
-      '<p class="lede">Not a directory and not a top-ten list. Answer nine questions and the engine ' +
-      "removes the challenges that cannot work for you — with the reason — then ranks what is left on " +
-      "nine weighted criteria and shows the maths behind every score.</p>" +
-      '<div class="actions"><a class="btn btn-primary" href="#/find">Find my challenge</a>' +
-      '<a class="btn" href="#/browse">Browse all ' + DATA.length + "</a></div></div>" +
-      '<div class="stats">' +
-      '<div class="stat"><b>' + DATA.length + "</b><span>challenges</span></div>" +
-      '<div class="stat"><b>' + FIRM_LIST.length + "</b><span>firms</span></div>" +
-      '<div class="stat"><b>' + Object.keys(sizes).length + "</b><span>account sizes</span></div>" +
-      '<div class="stat"><b>' + (cheapest ? money(cheapest.price) : "—") + "</b><span>cheapest entry</span></div>" +
-      "</div>" +
-      '<div class="panel"><h2>How the ranking works</h2>' +
-      "<p><b>Hard filtering first.</b> A challenge that conflicts with something you require is removed " +
-      "entirely, not scored low. If you need overnight positions and a challenge prohibits them, it is not " +
-      "a 72% match — it is the wrong challenge.</p>" +
-      "<p><b>Then weighted scoring.</b> Nine criteria, reweighted by how you want to approach the challenge " +
-      "and by your risk style. A bigger drawdown is not automatically better: the engine scores <i>usable</i> " +
-      "drawdown — room relative to the target, discounted by the mechanic and by how hard a daily cap rations it.</p>" +
-      "<p><b>Unknowns rank last.</b> Many challenges here have a confirmed product and size but no price or " +
-      "drawdown yet. They score below challenges we actually know about, so the site never recommends what it " +
-      "knows least.</p></div></div>";
-  }
+  // The real landing page from the app, mounted as an island. It was rewritten
+  // by hand once and immediately drifted from the product; using the actual
+  // component is the only way it stays in step.
+  function viewHome() { return '<div id="island-home"></div>'; }
 
   // ---- Questionnaire ----------------------------------------------------
   var QUESTIONS = [
@@ -608,6 +583,10 @@ __GLOBALS__
       return '<a href="' + r[0] + '"' + (on ? ' aria-current="page"' : "") + ">" + r[1] + "</a>";
     }).join("");
 
+    if (key === "" || key === "/") {
+      var homeEl = document.getElementById("island-home");
+      if (homeEl && window.PFMount) window.PFMount(homeEl, "home", {});
+    }
     if (key === "psychology") {
       var el = document.getElementById("island-psychology");
       if (el && window.PFMount) window.PFMount(el, "psychology", {});
