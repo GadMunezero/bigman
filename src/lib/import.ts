@@ -91,6 +91,7 @@ export const CHALLENGE_COLUMNS = [
   "markets",
   "account_size",
   "price",
+  "billing_type",
   "currency",
   "profit_target_pct",
   "max_drawdown_pct",
@@ -137,6 +138,7 @@ const SOURCE_TYPES = [
   "aggregator_unverified",
 ];
 const CONSISTENCY = ["required", "not_required", "unknown"];
+const BILLING = ["one_time", "monthly"];
 
 export interface ImportIssue {
   row: number;
@@ -396,6 +398,10 @@ export function planImport(csv: string): ImportPlan {
       markets: JSON.stringify(markets),
       account_size: num(get("account_size"), rowNumber, "account_size", errors, { min: 0 }),
       price,
+      // Futures evaluations are very often billed monthly. Without this the
+      // budget criterion silently compares a recurring fee against a one-off
+      // one, and the challenge page cannot say "/ month".
+      billing_type: enumValue(get("billing_type"), BILLING, rowNumber, "billing_type", errors),
       currency: get("currency").trim().toUpperCase() || "USD",
       profit_target_pct: num(get("profit_target_pct"), rowNumber, "profit_target_pct", errors, { min: 0, max: 100 }),
       max_drawdown_pct: num(get("max_drawdown_pct"), rowNumber, "max_drawdown_pct", errors, { min: 0, max: 100 }),

@@ -31,7 +31,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { CHALLENGE_COLUMNS } from "../src/lib/import";
 
-interface SizeSpec { target?: number; dd?: number; daily?: number }
+interface SizeSpec { target?: number; dd?: number; daily?: number; price?: number }
 interface Product {
   firm: string;
   product: string;
@@ -43,7 +43,11 @@ interface Product {
   max_days?: number;
   split?: number;
   news?: string;
+  overnight?: string;
+  weekend?: string;
   payout_days?: number;
+  /** "monthly" where the firm bills a recurring subscription. */
+  billing?: string;
   /** Percentages stated directly by the firm rather than as dollars. */
   target_pct?: number;
   dd_pct?: number;
@@ -76,6 +80,7 @@ function asPercent(dollars: number | undefined, size: number): string {
 const out: string[][] = [CHALLENGE_COLUMNS.slice()];
 let withFigures = 0;
 let sizesOnly = 0;
+let priced = 0;
 const flagged: string[] = [];
 
 for (const p of specs.products) {
@@ -104,6 +109,7 @@ for (const p of specs.products) {
 
     if (target || dd || daily) withFigures++;
     else sizesOnly++;
+    if (spec.price !== undefined) priced++;
 
     const conditions: string[] = [];
     if (p.notes) conditions.push(p.notes);
@@ -125,7 +131,11 @@ for (const p of specs.products) {
       markets: "futures",
       account_size: String(size),
       currency: "USD",
-      price: "",
+      // Priced per size, never carried across sizes: Tradeify Growth is $145 at
+      // 50K and $369 at 150K, and Take Profit Trader bills monthly where Goat
+      // charges once. A price on the wrong row is worse than none.
+      price: spec.price !== undefined ? String(spec.price) : "",
+      billing_type: p.billing ?? "",
       profit_target_pct: isInstant ? "" : target,
       max_drawdown_pct: dd,
       daily_drawdown_pct: daily,
@@ -136,6 +146,8 @@ for (const p of specs.products) {
       payout_conditions: conditions.join(" "),
       phases: isInstant ? "0" : "1",
       news_trading: p.news ?? "",
+      overnight: p.overnight ?? "",
+      weekend: p.weekend ?? "",
       consistency_rule: p.consistency ?? "",
       consistency_pct: p.consistency_pct !== undefined ? String(p.consistency_pct) : "",
       source_type: "trader_report",
@@ -157,6 +169,7 @@ fs.writeFileSync(outPath, csv + "\n");
 console.log(`Wrote ${out.length - 1} challenge rows to ${outPath}`);
 console.log(`  ${withFigures} carry a target, drawdown or daily limit`);
 console.log(`  ${sizesOnly} carry the size and rules only — no figures were supplied`);
+console.log(`  ${priced} carry a price`);
 if (flagged.length) {
   console.log(
     `\n!! ${flagged.length} rows have a daily loss limit whose figure is unknown.\n` +
@@ -164,4 +177,4 @@ if (flagged.length) {
       [...new Set(flagged)].join(", "),
   );
 }
-console.log("\nPrices are absent throughout — none were supplied. Add them per size before publishing.");
+console.log("\nSizes without a price show \"Not confirmed\" rather than guessing from a sibling size.");

@@ -168,6 +168,19 @@ export function buildWarnings(
     warnings.push("The entry price is not confirmed — check it on the firm's own page before buying.");
   }
 
+  /*
+   * The budget criterion compares one number, so a recurring fee and a one-off
+   * fee score as if they were the same kind of cost. They are not: a $170/month
+   * evaluation costs more than a $400 one-off by the third month. Rather than
+   * quietly reweighting price, which would make the score harder to audit, the
+   * trader is told what they are looking at.
+   */
+  if (challenge.billing_type === "monthly" && challenge.price !== null) {
+    warnings.push(
+      `The $${challenge.price} price is charged monthly, not once — it keeps billing until you pass or cancel, so compare it against one-off fees over the time you expect to take.`,
+    );
+  }
+
   const restricted: string[] = [];
   if (req.needsOvernight && rules.overnight === "restricted") restricted.push("overnight positions");
   if (req.needsWeekend && rules.weekend === "restricted") restricted.push("weekend holding");

@@ -611,3 +611,24 @@ describe("unconfirmed data never outranks confirmed data", () => {
     expect(scores.get("known")!).toBeGreaterThan(scores.get("unknown")!);
   });
 });
+
+describe("recurring pricing is disclosed, not silently averaged", () => {
+  /*
+   * Several futures firms bill monthly. The budget criterion compares a single
+   * price field, so a $170/month evaluation and a $170 one-off score
+   * identically on cost. Reweighting price by an assumed number of months would
+   * bury a guess inside the score; saying so in a caveat keeps the number
+   * auditable and still warns the trader.
+   */
+  it("warns when a challenge is billed monthly", () => {
+    const monthly = challenge("monthly", { price: 170, billing_type: "monthly" });
+    const oneOff = challenge("one-off", { price: 170, billing_type: "one_time" });
+
+    const result = getChallengeRecommendations(baseProfile, [monthly, oneOff]);
+    const warningsFor = (id: string) =>
+      result.recommendations.find((r) => r.challenge.id === id)!.warnings.join(" ");
+
+    expect(warningsFor("monthly")).toMatch(/charged monthly/i);
+    expect(warningsFor("one-off")).not.toMatch(/charged monthly/i);
+  });
+});
