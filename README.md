@@ -82,11 +82,11 @@ that seeds the catalogue on first boot and a persistent volume for the database.
 
 Two things to expect, both correct behaviour rather than bugs:
 
-- **Scores span roughly 52–70%** for a futures day trader. The top of that range is challenges
-  whose figures are known; the bottom is the 126 rows that have a confirmed product and size
-  but no price or drawdown yet. They rank last on purpose.
-- **Outbound buttons work for 10 firms** and say "official link not on file" for the rest,
-  because only those ten have a website recorded. Add more in `/admin/firms`.
+- **Scores spread widely**, and low ones are common. The top of the range is challenges whose
+  figures are known; the bottom is the 138 rows that have a confirmed product and size but no
+  price, and the 103 with no drawdown. They rank last on purpose.
+- **Outbound buttons work for 10 of the 24 firms** and say "official link not on file" for the
+  rest, because only those ten have a website recorded. Add more in `/admin/firms`.
 
 `npm run db:publish:all` publishes unverified data on purpose and refuses to run with
 `NODE_ENV=production`. It is a local convenience, not a deployment step.
@@ -140,9 +140,15 @@ to configure it gets a locked door.
 
 ## About the data
 
-**Nothing in this repository contains real prop firm data.** The demo seed uses invented
-firms, named "(fictional)", because attaching made-up prices and rules to a real company is
-exactly the fabrication this product exists to avoid.
+**The repository contains real firm names and real supplied figures, and none of it is
+verified.** `data/futures-specs.json` holds 24 futures firms transcribed from supplied research;
+every row imports as `needs_review` and `draft`, and nothing reaches a trader until a person
+publishes it in `/admin`.
+
+What the repository still refuses to contain is an **invented** figure. Where a price or a
+drawdown was not supplied it is blank, and blank renders as "Not confirmed" rather than being
+filled with a plausible guess. The separate demo seed (`npm run db:seed:demo`) uses firms named
+"(fictional)" for exactly this reason.
 
 Real data goes in through `/admin` or the bulk importer, taken from each firm's own
 documentation. See **[docs/DATA-SOURCING.md](docs/DATA-SOURCING.md)** for where each field
