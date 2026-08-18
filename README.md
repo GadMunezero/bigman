@@ -58,6 +58,9 @@ fictional demo catalogue, and starts the dev server in one step.
 
 Requires Node 20 or newer.
 
+**New here, or picking this up later?** Read **[docs/HANDOVER.md](docs/HANDOVER.md)** — what is
+built and verified, how to add data and features, and how to host it.
+
 ### Clicking around the full catalogue
 
 ```bash

@@ -35,6 +35,7 @@ const NAV = [
   { href: "/find-my-challenge", label: "Find My Challenge" },
   { href: "/challenges", label: "Challenges" },
   { href: "/compare", label: "Compare" },
+  { href: "/firms", label: "Firms" },
   { href: "/psychology", label: "Psychology" },
   { href: "/reviews", label: "Reviews" },
   { href: "/tools", label: "Tools" },

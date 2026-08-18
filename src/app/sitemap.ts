@@ -9,6 +9,7 @@ const STATIC_PATHS = [
   { path: "find-my-challenge", priority: 0.95 },
   { path: "challenges", priority: 0.8 },
   { path: "compare", priority: 0.7 },
+  { path: "firms", priority: 0.7 },
   { path: "psychology", priority: 0.7 },
   { path: "reviews", priority: 0.6 },
   { path: "tools", priority: 0.6 },
