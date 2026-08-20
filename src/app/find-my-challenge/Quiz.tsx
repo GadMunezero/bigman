@@ -35,6 +35,15 @@ const ANALYSIS_STEPS = [
   "Calculating your matches",
 ];
 
+/**
+ * Stands in for "I don't mind" on single-select questions.
+ *
+ * Never an empty string: the quiz decides whether a question has been answered
+ * by whether its value is truthy, so an empty option reads as unanswered and
+ * blocks the Continue button forever.
+ */
+const NO_PREFERENCE = "no_preference";
+
 const MARKET_OPTIONS: Record<string, Option> = {
   futures: { value: "futures", label: "Futures", hint: "ES, NQ, CL, GC and similar" },
   forex: { value: "forex", label: "Forex", hint: "Currency pairs" },
@@ -165,15 +174,76 @@ function buildQuestions(
         },
       ],
     },
+    /*
+     * The four questions below replace "would you describe yourself as
+     * aggressive or conservative?".
+     *
+     * That question asked about self-image. These ask about facts a trader can
+     * read off their own records, and each one decides a specific rule:
+     * frequency decides whether minimum trading days are harmless or
+     * disqualifying, profit shape decides whether a consistency rule can ever
+     * bind, risk width decides whether a daily loss limit fits the strategy,
+     * and the goal decides whether payout cadence or entry price should win a
+     * tie. `risk_style` is still on the profile — it is now derived from
+     * `risk_width` rather than asked.
+     */
     {
-      key: "risk_style",
-      title: "How would you describe your risk style?",
+      key: "trade_frequency",
+      title: "How often do you actually trade?",
+      help: "This decides whether a minimum-trading-days rule is harmless or disqualifying for you.",
       options: [
-        { value: "aggressive", label: "Aggressive", hint: "Bigger risk per trade, faster" },
-        { value: "balanced", label: "Balanced" },
-        { value: "conservative", label: "Conservative", hint: "Small risk, protect capital first" },
+        { value: "many_daily", label: "20+ trades a day", hint: "High frequency, small holds" },
+        { value: "few_daily", label: "A few trades a day" },
+        { value: "few_weekly", label: "A few trades a week" },
+        { value: "few_monthly", label: "A few trades a month", hint: "Only A+ setups" },
       ],
       narrow: true,
+    },
+    {
+      key: "profit_shape",
+      title: "When you have a profitable month, where does the profit come from?",
+      help: "The single most useful thing you can tell us. A consistency rule caps what share of your profit one day may contribute — it is meaningless for an even earner and can stop a withdrawal entirely for a trader whose month is made on two days.",
+      options: [
+        {
+          value: "one_big_day",
+          label: "One or two big days carry it",
+          hint: "Many small losses, occasional large winners",
+        },
+        { value: "mixed", label: "Some days matter more than others" },
+        { value: "even", label: "It accumulates fairly evenly", hint: "Similar profit most days" },
+        { value: "unsure", label: "I don't know yet" },
+      ],
+    },
+    {
+      key: "risk_width",
+      title: "How much do you risk on a single trade?",
+      help: "Against the account, not in dollars. A wide stop needs a daily loss limit it can fit inside — otherwise one ordinary losing trade ends your day.",
+      options: [
+        { value: "wide", label: "A lot", hint: "Wide stops, or big size on few trades" },
+        { value: "moderate", label: "A moderate amount" },
+        { value: "tight", label: "Very little", hint: "Small, tightly controlled risk" },
+        { value: "unsure", label: "I don't know" },
+      ],
+      narrow: true,
+    },
+    {
+      key: "primary_goal",
+      title: "Once you're funded, what does winning look like?",
+      help: "Two accounts with the same profit split can have completely different real payout economics. This decides which one we optimise for.",
+      options: [
+        { value: "get_funded", label: "Just reach a funded account" },
+        {
+          value: "fast_payouts",
+          label: "Withdraw money quickly",
+          hint: "Cadence and buffers outrank the headline split",
+        },
+        {
+          value: "cheapest_route",
+          label: "Spend as little as possible getting there",
+          hint: "Willing to retry",
+        },
+        { value: "long_term_seat", label: "Hold a funded seat long term" },
+      ],
     },
     {
       key: "deal_breakers",
@@ -220,9 +290,17 @@ function buildQuestions(
       title: "Which platform do you prefer?",
       when: (a) =>
         platforms.length > 0 && (a.market === "futures" || a.market === "multiple"),
+      /*
+       * "No preference" carries a sentinel rather than an empty string.
+       *
+       * An empty value is indistinguishable from an unanswered question, so
+       * selecting it left Continue disabled with no way forward — a dead end
+       * in the middle of the questionnaire for anyone who did not care which
+       * platform they used. The sentinel is converted back to null on submit.
+       */
       options: [
         ...platforms.map((p) => ({ value: p, label: p })),
-        { value: "", label: "No preference" },
+        { value: NO_PREFERENCE, label: "No preference" },
       ],
       narrow: true,
     },
@@ -337,7 +415,12 @@ export function Quiz({
       const response = await fetch("/api/profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(answers),
+        // The platform sentinel means "no preference", which the profile
+        // stores as absent rather than as a platform literally named that.
+        body: JSON.stringify({
+          ...answers,
+          platform: answers.platform === NO_PREFERENCE ? "" : answers.platform,
+        }),
       });
       if (!response.ok) throw new Error("Could not save your answers");
       clearInterval(ticker);

@@ -182,7 +182,16 @@ CREATE TABLE IF NOT EXISTS trader_profiles (
   news_trading        TEXT,
   overnight_required  TEXT,
   challenge_approach  TEXT,           -- pass_fast | normal | protect
-  risk_style          TEXT,           -- aggressive | balanced | conservative
+  risk_style          TEXT,           -- aggressive | balanced | conservative; derived from risk_width
+  -- The four measured answers the archetype classifier reads. Each one decides
+  -- a specific rule rather than a general preference: frequency decides whether
+  -- minimum trading days bind, profit_shape decides whether a consistency rule
+  -- can ever bind, risk_width decides whether a daily loss limit fits, and
+  -- primary_goal decides whether payout cadence or entry price wins a tie.
+  trade_frequency     TEXT,           -- many_daily | few_daily | few_weekly | few_monthly
+  profit_shape        TEXT,           -- one_big_day | mixed | even | unsure
+  risk_width          TEXT,           -- wide | moderate | tight | unsure
+  primary_goal        TEXT,           -- get_funded | fast_payouts | cheapest_route | long_term_seat
   deal_breakers       TEXT NOT NULL DEFAULT '[]',  -- JSON array; these hard-filter
   budget              TEXT,
   desired_account_size TEXT,

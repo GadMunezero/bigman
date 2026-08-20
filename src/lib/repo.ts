@@ -266,6 +266,10 @@ export function saveProfile(sessionId: string, input: ProfileInput): TraderProfi
     overnight_required: merged.overnight_required ?? null,
     challenge_approach: merged.challenge_approach ?? null,
     risk_style: merged.risk_style ?? null,
+    trade_frequency: merged.trade_frequency ?? null,
+    profit_shape: merged.profit_shape ?? null,
+    risk_width: merged.risk_width ?? null,
+    primary_goal: merged.primary_goal ?? null,
     deal_breakers: JSON.stringify(merged.deal_breakers ?? []),
     budget: merged.budget ?? null,
     desired_account_size: merged.desired_account_size ?? null,
@@ -285,7 +289,9 @@ export function saveProfile(sessionId: string, input: ProfileInput): TraderProfi
       `UPDATE trader_profiles SET market=@market, trading_style=@trading_style,
         holding_period=@holding_period, news_trading=@news_trading,
         overnight_required=@overnight_required, challenge_approach=@challenge_approach,
-        risk_style=@risk_style, deal_breakers=@deal_breakers, budget=@budget,
+        risk_style=@risk_style, trade_frequency=@trade_frequency,
+        profit_shape=@profit_shape, risk_width=@risk_width, primary_goal=@primary_goal,
+        deal_breakers=@deal_breakers, budget=@budget,
         desired_account_size=@desired_account_size, priorities=@priorities,
         platform=@platform, ea_required=@ea_required, weekend_required=@weekend_required,
         updated_at=@updated_at
@@ -297,11 +303,13 @@ export function saveProfile(sessionId: string, input: ProfileInput): TraderProfi
   db.prepare(
     `INSERT INTO trader_profiles
       (id, session_id, market, trading_style, holding_period, news_trading,
-       overnight_required, challenge_approach, risk_style, deal_breakers,
+       overnight_required, challenge_approach, risk_style, trade_frequency,
+       profit_shape, risk_width, primary_goal, deal_breakers,
        budget, desired_account_size, priorities, platform,
        ea_required, weekend_required)
      VALUES (@id, @session_id, @market, @trading_style, @holding_period, @news_trading,
-       @overnight_required, @challenge_approach, @risk_style, @deal_breakers,
+       @overnight_required, @challenge_approach, @risk_style, @trade_frequency,
+       @profit_shape, @risk_width, @primary_goal, @deal_breakers,
        @budget, @desired_account_size, @priorities, @platform,
        @ea_required, @weekend_required)`,
   ).run({ ...values, id: newId("prof"), session_id: sessionId });

@@ -50,6 +50,96 @@ export const RISK_STYLES = ["aggressive", "balanced", "conservative"] as const;
 export type RiskStyle = (typeof RISK_STYLES)[number];
 
 /**
+ * How often the trader actually trades.
+ *
+ * This is not a preference, it is a fact about their strategy, and it decides
+ * whether a minimum-trading-days rule is harmless or disqualifying. Someone
+ * taking two A+ setups a week against a four-day minimum is being asked to
+ * invent trades that do not exist — the rule stops measuring their edge and
+ * starts working against it.
+ */
+export const TRADE_FREQUENCIES = [
+  "many_daily",
+  "few_daily",
+  "few_weekly",
+  "few_monthly",
+] as const;
+export type TradeFrequency = (typeof TRADE_FREQUENCIES)[number];
+
+export const TRADE_FREQUENCY_LABELS: Record<TradeFrequency, string> = {
+  many_daily: "20+ trades a day",
+  few_daily: "a few trades a day",
+  few_weekly: "a few trades a week",
+  few_monthly: "a few trades a month",
+};
+
+/**
+ * The shape of the trader's returns — the single most load-bearing fact for
+ * deciding whether a consistency rule is irrelevant or fatal.
+ *
+ * A consistency rule caps what share of total profit one day may contribute.
+ * For a trader whose P&L is +200, +250, +180, +300 it never binds. For a
+ * trader whose month is four small days and one +$3,000 day it is a rule that
+ * says, in effect, "we do not accept your return distribution" — they can hit
+ * the profit target and still be unable to withdraw.
+ *
+ * So the engine never asks "is a consistency rule good or bad?". It asks
+ * whether it is good or bad *for this distribution*.
+ */
+export const PROFIT_SHAPES = ["one_big_day", "mixed", "even", "unsure"] as const;
+export type ProfitShape = (typeof PROFIT_SHAPES)[number];
+
+export const PROFIT_SHAPE_LABELS: Record<ProfitShape, string> = {
+  one_big_day: "a few big days carry the month",
+  mixed: "some days matter more than others",
+  even: "profit accumulates evenly",
+  unsure: "not sure yet",
+};
+
+/**
+ * How much of the risk budget a single trade consumes.
+ *
+ * Replaces asking the trader to self-describe as "aggressive" or
+ * "conservative", which is a personality question rather than a measurable
+ * one. Stop width against the daily loss limit is what actually decides
+ * whether an account is survivable: a trader risking $500 a trade on an
+ * account with a $750 daily cap is one ordinary losing trade from being
+ * locked out, however calm they feel about it.
+ */
+export const RISK_WIDTHS = ["wide", "moderate", "tight", "unsure"] as const;
+export type RiskWidth = (typeof RISK_WIDTHS)[number];
+
+export const RISK_WIDTH_LABELS: Record<RiskWidth, string> = {
+  wide: "wide stops or large risk per trade",
+  moderate: "moderate risk per trade",
+  tight: "small, tightly controlled risk",
+  unsure: "not sure",
+};
+
+/**
+ * What the trader is actually optimising for once funded.
+ *
+ * `challenge_approach` asks about pace through the evaluation; this asks what
+ * winning looks like afterwards. They are genuinely different objectives —
+ * the cheapest route to a funded account and the fastest route to money in a
+ * bank account rank the same catalogue differently.
+ */
+export const PRIMARY_GOALS = [
+  "get_funded",
+  "fast_payouts",
+  "cheapest_route",
+  "long_term_seat",
+] as const;
+export type PrimaryGoal = (typeof PRIMARY_GOALS)[number];
+
+export const PRIMARY_GOAL_LABELS: Record<PrimaryGoal, string> = {
+  get_funded: "reach a funded account",
+  fast_payouts: "withdraw money quickly",
+  cheapest_route: "spend as little as possible getting there",
+  long_term_seat: "hold a funded seat for the long term",
+};
+
+/**
  * Deal-breakers are hard filters, not preferences.
  *
  * The distinction matters: a trader who dislikes trailing drawdown should see
@@ -321,7 +411,16 @@ export interface TraderProfile {
   news_trading: NewsFrequency | null;
   overnight_required: TriState | null;
   challenge_approach: ChallengeApproach | null;
+  /**
+   * Derived from `risk_width` rather than asked. Kept on the profile because
+   * the weighting model reasons in these terms and because a profile saved
+   * before `risk_width` existed still carries a usable value.
+   */
   risk_style: RiskStyle | null;
+  trade_frequency: TradeFrequency | null;
+  profit_shape: ProfitShape | null;
+  risk_width: RiskWidth | null;
+  primary_goal: PrimaryGoal | null;
   deal_breakers: DealBreaker[];
   budget: Budget | null;
   /** Account size in USD, or "no_preference". */
@@ -345,6 +444,10 @@ export type ProfileInput = Partial<
     | "overnight_required"
     | "challenge_approach"
     | "risk_style"
+    | "trade_frequency"
+    | "profit_shape"
+    | "risk_width"
+    | "primary_goal"
     | "deal_breakers"
     | "budget"
     | "desired_account_size"
@@ -361,6 +464,7 @@ export type ProfileInput = Partial<
 
 /** The criteria the soft-scoring stage evaluates. Weights are configurable. */
 export const SCORE_CRITERIA = [
+  "archetype_fit",
   "trading_style",
   "rules",
   "budget",
@@ -374,6 +478,7 @@ export const SCORE_CRITERIA = [
 export type ScoreCriterion = (typeof SCORE_CRITERIA)[number];
 
 export const CRITERION_LABELS: Record<ScoreCriterion, string> = {
+  archetype_fit: "Strategy fit",
   trading_style: "Trading style",
   rules: "Rules",
   budget: "Budget",
@@ -428,9 +533,28 @@ export type MatchLabel =
   | "Possible match"
   | "Weak match";
 
+/**
+ * What the engine concluded about the trader, before it looked at any
+ * challenge.
+ *
+ * Shown back to them at the top of their results, because a recommendation is
+ * only checkable if you can see the reading of you that produced it. If the
+ * profile is wrong, the ranking below it is wrong, and the trader is the only
+ * person who can tell.
+ */
+export interface TraderFitProfile {
+  archetypes: { id: string; label: string; summary: string; strength: number }[];
+  /** Rules this profile needs, strongest archetype first. */
+  must_have: { label: string; because: string }[];
+  /** Rules that work against this profile. */
+  avoid: { label: string; because: string }[];
+}
+
 export interface RecommendationResult {
   /** Compatible challenges, best first. */
   recommendations: Recommendation[];
+  /** What kind of trader the answers describe, and what that implies. */
+  fit_profile: TraderFitProfile;
   /** Challenges removed by hard filters, with the reason why. */
   eliminated: Recommendation[];
   /**

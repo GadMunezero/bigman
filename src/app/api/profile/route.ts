@@ -9,8 +9,12 @@ import {
   HOLDING_PERIODS,
   MARKETS,
   NEWS_FREQUENCIES,
+  PRIMARY_GOALS,
   PRIORITIES,
+  PROFIT_SHAPES,
   RISK_STYLES,
+  RISK_WIDTHS,
+  TRADE_FREQUENCIES,
   TRADING_STYLES,
   TRI_STATE,
 } from "@/lib/types";
@@ -32,6 +36,10 @@ const BodySchema = z.object({
     .enum(CHALLENGE_APPROACHES as unknown as [string, ...string[]])
     .optional(),
   risk_style: z.enum(RISK_STYLES as unknown as [string, ...string[]]).optional(),
+  trade_frequency: z.enum(TRADE_FREQUENCIES as unknown as [string, ...string[]]).optional(),
+  profit_shape: z.enum(PROFIT_SHAPES as unknown as [string, ...string[]]).optional(),
+  risk_width: z.enum(RISK_WIDTHS as unknown as [string, ...string[]]).optional(),
+  primary_goal: z.enum(PRIMARY_GOALS as unknown as [string, ...string[]]).optional(),
   deal_breakers: z
     .array(z.enum(DEAL_BREAKERS as unknown as [string, ...string[]]))
     .max(DEAL_BREAKERS.length)
@@ -80,6 +88,10 @@ export async function POST(request: Request) {
     overnight_required: data.overnight_required as never,
     challenge_approach: data.challenge_approach as never,
     risk_style: data.risk_style as never,
+    trade_frequency: data.trade_frequency as never,
+    profit_shape: data.profit_shape as never,
+    risk_width: data.risk_width as never,
+    primary_goal: data.primary_goal as never,
     deal_breakers: (data.deal_breakers ?? []) as never,
     budget: data.budget as never,
     desired_account_size: data.desired_account_size || null,
@@ -95,6 +107,8 @@ export async function POST(request: Request) {
     trading_style: profile.trading_style,
     budget: profile.budget,
     challenge_approach: profile.challenge_approach,
+    profit_shape: profile.profit_shape,
+    trade_frequency: profile.trade_frequency,
     deal_breakers: profile.deal_breakers.length,
   });
 

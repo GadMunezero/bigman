@@ -9,15 +9,16 @@ import { SCORE_CRITERIA } from "../types";
  * scored on — `resolveWeights` reshapes them per profile.
  */
 export const DEFAULT_WEIGHTS: Record<ScoreCriterion, number> = {
-  trading_style: 20,
-  rules: 22,
-  budget: 13,
-  drawdown: 12,
-  difficulty: 13,
-  payout: 8,
-  account_size: 4,
+  archetype_fit: 18,
+  trading_style: 14,
+  rules: 18,
+  budget: 11,
+  drawdown: 11,
+  difficulty: 11,
+  payout: 7,
+  account_size: 3,
   platform: 3,
-  data_confidence: 5,
+  data_confidence: 4,
 };
 
 /**
@@ -113,15 +114,28 @@ export interface WeightInput {
   riskStyle?: RiskStyle | null;
   priorities?: Priority[];
   overrides?: Partial<Record<ScoreCriterion, number>>;
+  /**
+   * Multipliers derived from the trader's archetypes. Applied before stated
+   * priorities so that an explicit answer always outranks an inferred one.
+   */
+  archetype?: Partial<Record<ScoreCriterion, number>>;
 }
 
 /**
  * Produces the weights a specific trader is scored on.
  *
- * Order matters: base → approach → risk style → stated priorities → renormalise.
- * Renormalising last keeps every trader scored out of 100, so a 93% means the
- * same thing regardless of how many priorities they picked or which approach
- * they chose. Without it, scores would not be comparable between profiles.
+ * Order matters: base → archetype → approach → risk style → stated priorities
+ * → renormalise.
+ *
+ * Archetype first because it is the broadest reshaping — it decides which
+ * questions the model is asking at all. Stated priorities last because a
+ * trader who explicitly names something should never be overruled by an
+ * inference the engine made about them.
+ *
+ * Renormalising at the end keeps every trader scored out of 100, so a 93%
+ * means the same thing regardless of archetype, approach, or how many
+ * priorities they picked. Without it, scores would not be comparable between
+ * profiles — and comparing them is the entire product.
  */
 export function resolveWeights(input: WeightInput = {}): ResolvedWeights {
   const approach: ChallengeApproach = input.approach ?? "normal";
@@ -131,9 +145,10 @@ export function resolveWeights(input: WeightInput = {}): ResolvedWeights {
   const shaped = { ...base };
 
   for (const criterion of SCORE_CRITERIA) {
+    const byArchetype = input.archetype?.[criterion] ?? 1;
     const byApproach = APPROACH_MODIFIERS[approach][criterion] ?? 1;
     const byRisk = RISK_MODIFIERS[riskStyle][criterion] ?? 1;
-    shaped[criterion] = base[criterion] * byApproach * byRisk;
+    shaped[criterion] = base[criterion] * byArchetype * byApproach * byRisk;
   }
 
   const boosted = new Set<ScoreCriterion>();

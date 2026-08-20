@@ -13,6 +13,7 @@ import {
   ScoreBreakdown,
 } from "@/components/ui";
 import { getChallengeRecommendations, PRIMARY_RESULT_THRESHOLD } from "@/lib/engine";
+import { FitProfile } from "./FitProfile";
 import { listJourneysForSession } from "@/lib/outcomes";
 import { getOfferForChallenge, listChallengeRecords, listSaved, trackEvent } from "@/lib/repo";
 import { getCurrentProfile, getSessionId } from "@/lib/session";
@@ -146,6 +147,9 @@ export default async function ResultsPage() {
           {result.total_considered} challenges are compatible with your requirements.
         </p>
       </header>
+
+      {/* The reading of the trader comes before the ranking derived from it. */}
+      <FitProfile profile={result.fit_profile} />
 
       {/* ---------------------------------------------------- top result */}
       <section aria-labelledby="top-match">

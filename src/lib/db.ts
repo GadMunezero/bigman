@@ -38,6 +38,13 @@ const ADDED_COLUMNS: { table: string; column: string; definition: string }[] = [
   { table: "challenges", column: "country_restrictions", definition: "TEXT" },
   { table: "trader_profiles", column: "challenge_approach", definition: "TEXT" },
   { table: "trader_profiles", column: "risk_style", definition: "TEXT" },
+  // The four measured answers the archetype classifier reads. A profile saved
+  // before these existed keeps working — they read as null, no archetype is
+  // detected, and the engine falls back to the base weights.
+  { table: "trader_profiles", column: "trade_frequency", definition: "TEXT" },
+  { table: "trader_profiles", column: "profit_shape", definition: "TEXT" },
+  { table: "trader_profiles", column: "risk_width", definition: "TEXT" },
+  { table: "trader_profiles", column: "primary_goal", definition: "TEXT" },
   {
     table: "trader_profiles",
     column: "deal_breakers",

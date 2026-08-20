@@ -7,16 +7,34 @@ What is built, what is verified, what to do next, and how to put it online.
 ## What this is
 
 A futures prop firm **challenge finder** — a recommendation engine, not a
-directory. Eleven questions produce a trading profile; the engine removes the
-challenges that cannot work for you, ranks what is left on nine weighted
-criteria, and shows the working.
+directory. Fourteen questions produce a trading profile; the engine works out
+what kind of trader you are, removes the challenges that cannot work for you,
+ranks what is left on ten weighted criteria, and shows the working.
 
 **23 firms · 183 challenges · nine account sizes (20K–300K).**
 
-Eleven, not twelve: the questionnaire asks what you trade only when the
+Fourteen, not fifteen: the questionnaire asks what you trade only when the
 catalogue covers more than one market. While it is futures-only that question
 has a single possible answer, so it is filled in rather than asked. Add CFDs and
 it comes back on its own.
+
+### The one idea the engine is built on
+
+> The importance of a rule depends on the trader's return distribution, not on
+> the rule.
+
+"Is a consistency rule bad?" has no answer. It caps what share of your total
+profit one day may contribute. For a trader whose P&L reads +200, +250, +180,
++300 it never binds. For a trader whose month is four flat days and one +$3,000
+day, it is the rule that lets them hit the profit target and then blocks the
+withdrawal. Same rule, same account, opposite verdicts.
+
+So before anything is scored, `src/lib/engine/archetypes.ts` classifies the
+trader — scalper, wide-stop, high R:R, swing, news-dependent, algorithmic,
+low-frequency, aggressive, conservative, consistent earner, payout-focused,
+lowest-cost, low-friction. Usually several at once, each with a strength. That
+reshapes the weights, contributes a `archetype_fit` score, and produces the
+"what you need / what works against you" panel at the top of the results.
 
 ---
 
@@ -26,11 +44,11 @@ Everything below was checked by running it, not by reading the code.
 
 | Area | State |
 | ---- | ----- |
-| Test suite | **73 passing** |
+| Test suite | **93 passing** |
 | Production build | Compiles clean, full typecheck passes |
 | Routes | **28 checked**, all return 200 |
-| Questionnaire | All 11 questions → results. Verified end to end in a browser |
-| Engine | Ranks all 183; "57 of 183 compatible" on a real run |
+| Questionnaire | All 14 questions → results. Two different traders driven through it in a browser get different archetypes and different top matches |
+| Engine | Ranks all 183. A swing/high-R:R/low-frequency trader tops out on Blue Guardian Standard; a scalper/even-earner/payout-focused trader on Top One Elite Access — same catalogue, different questions |
 | Clean rebuild | `npm run catalogue:build` reproduces the catalogue exactly |
 | Container boot | `migrate-or-create` + `seed-if-empty` against an empty volume path gives 23 firms / 183 challenges, all draft; running them again leaves it alone |
 | Standalone server | `node .next/standalone/server.js` boots and serves — the mode the Dockerfile runs |
@@ -193,6 +211,7 @@ which futures rarely has.
 
 | Change | Where |
 | ------ | ----- |
+| A new trader archetype | `ARCHETYPES` and `ARCHETYPE_DEFINITIONS` in `src/lib/engine/archetypes.ts`. Each one needs a `detect`, a set of weight multipliers, `mustHave`/`avoid` with a reason for each, and a `fit` that scores a challenge and says why |
 | A new scoring criterion | `SCORE_CRITERIA` in `src/lib/types.ts`, a scorer in `src/lib/engine/scoring.ts`, a weight in `weights.ts` — weights renormalise to 100 automatically |
 | A new questionnaire question | `buildQuestions()` in `src/app/find-my-challenge/Quiz.tsx`, plus the field on `TraderProfile` |
 | A new hard filter | `deriveRequirements()` and `hardFilter()` in `src/lib/engine/requirements.ts` |

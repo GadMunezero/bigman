@@ -10,7 +10,10 @@ import {
   NEWS_FREQUENCIES,
   PRIORITIES,
   PRIORITY_LABELS,
-  RISK_STYLES,
+  PRIMARY_GOALS,
+  PROFIT_SHAPES,
+  RISK_WIDTHS,
+  TRADE_FREQUENCIES,
   TRADING_STYLES,
   TRI_STATE,
   type TraderProfile,
@@ -53,6 +56,10 @@ export default async function TesterPage({ searchParams }: { searchParams: Searc
     overnight_required: (first(params.overnight_required) || null) as TraderProfile["overnight_required"],
     challenge_approach: (first(params.challenge_approach) || null) as TraderProfile["challenge_approach"],
     risk_style: (first(params.risk_style) || null) as TraderProfile["risk_style"],
+    trade_frequency: (first(params.trade_frequency) || null) as TraderProfile["trade_frequency"],
+    profit_shape: (first(params.profit_shape) || null) as TraderProfile["profit_shape"],
+    risk_width: (first(params.risk_width) || null) as TraderProfile["risk_width"],
+    primary_goal: (first(params.primary_goal) || null) as TraderProfile["primary_goal"],
     deal_breakers: all(params.deal_breakers) as TraderProfile["deal_breakers"],
     budget: (first(params.budget) || null) as TraderProfile["budget"],
     desired_account_size: first(params.desired_account_size) || null,
@@ -157,14 +164,65 @@ export default async function TesterPage({ searchParams }: { searchParams: Searc
               </select>
             </div>
             <div>
-              <label className="field-label" htmlFor="risk_style">
-                Risk style
+              <label className="field-label" htmlFor="risk_width">
+                Risk per trade
               </label>
-              <select id="risk_style" name="risk_style" defaultValue={first(params.risk_style)}>
-                <option value="">Not set (balanced)</option>
-                {RISK_STYLES.map((style) => (
-                  <option key={style} value={style}>
-                    {style}
+              <select id="risk_width" name="risk_width" defaultValue={first(params.risk_width)}>
+                <option value="">Not set</option>
+                {RISK_WIDTHS.map((width) => (
+                  <option key={width} value={width}>
+                    {width}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="field-label" htmlFor="trade_frequency">
+                Trade frequency
+              </label>
+              <select
+                id="trade_frequency"
+                name="trade_frequency"
+                defaultValue={first(params.trade_frequency)}
+              >
+                <option value="">Not set</option>
+                {TRADE_FREQUENCIES.map((freq) => (
+                  <option key={freq} value={freq}>
+                    {freq.replace(/_/g, " ")}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="field-label" htmlFor="profit_shape">
+                Profit shape
+              </label>
+              <select
+                id="profit_shape"
+                name="profit_shape"
+                defaultValue={first(params.profit_shape)}
+              >
+                <option value="">Not set</option>
+                {PROFIT_SHAPES.map((shape) => (
+                  <option key={shape} value={shape}>
+                    {shape.replace(/_/g, " ")}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="field-label" htmlFor="primary_goal">
+                Primary goal
+              </label>
+              <select
+                id="primary_goal"
+                name="primary_goal"
+                defaultValue={first(params.primary_goal)}
+              >
+                <option value="">Not set</option>
+                {PRIMARY_GOALS.map((goal) => (
+                  <option key={goal} value={goal}>
+                    {goal.replace(/_/g, " ")}
                   </option>
                 ))}
               </select>

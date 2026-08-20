@@ -6,6 +6,8 @@ import type {
   TraderProfile,
 } from "../types";
 import { SCORE_CRITERIA } from "../types";
+import type { ArchetypeMatch } from "./archetypes";
+import { scoreArchetypeFit } from "./archetypes";
 import type { DerivedRequirements } from "./requirements";
 import { formatMoney } from "./requirements";
 import type { ResolvedWeights } from "./weights";
@@ -178,6 +180,8 @@ interface ScorerArgs {
   profile: Partial<TraderProfile>;
   req: DerivedRequirements;
   ctx: ScoringContext;
+  /** The trader's archetypes, already classified once per request. */
+  archetypes: ArchetypeMatch[];
 }
 
 type Scorer = (args: ScorerArgs) => { ratio: number; notes: string[] };
@@ -557,7 +561,24 @@ const scoreDataConfidence: Scorer = ({ challenge }) => {
   return { ratio: clamp(average(fieldScores) * 0.6 + knownRules * 0.4), notes };
 };
 
+/**
+ * How well the challenge serves the way this trader's returns are actually
+ * shaped, rather than how it compares on any single published figure.
+ *
+ * The reasoning lives in `archetypes.ts`; this is the seam that puts it in the
+ * breakdown alongside every other criterion. Keeping it here rather than
+ * applying it as a multiplier on the final score matters: a trader can open
+ * the breakdown and see that a challenge lost points because a consistency
+ * rule conflicts with their return distribution, which is a sentence they can
+ * check, argue with, or act on.
+ */
+const scoreArchetype: Scorer = ({ challenge, archetypes }) => {
+  const fit = scoreArchetypeFit(challenge, archetypes);
+  return { ratio: fit.ratio, notes: [...fit.supports, ...fit.conflicts] };
+};
+
 const SCORERS: Record<ScoreCriterion, Scorer> = {
+  archetype_fit: scoreArchetype,
   trading_style: scoreTradingStyle,
   rules: scoreRules,
   budget: scoreBudget,
@@ -577,18 +598,24 @@ export function scoreChallenge(
   args: ScorerArgs,
   resolved: ResolvedWeights,
 ): { score: number; breakdown: CriterionScore[] } {
-  const breakdown: CriterionScore[] = SCORE_CRITERIA.map((criterion) => {
-    const { ratio, notes } = SCORERS[criterion](args);
-    const available = resolved.weights[criterion];
-    return {
-      criterion,
-      ratio: clamp(ratio),
-      earned: clamp(ratio) * available,
-      available,
-      boosted: resolved.boosted.has(criterion),
-      notes,
-    };
-  });
+  const breakdown: CriterionScore[] = SCORE_CRITERIA
+    // A criterion carrying no weight contributed nothing, so it does not
+    // belong in an explanation of how the score was reached. This happens when
+    // strategy fit has no archetype to reason about, and whenever an admin
+    // zeroes a criterion in `scoring_weights`.
+    .filter((criterion) => resolved.weights[criterion] > 0)
+    .map((criterion) => {
+      const { ratio, notes } = SCORERS[criterion](args);
+      const available = resolved.weights[criterion];
+      return {
+        criterion,
+        ratio: clamp(ratio),
+        earned: clamp(ratio) * available,
+        available,
+        boosted: resolved.boosted.has(criterion),
+        notes,
+      };
+    });
 
   const earned = breakdown.reduce((sum, b) => sum + b.earned, 0);
   const available = breakdown.reduce((sum, b) => sum + b.available, 0);

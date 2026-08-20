@@ -6,6 +6,13 @@ import type {
   ScoreCriterion,
   TraderProfile,
 } from "../types";
+import {
+  archetypeWeightModifiers,
+  buildFitProfile,
+  classifyArchetypes,
+  riskStyleFrom,
+  scoreArchetypeFit,
+} from "./archetypes";
 import { buildReasons, buildWarnings, comparativeWarning } from "./explain";
 import { deriveRequirements, hardFilter, requirementLabel } from "./requirements";
 import { buildContext, scoreChallenge } from "./scoring";
@@ -13,6 +20,7 @@ import { resolveWeights } from "./weights";
 
 export * from "./requirements";
 export * from "./explain";
+export * from "./archetypes";
 export {
   APPROACH_LABELS,
   DEFAULT_WEIGHTS,
@@ -46,8 +54,16 @@ export interface EngineOptions {
  *      shown as "72% match" with a footnote; it is shown as not compatible,
  *      with the reason.
  *
- *   2. SOFT SCORE — rank what is left on eight weighted criteria, with the
- *      weights boosted toward whatever the trader said matters most.
+ *   2. SOFT SCORE — rank what is left on ten weighted criteria, with the
+ *      weights reshaped by the trader's archetypes and then boosted toward
+ *      whatever they said matters most.
+ *
+ * Between the two sits classification. Before anything is scored, the engine
+ * works out what kind of trader this is — scalper, swing trader, high R:R,
+ * low-frequency, payout-focused — because the same rule is worth opposite
+ * things to different return distributions. A consistency rule is irrelevant
+ * to a trader who earns evenly and disqualifying for one whose month is made
+ * on two days. Nothing downstream can decide that; only the profile can.
  *
  * Affiliate data is not an input. Nothing in this file, or anything it calls,
  * reads a commission, an affiliate URL, or a tracking ID.
@@ -64,10 +80,15 @@ export function getChallengeRecommendations(
     highFeeThreshold: medianPrice(challenges, profile.market ?? null),
   });
 
+  const archetypes = classifyArchetypes(profile);
+
   const resolved = resolveWeights({
     approach: profile.challenge_approach,
-    riskStyle: profile.risk_style,
+    // A measured answer about risk per trade beats a self-description, so it
+    // overrides the stated style when both are present.
+    riskStyle: riskStyleFrom(profile.risk_width ?? null, profile.risk_style ?? null),
     priorities: profile.priorities ?? [],
+    archetype: archetypeWeightModifiers(archetypes),
     overrides: options.weightOverrides,
   });
 
@@ -110,15 +131,19 @@ export function getChallengeRecommendations(
   const ctx = buildContext(compatible);
 
   const recommendations: Recommendation[] = compatible.map((challenge) => {
-    const args = { challenge, profile, req, ctx };
+    const args = { challenge, profile, req, ctx, archetypes };
     const { score, breakdown } = scoreChallenge(args, resolved);
+    const fit = scoreArchetypeFit(challenge, archetypes);
     return {
       challenge,
       eligibility: "compatible" as const,
       match_score: score,
       label: matchLabel(score),
       reasons: buildReasons(challenge, profile, req, breakdown),
-      warnings: buildWarnings(challenge, profile, req),
+      // An archetype conflict is the most actionable caveat there is: it names
+      // the specific rule that fights the specific way this person trades.
+      // Those go first, ahead of the general warnings.
+      warnings: [...fit.conflicts, ...buildWarnings(challenge, profile, req)],
       eliminations: [],
       score_breakdown: breakdown,
     };
@@ -153,8 +178,15 @@ export function getChallengeRecommendations(
     }))
     .sort((a, b) => b.blocked - a.blocked);
 
+  const fit = buildFitProfile(archetypes);
+
   return {
     recommendations,
+    fit_profile: {
+      archetypes: fit.archetypes,
+      must_have: fit.mustHave,
+      avoid: fit.avoid,
+    },
     eliminated,
     blocking_requirements,
     total_considered: challenges.length,

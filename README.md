@@ -15,16 +15,27 @@ ASK → UNDERSTAND → FILTER → MATCH → EXPLAIN → COMPARE → REFER
 ```
 
 About a dozen questions produce a trading profile. The engine then runs two stages that are
-never blended:
+never blended, with a classification step between them:
 
 1. **Hard filtering.** A challenge that conflicts with a stated requirement is removed
    entirely. If you need overnight positions and a challenge prohibits them, it is not a 72%
    match — it is the wrong challenge, and the results page says so with the reason.
-2. **Soft scoring.** Everything that survives is ranked on nine weighted criteria. The weights
-   are not fixed: they are reshaped by how you said you want to approach the challenge (pass
-   fast / normal pace / protect the account), adjusted again by your risk style, boosted toward
-   your stated priorities, and then renormalised to 100 so scores stay comparable between
-   traders.
+2. **Classification.** Your answers are matched against a set of trading archetypes — scalper,
+   wide-stop, high R:R, swing, news-dependent, low-frequency, payout-focused and others. You are
+   usually several at once, each with a strength.
+3. **Soft scoring.** Everything that survives is ranked on ten weighted criteria. The weights
+   are not fixed: they are reshaped by your archetypes first, then by how you said you want to
+   approach the challenge, then by how much you risk per trade, then boosted toward your stated
+   priorities, and finally renormalised to 100 so scores stay comparable between traders.
+   Inference first, explicit answers last — anything you say directly overrides anything the
+   engine inferred about you.
+
+**The importance of a rule depends on your return distribution, not on the rule.** This is the
+idea the whole engine is built on. A consistency rule caps what share of your total profit one
+day may contribute. If your profit accumulates evenly it never binds. If your month is made on
+two days, it is the rule that lets you hit the profit target and then blocks the withdrawal.
+Same rule, same account, opposite verdicts — so the engine asks what kind of trader you are
+before it weights anything, and shows you that reading above the ranking it produced.
 
 **Deal-breakers are stricter than derived requirements.** A requirement inferred from how you
 trade only eliminates on a confirmed prohibition. Something you name as a deal-breaker

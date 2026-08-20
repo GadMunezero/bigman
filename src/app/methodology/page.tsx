@@ -6,7 +6,7 @@ import { CRITERION_LABELS, SCORE_CRITERIA } from "@/lib/types";
 export const metadata = {
   title: "Methodology",
   description:
-    "Exactly how challenge match scores are calculated: the hard filters, the eight weighted criteria, how priorities change the weighting, and why commission is not an input.",
+    "Exactly how challenge match scores are calculated: the hard filters, how your trading archetype reshapes the model, the ten weighted criteria, and why commission is not an input.",
 };
 
 export default function MethodologyPage() {
@@ -55,9 +55,18 @@ export default function MethodologyPage() {
             ],
           },
           {
+            heading: "Between the stages — what kind of trader you are",
+            paragraphs: [
+              "Before anything is scored, your answers are matched against a set of trading archetypes: scalper, wide-stop trader, high R:R, swing trader, news trader, low-frequency, payout-focused, and others. You are usually several at once, and each match carries a strength rather than a yes or no.",
+              "This exists because the same rule is worth opposite things to different traders. A consistency rule caps what share of your total profit a single day may contribute. If your profit accumulates evenly it never binds and is worth nothing to avoid. If your month is made on two days, it is the rule that lets you hit the profit target and then blocks the withdrawal. There is no answer to 'is a consistency rule bad' — only to 'is it bad for this return distribution'.",
+              "So the archetypes reshape the weights before your stated approach and priorities are applied. Inference first, explicit answers last: anything you tell us directly overrides anything we inferred about you. If nothing is detected, the archetype criterion is given no weight at all rather than spending points on a value identical for every challenge.",
+              "Your results page shows the reading we made of you, above the ranking it produced. If the reading is wrong the ranking is wrong, and you are the only person who can tell.",
+            ],
+          },
+          {
             heading: "Stage two — weighted scoring",
             paragraphs: [
-              "Surviving challenges are scored on nine criteria. These are the base weights, before your answers reshape them:",
+              "Surviving challenges are scored on ten criteria. These are the base weights, before your answers reshape them:",
             ],
           },
         ]}
@@ -101,10 +110,16 @@ export default function MethodologyPage() {
                 cleared weighs less.
               </li>
             </ul>
+            <p style={{ marginBottom: "0.75rem" }}>
+              How much you risk per trade then applies a second, smaller adjustment on top. Large
+              risk shifts weight toward room to push; small risk shifts it toward cost and payout
+              terms, because a strategy that never approaches the limits should not pay a premium
+              for headroom it will not use.
+            </p>
             <p>
-              Your risk style then applies a second, smaller adjustment on top. Aggressive shifts
-              weight toward room to push; conservative shifts it toward rules you cannot trip over
-              by accident.
+              We ask how much you risk rather than whether you consider yourself aggressive. The
+              first is something you can read off your own records; the second is a question about
+              self-image, and the two answers disagree often enough that the measurable one wins.
             </p>
           </section>
 
