@@ -48,9 +48,9 @@ Everything below was checked by running it, not by reading the code.
 | Production build | Compiles clean, full typecheck passes |
 | Routes | **28 checked**, all return 200 |
 | Questionnaire | All 14 questions → results. Two different traders driven through it in a browser get different archetypes and different top matches |
-| Engine | Ranks all 297. A swing/high-R:R/low-frequency trader tops out on Blue Guardian Standard; a scalper/even-earner/payout-focused trader on The Trading Pit Futures Prime — same catalogue, different questions |
+| Engine | Ranks all 324. A swing/high-R:R/low-frequency trader tops out on Blue Guardian Standard; a scalper/even-earner/payout-focused trader on The Trading Pit Futures Prime — same catalogue, different questions |
 | Clean rebuild | `npm run catalogue:build` reproduces the catalogue exactly |
-| Container boot | `migrate-or-create` + `seed-if-empty` against an empty volume path gives 38 firms / 297 challenges, all draft; running them again leaves it alone |
+| Container boot | `migrate-or-create` + `seed-if-empty` against an empty volume path gives 38 firms / 324 challenges, all draft; running them again leaves it alone |
 | Standalone server | `node .next/standalone/server.js` boots and serves — the mode the Dockerfile runs |
 | Pending changes | 0 — no import collisions |
 | Firm websites | 23 of 23 futures firms on file; the 15 CFD firms have none yet |

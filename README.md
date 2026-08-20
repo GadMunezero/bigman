@@ -78,8 +78,7 @@ built and verified, how to add data and features, and how to host it.
 ADMIN_PASSWORD=demo npm run catalogue
 ```
 
-Builds the whole catalogue and starts the dev server: **38 firms and 297 challenges across futures and CFDs** across
-nine account sizes (20K to 300K), with official websites applied.
+Builds the whole catalogue and starts the dev server: **38 firms and 324 challenges across futures and CFDs**, with official websites applied.
 
 The questionnaire reads its market options from what is actually published, so it never walks a
 trader through a dozen questions to a guaranteed no-match. The catalogue was futures-only for a

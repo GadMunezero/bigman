@@ -33,8 +33,8 @@ docker run -d --name propfirm \
   propfirm
 ```
 
-On first boot the entrypoint creates the schema and loads the catalogue — 23
-firms and 183 challenges — then starts the server. On every boot after that it
+On first boot the entrypoint creates the schema and loads the catalogue — 38
+firms and 324 challenges — then starts the server. On every boot after that it
 finds an existing database and leaves it alone, so a restart never overwrites
 work done in `/admin`.
 
@@ -91,7 +91,7 @@ public deployment is a different promise from a local demo.
 1. **Do not set `SEED_PUBLISH=1`.** Publish challenges in `/admin/challenges`
    as you verify them, so the public catalogue only ever contains figures a
    person has checked against the firm's own page.
-2. **138 of the 183 challenges have no price, and 103 have no drawdown.**
+2. **79 of the 324 challenges have no price, and 176 have no drawdown.**
    They come from a product matrix that listed which plans exist at which
    account sizes, not what they cost. They rank last by design, and there is a
    test enforcing that, but they are not ready to show as recommendations.

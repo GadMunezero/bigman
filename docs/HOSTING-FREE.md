@@ -195,12 +195,12 @@ docker compose -f deploy/docker-compose.yml logs -f      # watch it come up
 ## What happens on first boot
 
 1. The schema is created on the volume at `/data/app.db`.
-2. The catalogue is loaded: **23 firms, 183 challenges**.
+2. The catalogue is loaded: **38 firms, 324 challenges** across futures and CFDs.
 3. Everything lands as **draft**, so the public site shows an empty catalogue
    until you publish challenges yourself in `/admin`.
 
 That last point is deliberate and worth not overriding. The figures are
-unverified research. Publishing all 183 at once puts numbers in front of
+unverified research. Publishing all 324 at once puts numbers in front of
 traders that nobody has checked against the firm's own page.
 
 Every boot after the first finds an existing database and leaves it alone, so
@@ -219,10 +219,11 @@ restarting and redeploying never overwrite work done in `/admin`.
    sister domain for a different product — Goat Funded Futures is not Goat
    Funded Trader. A lookalike domain in an outbound link is the most damaging
    error this site can make.
-3. **Fill in the missing prices.** 138 of 183 challenges have no price and 103
-   have no drawdown figure, because the source said "varies by configuration".
-   They rank last by design and say "Not confirmed" rather than guessing, but
-   a challenge with no numbers is not a recommendation.
+3. **Fill in what is still missing.** 79 of 324 challenges have no price and
+   176 have no drawdown figure — most of the latter are the CFD rows, which
+   arrived as a price list with no rules attached. They rank last by design and
+   say "Not confirmed" rather than guessing, but a challenge with no numbers is
+   not a recommendation.
 
 ---
 
