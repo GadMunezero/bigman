@@ -11,7 +11,7 @@ directory. Fourteen questions produce a trading profile; the engine works out
 what kind of trader you are, removes the challenges that cannot work for you,
 ranks what is left on ten weighted criteria, and shows the working.
 
-**38 firms · 297 challenges · futures and CFDs.**
+**38 firms · 324 challenges · futures and CFDs.**
 
 The questionnaire asks what you trade only when the catalogue covers more than
 one market. It was futures-only for a while, and the question was filled in
@@ -70,7 +70,7 @@ articles, the recommendation tester, outcomes and analytics.
 
 ### Known gaps, stated plainly
 
-- **119 of 297 challenges have no price**, and 123 have no profit split. Where
+- **79 of 324 challenges have no price**, and 125 have no profit split. Where
   a firm publishes a range or a promotional price rather than one figure, the
   range is recorded in the row's notes and the price column stays empty. They
   rank last on purpose, and the page says "Price not confirmed" rather than

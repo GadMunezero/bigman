@@ -382,6 +382,14 @@ export interface Challenge {
   payout_frequency_days: number | null;
   payout_split_pct: number | null;
   payout_conditions: string | null;
+  /** Charged on passing, on top of the entry price. */
+  activation_fee: number | null;
+  /** Cap on a single withdrawal, where the firm sets one. */
+  max_payout: number | null;
+  /** Position limits as the firm states them, e.g. "5/50" for minis/micros. */
+  contracts: string | null;
+  /** Broker or data connection behind the account, e.g. "Rithmic". */
+  data_feed: string | null;
   platforms: string[];
   leverage: string | null;
   refund_policy: string | null;

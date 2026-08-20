@@ -674,6 +674,15 @@ __GLOBALS__
           : c.payout_frequency_days === 1 ? "Daily" : "Every " + c.payout_frequency_days + " days";
       }],
       ["Profit split", function (c) { return pct(c.payout_split_pct); }],
+      ["Max payout", function (c) { return money(c.max_payout); }],
+      // Price alone flatters the cheaper of two otherwise identical accounts:
+      // Topstep sells the same evaluation twice, once cheaper with a $149
+      // activation fee and once dearer with none.
+      ["Activation fee", function (c) {
+        return c.activation_fee == null ? null : c.activation_fee === 0 ? "None" : money(c.activation_fee);
+      }],
+      ["Contracts", function (c) { return c.contracts || null; }],
+      ["Data / broker", function (c) { return c.data_feed || null; }],
       ["Billing", function (c) { return c.billing_type === "monthly" ? "Monthly" : c.billing_type === "one_time" ? "One-off" : null; }],
       // A consistency rule is the field most likely to decide the account for a
       // trader whose month is made on a couple of days, so it belongs in the

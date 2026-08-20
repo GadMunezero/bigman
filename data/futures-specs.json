@@ -62,7 +62,9 @@
           "dd": 4500,
           "price": 295.4
         }
-      }
+      },
+      "platforms": "NinjaTrader;Quantower;MotiveWave;Tradovate;TradingView;ATAS;Bookmap;Jigsaw Daytradr;MultiCharts;R Trader Pro;Sierra Chart;Tradesea",
+      "data_feed": "EdgeClear, NinjaTrader"
     },
     {
       "firm": "Lucid Trading",
@@ -72,17 +74,38 @@
       "consistency": "required",
       "consistency_pct": 40,
       "min_days": 3,
-      "payout_days": 3,
+      "payout_days": 5,
       "split": 90,
       "billing": "one_time",
       "notes": "No daily loss limit. The 40% consistency rule applies once funded. No activation fee. The supplied table lists 50K alternatives at $115.20–$140.40 and a $25K alternative at $85 without saying which Lucid product each belongs to. Published as a range rather than one figure: $115.20–$140.40. Not recorded as a price.",
       "sizes": {
+        "25000": {
+          "price": 65.3,
+          "target": 1250,
+          "dd": 1000,
+          "contracts": "2/20"
+        },
         "50000": {
           "target": 3000,
           "dd": 2000,
-          "price": 185
+          "price": 105.2,
+          "contracts": "4/40"
+        },
+        "100000": {
+          "price": 215.6,
+          "target": 6000,
+          "dd": 3000,
+          "contracts": "6/60"
+        },
+        "150000": {
+          "price": 295.4,
+          "target": 9000,
+          "dd": 4500,
+          "contracts": "10/100"
         }
-      }
+      },
+      "platforms": "NinjaTrader;Quantower;MotiveWave;Tradovate;TradingView;ATAS;Bookmap;Jigsaw Daytradr;MultiCharts;R Trader Pro;Sierra Chart;Tradesea",
+      "data_feed": "EdgeClear, NinjaTrader"
     },
     {
       "firm": "Lucid Trading",
@@ -102,7 +125,9 @@
           "dd": 2000,
           "price": 136
         }
-      }
+      },
+      "platforms": "NinjaTrader;Quantower;MotiveWave;Tradovate;TradingView;ATAS;Bookmap;Jigsaw Daytradr;MultiCharts;R Trader Pro;Sierra Chart;Tradesea",
+      "data_feed": "EdgeClear, NinjaTrader"
     },
     {
       "firm": "Lucid Trading",
@@ -122,7 +147,9 @@
           "dd": 2000,
           "price": 159
         }
-      }
+      },
+      "platforms": "NinjaTrader;Quantower;MotiveWave;Tradovate;TradingView;ATAS;Bookmap;Jigsaw Daytradr;MultiCharts;R Trader Pro;Sierra Chart;Tradesea",
+      "data_feed": "EdgeClear, NinjaTrader"
     },
     {
       "firm": "Lucid Trading",
@@ -132,13 +159,15 @@
       "notes": "Instant/direct funding with no evaluation. Price was not reliably surfaced, and profit target and payout rules differ from the evaluation accounts.",
       "sizes": {
         "50000": {}
-      }
+      },
+      "platforms": "NinjaTrader;Quantower;MotiveWave;Tradovate;TradingView;ATAS;Bookmap;Jigsaw Daytradr;MultiCharts;R Trader Pro;Sierra Chart;Tradesea",
+      "data_feed": "EdgeClear, NinjaTrader"
     },
     {
       "firm": "My Funded Futures",
       "product": "Rapid",
       "program": "evaluation",
-      "drawdown_type": "intraday_trailing",
+      "drawdown_type": "eod_trailing",
       "consistency": "not_required",
       "billing": "monthly",
       "notes": "Maximum 5 minis / 50 micros. No consistency rule once funded. No activation fee. A one-off $125.60 Rapid EOD variant at $50K is also sold; it is not a separate product on file.",
@@ -151,7 +180,8 @@
         "50000": {
           "target": 3000,
           "dd": 2000,
-          "price": 78.5
+          "price": 78.5,
+          "contracts": "5/50"
         },
         "100000": {
           "target": 6000,
@@ -167,7 +197,9 @@
       "split": 90,
       "source": "https://myfundedfutures.com/plans/rapid",
       "source_note": "Daily payouts, no activation fee. One source describes the maximum loss as end-of-day while the supplied product table records intraday trailing — the recorded mechanic was left alone and the disagreement needs settling on the firm's own page.",
-      "secondhand": true
+      "secondhand": true,
+      "platforms": "NinjaTrader;Quantower;TradingView;Tradovate;ATAS;Deepcharts;DeepDom;Volumetrica Trading",
+      "data_feed": "DXFeed, NinjaTrader"
     },
     {
       "firm": "My Funded Futures",
@@ -189,15 +221,20 @@
         "100000": {
           "target": 6000,
           "dd": 3000,
-          "price": 172
+          "price": 172,
+          "contracts": "6/60"
         },
         "150000": {
           "target": 9000,
           "dd": 4500,
-          "price": 238.5
+          "price": 238.5,
+          "contracts": "9/90"
         }
       },
-      "billing": "monthly"
+      "billing": "monthly",
+      "payout_days": 14,
+      "platforms": "NinjaTrader;Quantower;TradingView;Tradovate;ATAS;Deepcharts;DeepDom;Volumetrica Trading",
+      "data_feed": "DXFeed, NinjaTrader"
     },
     {
       "firm": "My Funded Futures",
@@ -206,7 +243,9 @@
       "notes": "One-step evaluation with an EOD-style risk structure and two Max Loss Limit options chosen at checkout, so price and drawdown both depend on that choice. No activation fee.",
       "sizes": {
         "25000": {
-          "price": 52.5
+          "price": 52.5,
+          "target": 1500,
+          "dd": 1000
         },
         "50000": {
           "target": 3000,
@@ -223,7 +262,10 @@
       "source": "https://help.myfundedfutures.com/en/articles/14290805-builder-plan-50k-a-comprehensive-guide",
       "source_note": "The daily loss limit is a soft pause rather than a breach.",
       "secondhand": true,
-      "billing": "monthly"
+      "billing": "monthly",
+      "payout_days": 2,
+      "platforms": "NinjaTrader;Quantower;TradingView;Tradovate;ATAS;Deepcharts;DeepDom;Volumetrica Trading",
+      "data_feed": "DXFeed, NinjaTrader"
     },
     {
       "firm": "My Funded Futures",
@@ -233,7 +275,9 @@
       "notes": "Flexible evaluation with an EOD-style drawdown. Price varies by account configuration. No activation fee.",
       "sizes": {
         "50000": {}
-      }
+      },
+      "platforms": "NinjaTrader;Quantower;TradingView;Tradovate;ATAS;Deepcharts;DeepDom;Volumetrica Trading",
+      "data_feed": "DXFeed, NinjaTrader"
     },
     {
       "firm": "Tradeify",
@@ -243,37 +287,43 @@
       "consistency": "not_required",
       "min_days": 1,
       "billing": "one_time",
-      "notes": "Can pass in one day. The daily loss limit is a soft breach, not a termination. No activation fee.",
+      "notes": "Can pass in one day. The daily loss limit is a soft breach, not a termination. No activation fee. The 150K drawdown is published as $4,500-$5,000; a range is not a figure, so it is not recorded.",
       "sizes": {
         "25000": {
           "target": 1500,
           "dd": 1000,
           "daily": 600,
-          "price": 59.4
+          "price": 59.4,
+          "contracts": "1/10"
         },
         "50000": {
           "target": 3000,
           "dd": 2000,
           "daily": 1250,
-          "price": 99
+          "price": 87,
+          "contracts": "4/40"
         },
         "100000": {
           "target": 6000,
-          "dd": 3500,
+          "dd": 3000,
           "daily": 2500,
-          "price": 159
+          "price": 153,
+          "contracts": "8/80"
         },
         "150000": {
           "target": 9000,
           "dd": 5000,
           "daily": 3750,
-          "price": 221.4
+          "price": 221.4,
+          "contracts": "12/120"
         }
       },
       "split": 90,
       "consistency_pct": 35,
       "source": "https://help.tradeify.co/en/articles/14369021-tradeify-pricing-reference",
-      "secondhand": true
+      "secondhand": true,
+      "platforms": "NinjaTrader;Quantower;R Trader;Sierra Chart;Tradesea;TradingView;Tradovate;WealthCharts",
+      "data_feed": "Rithmic, Tradovate, WealthCharts"
     },
     {
       "firm": "Tradeify",
@@ -284,33 +334,39 @@
       "consistency_pct": 40,
       "min_days": 3,
       "billing": "one_time",
-      "notes": "No daily loss limit. No time limit. On passing, choose Flex payout or Daily payout. No activation fee.",
+      "notes": "No daily loss limit. No time limit. On passing, choose Flex payout or Daily payout. No activation fee. The 150K drawdown is published as $4,500-$5,000; a range is not a figure, so it is not recorded.",
       "sizes": {
         "25000": {
           "target": 1500,
           "dd": 1000,
-          "price": 65.4
+          "price": 65.4,
+          "contracts": "1/10"
         },
         "50000": {
           "target": 3000,
           "dd": 2000,
-          "price": 99
+          "price": 99,
+          "contracts": "4/40"
         },
         "100000": {
           "target": 6000,
           "dd": 3000,
-          "price": 159
+          "price": 159,
+          "contracts": "8/80"
         },
         "150000": {
           "target": 9000,
           "dd": 4500,
-          "price": 221.4
+          "price": 221.4,
+          "contracts": "12/120"
         }
       },
       "split": 90,
       "source": "https://help.tradeify.co/en/articles/14369021-tradeify-pricing-reference",
       "source_note": "The 40% consistency rule applies during the evaluation only and is dropped once funded.",
-      "secondhand": true
+      "secondhand": true,
+      "platforms": "NinjaTrader;Quantower;R Trader;Sierra Chart;Tradesea;TradingView;Tradovate;WealthCharts",
+      "data_feed": "Rithmic, Tradovate, WealthCharts"
     },
     {
       "firm": "Tradeify",
@@ -322,22 +378,26 @@
       "sizes": {
         "25000": {
           "dd": 1000,
-          "price": 207
+          "price": 207,
+          "contracts": "1/10"
         },
         "50000": {
           "dd": 2000,
           "daily": 1250,
-          "price": 295.2
+          "price": 295.2,
+          "contracts": "4/40"
         },
         "100000": {
           "dd": 4000,
           "daily": 2500,
-          "price": 396
+          "price": 396,
+          "contracts": "8/80"
         },
         "150000": {
-          "dd": 5250,
+          "dd": 5000,
           "daily": 3000,
-          "price": 477.6
+          "price": 477.6,
+          "contracts": "12/120"
         }
       },
       "split": 90,
@@ -345,7 +405,9 @@
       "consistency_pct": 30,
       "source": "https://help.tradeify.co/en/articles/14369021-tradeify-pricing-reference",
       "source_note": "Published as a 20-30% band; the looser end is recorded so the rule is not overstated.",
-      "secondhand": true
+      "secondhand": true,
+      "platforms": "NinjaTrader;Quantower;R Trader;Sierra Chart;Tradesea;TradingView;Tradovate;WealthCharts",
+      "data_feed": "Rithmic, Tradovate, WealthCharts"
     },
     {
       "firm": "FundedNext Futures",
@@ -355,7 +417,7 @@
       "consistency": "required",
       "consistency_pct": 40,
       "split": 90,
-      "payout_days": 3,
+      "payout_days": 1,
       "billing": "one_time",
       "notes": "No daily loss limit by default. Can pass in one day. Consistency applies once funded. Published as a range rather than one figure: $60.30–$149.99. Not recorded as a price. Published as a range rather than one figure: $112.50–$249.99. Not recorded as a price.",
       "sizes": {
@@ -366,13 +428,16 @@
         "50000": {
           "target": 3000,
           "dd": 2000,
-          "price": 79.99
+          "price": 149.99
         },
         "100000": {
           "target": 5000,
-          "dd": 2500
+          "dd": 2500,
+          "price": 249.99
         }
-      }
+      },
+      "platforms": "NinjaTrader;TradingView;Tradovate",
+      "data_feed": "NinjaTrader"
     },
     {
       "firm": "FundedNext Futures",
@@ -401,7 +466,9 @@
           "dd": 2500,
           "daily": 1250
         }
-      }
+      },
+      "platforms": "NinjaTrader;TradingView;Tradovate",
+      "data_feed": "NinjaTrader"
     },
     {
       "firm": "FundedNext Futures",
@@ -410,17 +477,24 @@
       "drawdown_type": "eod_trailing",
       "consistency": "required",
       "consistency_pct": 40,
-      "split": 90,
-      "payout_days": 5,
+      "split": 95,
+      "payout_days": 1,
       "notes": "No daily loss limit. Reward share up to 90%. Price varies by size and configuration.",
       "sizes": {
+        "25000": {
+          "price": 79.99,
+          "target": 1500,
+          "dd": 1000
+        },
         "50000": {
           "target": 2500,
-          "dd": 1500
+          "dd": 1500,
+          "price": 60.3
         },
         "100000": {
           "target": 5000,
-          "dd": 2500
+          "dd": 2500,
+          "price": 112.5
         },
         "150000": {
           "target": 8000,
@@ -428,7 +502,9 @@
           "price": 217.8
         }
       },
-      "billing": "one_time"
+      "billing": "one_time",
+      "platforms": "NinjaTrader;TradingView;Tradovate",
+      "data_feed": "NinjaTrader"
     },
     {
       "firm": "FundedNext Futures",
@@ -452,7 +528,9 @@
           "target": 6000,
           "dd": 3000
         }
-      }
+      },
+      "platforms": "NinjaTrader;TradingView;Tradovate",
+      "data_feed": "NinjaTrader"
     },
     {
       "firm": "Ylos Trading",
@@ -472,7 +550,8 @@
       "min_days": 10,
       "source": "https://ylostrading.com/",
       "source_note": "100% split applies to payouts up to $15,000. Funded accounts use a real-time drawdown. A payout needs 10 days each clearing $150. No renewal fees.",
-      "secondhand": true
+      "secondhand": true,
+      "platforms": "BlackArrow"
     },
     {
       "firm": "Apex Trader Funding",
@@ -480,18 +559,53 @@
       "program": "evaluation",
       "notes": "The product lineup has changed significantly and the current sizes differ from the older 25K/50K/75K/100K/150K structure. Target, drawdown, contract limits and pricing all vary by model, and legacy accounts are not current purchase options. No price is recorded rather than an invented one. Apex prices move with a running promotion and are published as ranges, so none is recorded as the price. Published as a range rather than one figure: $16.70–$24.90 at 25K, $19.70–$24.90 at 50K, $29.70–$39.90 at 100K, $49.70–$59.90 at 150K. Not recorded as a price.",
       "sizes": {
-        "25000": {},
-        "50000": {},
+        "25000": {
+          "price": 16.7,
+          "target": 1500,
+          "dd": 1000,
+          "contracts": "4/40"
+        },
+        "50000": {
+          "price": 19.7,
+          "target": 3000,
+          "dd": 2000,
+          "contracts": "6/60"
+        },
         "75000": {},
-        "100000": {},
-        "150000": {}
+        "100000": {
+          "price": 29.7,
+          "target": 6000,
+          "dd": 3000,
+          "contracts": "14/140"
+        },
+        "150000": {
+          "price": 49.7,
+          "target": 9000,
+          "dd": 4000,
+          "contracts": "17/170"
+        },
+        "250000": {
+          "price": 59.7,
+          "target": 15000,
+          "dd": 6500,
+          "contracts": "27/270"
+        },
+        "300000": {
+          "price": 69.7,
+          "target": 20000,
+          "dd": 7500,
+          "contracts": "35/350"
+        }
       },
       "target_pct": 5,
-      "split": 90,
+      "split": 100,
       "billing": "monthly",
       "source": "https://apextraderfunding.com/help-center/evaluation-accounts-ea/intraday-trailing-drawdown-evaluations/",
       "source_note": "The 5% target is stated by the firm as uniform across every account size. The split is 100% of the first $25,000 and 90/10 after it; 90 is recorded as the ongoing rate. Both end-of-day and intraday trailing variants are sold. An activation fee applies on passing.",
-      "secondhand": true
+      "secondhand": true,
+      "drawdown_type": "intraday_trailing",
+      "platforms": "NinjaTrader;Quantower;TradingView;Tradovate;Rithmic;R Trader Pro;Sierra Chart;ATAS;Bookmap;Jigsaw;MotiveWave;EdgeProX;Finamark;VolFix;WealthCharts",
+      "data_feed": "Rithmic, Tradovate, WealthCharts"
     },
     {
       "firm": "FuturesElite",
@@ -512,7 +626,9 @@
       "payout_days": 5,
       "source": "https://faq.futureselite.com/en/",
       "source_note": "No daily loss limit on this plan.",
-      "secondhand": true
+      "secondhand": true,
+      "platforms": "NinjaTrader;Quantower;Tradovate;ATAS;Deepcharts;Deepmap;Volumetrica Trading",
+      "data_feed": "Dorman, DXFeed, EdgeClear, NinjaTrader"
     },
     {
       "firm": "FuturesElite",
@@ -522,18 +638,33 @@
       "sizes": {
         "50000": {
           "target": 3000,
-          "dd": 2000
+          "dd": 2000,
+          "price": 116.35,
+          "contracts": "4/40"
         },
-        "100000": {},
-        "150000": {}
+        "100000": {
+          "price": 202.4,
+          "target": 6000,
+          "dd": 3000,
+          "contracts": "8/80"
+        },
+        "150000": {
+          "price": 239.85,
+          "target": 9000,
+          "dd": 4500,
+          "contracts": "10/100"
+        }
       },
-      "split": 80,
+      "split": 90,
       "target_pct": 6,
       "drawdown_type": "eod_trailing",
-      "payout_days": 5,
+      "payout_days": 1,
       "source": "https://faq.futureselite.com/en/",
       "source_note": "No daily loss limit on this plan.",
-      "secondhand": true
+      "secondhand": true,
+      "billing": "one_time",
+      "platforms": "NinjaTrader;Quantower;Tradovate;ATAS;Deepcharts;Deepmap;Volumetrica Trading",
+      "data_feed": "Dorman, DXFeed, EdgeClear, NinjaTrader"
     },
     {
       "firm": "FuturesElite",
@@ -546,19 +677,27 @@
       "sizes": {
         "25000": {},
         "50000": {},
-        "100000": {},
+        "100000": {
+          "price": 375.2,
+          "dd": 3000,
+          "contracts": "8/80"
+        },
         "150000": {}
       },
       "split": 80,
-      "payout_days": 5,
+      "payout_days": 10,
       "source": "https://faq.futureselite.com/en/",
-      "secondhand": true
+      "secondhand": true,
+      "drawdown_type": "eod_trailing",
+      "billing": "one_time",
+      "platforms": "NinjaTrader;Quantower;Tradovate;ATAS;Deepcharts;Deepmap;Volumetrica Trading",
+      "data_feed": "Dorman, DXFeed, EdgeClear, NinjaTrader"
     },
     {
       "firm": "Funded Futures Family",
       "product": "Velocity",
       "program": "evaluation",
-      "drawdown_type": "eod_trailing",
+      "drawdown_type": "intraday_trailing",
       "consistency": "required",
       "consistency_pct": 40,
       "min_days": 3,
@@ -566,15 +705,29 @@
       "billing": "monthly",
       "notes": "Monthly account. Standard payout needs 3 winning days; the Daily Payout add-on removes both that and the consistency rule. Profit split up to 90%. A $25 monthly promotional price and a $142.80 monthly standard price are both published for $50K; a promotional price is not the price, so neither replaces what is on file.",
       "sizes": {
-        "25000": {},
+        "25000": {
+          "price": 15.8,
+          "target": 1500,
+          "dd": 1000
+        },
         "50000": {
           "target": 3000,
-          "dd": 1500,
-          "price": 125
+          "dd": 2000,
+          "price": 25
         },
-        "100000": {},
-        "150000": {}
-      }
+        "100000": {
+          "price": 45,
+          "target": 7000,
+          "dd": 3250
+        },
+        "150000": {
+          "price": 65,
+          "target": 10000,
+          "dd": 4750
+        }
+      },
+      "platforms": "NinjaTrader;TradingView;Tradovate;WealthCharts",
+      "data_feed": "NinjaTrader, WealthCharts"
     },
     {
       "firm": "Funded Futures Family",
@@ -589,7 +742,9 @@
         "100000": {
           "price": 629
         }
-      }
+      },
+      "platforms": "NinjaTrader;TradingView;Tradovate;WealthCharts",
+      "data_feed": "NinjaTrader, WealthCharts"
     },
     {
       "firm": "Top One Futures",
@@ -617,7 +772,9 @@
       },
       "source": "https://damnpropfirms.com/prop-firms/top-one-futures-account-types-plans-compared-2026/",
       "source_note": "No daily loss limit during the challenge; the 40% consistency rule applies at payout. Sources disagree on this firm's profit targets: one publishes a flat 6% and another a tiered 6% at 25K and 50K, 5% at 75K and 100K, 4% at 150K. The recorded figures follow the first; settle it on the firm's own page before publishing.",
-      "secondhand": true
+      "secondhand": true,
+      "platforms": "NinjaTrader;TradingView;Tradovate",
+      "data_feed": "NinjaTrader"
     },
     {
       "firm": "Top One Futures",
@@ -655,7 +812,9 @@
       "secondhand": true,
       "split": 90,
       "consistency": "required",
-      "consistency_pct": 25
+      "consistency_pct": 25,
+      "platforms": "NinjaTrader;TradingView;Tradovate",
+      "data_feed": "NinjaTrader"
     },
     {
       "firm": "Top One Futures",
@@ -670,20 +829,31 @@
           "price": 71.2
         },
         "50000": {
-          "price": 87.2
+          "price": 87.2,
+          "target": 3000,
+          "dd": 2000,
+          "contracts": "3/30"
         },
         "100000": {
-          "price": 159.2
+          "price": 159.2,
+          "target": 6000,
+          "dd": 3000,
+          "contracts": "5/50"
         },
         "150000": {
-          "price": 219.6
+          "price": 219.6,
+          "target": 9000,
+          "dd": 4500,
+          "contracts": "7/70"
         }
       },
       "split": 90,
       "consistency": "required",
       "consistency_pct": 40,
       "source": "https://damnpropfirms.com/prop-firms/top-one-futures-account-types-plans-compared-2026/",
-      "secondhand": true
+      "secondhand": true,
+      "platforms": "NinjaTrader;TradingView;Tradovate",
+      "data_feed": "NinjaTrader"
     },
     {
       "firm": "Top One Futures",
@@ -705,7 +875,9 @@
       },
       "split": 90,
       "source": "https://damnpropfirms.com/prop-firms/top-one-futures-account-types-plans-compared-2026/",
-      "secondhand": true
+      "secondhand": true,
+      "platforms": "NinjaTrader;TradingView;Tradovate",
+      "data_feed": "NinjaTrader"
     },
     {
       "firm": "Top One Futures",
@@ -733,7 +905,9 @@
       "drawdown_type": "eod_trailing",
       "source": "https://damnpropfirms.com/prop-firms/top-one-futures-account-types-plans-compared-2026/",
       "source_note": "No evaluation. The tightest consistency rule the firm sells.",
-      "secondhand": true
+      "secondhand": true,
+      "platforms": "NinjaTrader;TradingView;Tradovate",
+      "data_feed": "NinjaTrader"
     },
     {
       "firm": "Take Profit Trader",
@@ -766,7 +940,9 @@
           "dd": 4500,
           "price": 360
         }
-      }
+      },
+      "platforms": "NinjaTrader;TradingView;Tradovate;Quantower;R Trader;ATAS;Bookmap;Finamark;Investor/RT;Jigsaw;MotiveWave;MultiCharts;Trade Navigator;VolFix",
+      "data_feed": "CQG, Rithmic"
     },
     {
       "firm": "E8 Futures",
@@ -791,7 +967,9 @@
       },
       "source": "https://e8futures.com/e8-zero",
       "source_note": "NEEDS REVIEW: research describes E8's futures line as Signature-only, with E8 Zero sold for forex and crypto rather than futures. This product came from the supplied table and has been kept rather than deleted, but confirm it exists as a futures account before publishing.",
-      "secondhand": true
+      "secondhand": true,
+      "platforms": "TradingView;Tradovate",
+      "data_feed": "NinjaTrader"
     },
     {
       "firm": "E8 Futures",
@@ -816,7 +994,9 @@
       },
       "source": "https://e8futures.com/e8-zero",
       "source_note": "NEEDS REVIEW: research describes E8's futures line as Signature-only, with E8 Zero sold for forex and crypto rather than futures. Confirm before publishing.",
-      "secondhand": true
+      "secondhand": true,
+      "platforms": "TradingView;Tradovate",
+      "data_feed": "NinjaTrader"
     },
     {
       "firm": "E8 Futures",
@@ -841,7 +1021,9 @@
       "source": "https://helpfutures.e8markets.com/en/articles/11864618-e8-signature-futures",
       "source_note": "The drawdown is an end-of-day dynamic floor: it moves only at market close, follows the highest end-of-day balance, and locks permanently once it reaches the starting balance. The 35% consistency rule applies to funded accounts.",
       "secondhand": true,
-      "billing": "one_time"
+      "billing": "one_time",
+      "platforms": "TradingView;Tradovate",
+      "data_feed": "NinjaTrader"
     },
     {
       "firm": "Traders Launch",
@@ -853,13 +1035,29 @@
       "sizes": {
         "100000": {
           "target": 2000,
-          "dd": 800
+          "dd": 1000,
+          "price": 39.2,
+          "contracts": "5"
         },
         "200000": {
           "target": 3000,
-          "dd": 1000
+          "dd": 1000,
+          "price": 59.2,
+          "contracts": "1/10"
+        },
+        "300000": {
+          "price": 111.2,
+          "target": 5000,
+          "dd": 2000,
+          "contracts": "2/20"
         }
-      }
+      },
+      "drawdown_type": "eod_trailing",
+      "split": 55,
+      "payout_days": 3,
+      "billing": "one_time",
+      "platforms": "Interactive Brokers;NinjaTrader;Quantower;Volumetrica Trading",
+      "data_feed": "Interactive Brokers, NinjaTrader"
     },
     {
       "firm": "TradeDay",
@@ -872,15 +1070,17 @@
         "50000": {
           "target": 3000,
           "dd": 2000,
-          "price": 125
+          "price": 78.75
         },
         "100000": {
           "target": 6000,
-          "dd": 3000
+          "dd": 3000,
+          "price": 128.25
         },
         "150000": {
           "target": 9000,
-          "dd": 4500
+          "dd": 4500,
+          "price": 180
         }
       },
       "split": 80,
@@ -888,7 +1088,11 @@
       "consistency_pct": 30,
       "source": "https://tradeday.freshdesk.com/en/support/solutions/articles/103000335937-quick-pay-funded-sim-payout-policy",
       "source_note": "The split is 50/50 on the first $4,000 of net profit per account and 80/20 above it; 80 is recorded as the ongoing rate. The consistency rule applies during evaluation only. Minimum payout $250, no activation fee.",
-      "secondhand": true
+      "secondhand": true,
+      "payout_days": 1,
+      "max_payout": 10000,
+      "platforms": "NinjaTrader;TradingView;Tradovate;Jigsaw Daytradr;TradeDayX;ATAS;Bookmap;EdgeProX;Finamark;MotiveWave;MultiCharts;OverCharts;Quantower;R Trader Pro;Sierra Chart;VolFix;WealthCharts",
+      "data_feed": "CQG, Rithmic, NinjaTrader"
     },
     {
       "firm": "TradeDay",
@@ -901,15 +1105,17 @@
         "50000": {
           "target": 3000,
           "dd": 2000,
-          "price": 125
+          "price": 58.95
         },
         "100000": {
           "target": 6000,
-          "dd": 3000
+          "dd": 3000,
+          "price": 108
         },
         "150000": {
           "target": 9000,
-          "dd": 4500
+          "dd": 4500,
+          "price": 162
         }
       },
       "split": 80,
@@ -917,7 +1123,11 @@
       "consistency_pct": 30,
       "source": "https://tradeday.freshdesk.com/en/support/solutions/articles/103000335937-quick-pay-funded-sim-payout-policy",
       "source_note": "50/50 on the first $4,000 then 80/20. Consistency applies during evaluation only.",
-      "secondhand": true
+      "secondhand": true,
+      "payout_days": 1,
+      "max_payout": 10000,
+      "platforms": "NinjaTrader;TradingView;Tradovate;Jigsaw Daytradr;TradeDayX;ATAS;Bookmap;EdgeProX;Finamark;MotiveWave;MultiCharts;OverCharts;Quantower;R Trader Pro;Sierra Chart;VolFix;WealthCharts",
+      "data_feed": "CQG, Rithmic, NinjaTrader"
     },
     {
       "firm": "TradeDay",
@@ -927,15 +1137,18 @@
       "sizes": {
         "50000": {
           "target": 3000,
-          "dd": 2000
+          "dd": 2000,
+          "price": 85.05
         },
         "100000": {
           "target": 6000,
-          "dd": 3000
+          "dd": 3000,
+          "price": 148.5
         },
         "150000": {
           "target": 9000,
-          "dd": 4500
+          "dd": 4500,
+          "price": 225
         }
       },
       "split": 80,
@@ -944,7 +1157,12 @@
       "billing": "monthly",
       "source": "https://tradeday.freshdesk.com/en/support/solutions/articles/103000404096-fast-pass-funded-sim-payout-policy",
       "source_note": "Flat 80/20 in funded sim. The consistency rule applies during evaluation only.",
-      "secondhand": true
+      "secondhand": true,
+      "drawdown_type": "eod_trailing",
+      "payout_days": 5,
+      "max_payout": 10000,
+      "platforms": "NinjaTrader;TradingView;Tradovate;Jigsaw Daytradr;TradeDayX;ATAS;Bookmap;EdgeProX;Finamark;MotiveWave;MultiCharts;OverCharts;Quantower;R Trader Pro;Sierra Chart;VolFix;WealthCharts",
+      "data_feed": "CQG, Rithmic, NinjaTrader"
     },
     {
       "firm": "DayTraders",
@@ -952,13 +1170,34 @@
       "program": "evaluation",
       "drawdown_type": "intraday_trailing",
       "min_days": 2,
-      "notes": "Two qualifying days. Price varies.",
+      "notes": "Two qualifying days. Price varies. The supplied platform list for this firm ends in 'etc.', so the platforms on file are the ones named rather than the complete set — treat an absence here as unrecorded, not unsupported.",
       "sizes": {
-        "50000": {}
+        "50000": {
+          "price": 70.35,
+          "target": 3000,
+          "dd": 2000,
+          "contracts": "10/100"
+        },
+        "150000": {
+          "price": 104.85,
+          "target": 8500,
+          "dd": 4500,
+          "contracts": "24/240"
+        },
+        "300000": {
+          "price": 131.85,
+          "target": 15000,
+          "dd": 7000,
+          "contracts": "40/400"
+        }
       },
       "split": 100,
       "source": "https://daytraders.com/trailing-drawdown-explained",
-      "secondhand": true
+      "secondhand": true,
+      "payout_days": 8,
+      "billing": "one_time",
+      "platforms": "NinjaTrader;TradingView;Tradovate;Quantower;Rithmic;R Trader Pro;Sierra Chart;ATAS;Bookmap;MotiveWave;Jigsaw",
+      "data_feed": "Rithmic, Tradovate, WealthCharts"
     },
     {
       "firm": "DayTraders",
@@ -968,11 +1207,13 @@
       "consistency": "required",
       "consistency_pct": 50,
       "min_days": 2,
-      "notes": "Two qualifying days. Sizes run to 300K. Price varies.",
+      "notes": "Two qualifying days. Sizes run to 300K. Price varies. The supplied platform list for this firm ends in 'etc.', so the platforms on file are the ones named rather than the complete set — treat an absence here as unrecorded, not unsupported.",
       "sizes": {
         "25000": {
-          "price": 570,
-          "dd": 1000
+          "price": 46.35,
+          "dd": 1500,
+          "target": 1500,
+          "contracts": "6/60"
         },
         "50000": {
           "target": 3000,
@@ -990,7 +1231,11 @@
       "split": 100,
       "source": "https://daytraders.com/help/articles/9855052-drawdown-threshold-guide-trailing-static-eod",
       "source_note": "The firm advertises 100% profit retention with no split. Fees are quoted as one-time or monthly depending on the plan chosen.",
-      "secondhand": true
+      "secondhand": true,
+      "payout_days": 8,
+      "billing": "one_time",
+      "platforms": "NinjaTrader;TradingView;Tradovate;Quantower;Rithmic;R Trader Pro;Sierra Chart;ATAS;Bookmap;MotiveWave;Jigsaw",
+      "data_feed": "Rithmic, Tradovate, WealthCharts"
     },
     {
       "firm": "DayTraders",
@@ -998,41 +1243,66 @@
       "program": "evaluation",
       "drawdown_type": "static",
       "min_days": 2,
-      "notes": "Fixed drawdown rather than trailing. Two qualifying days. Price varies.",
+      "notes": "Fixed drawdown rather than trailing. Two qualifying days. Price varies. The supplied platform list for this firm ends in 'etc.', so the platforms on file are the ones named rather than the complete set — treat an absence here as unrecorded, not unsupported.",
       "sizes": {
-        "50000": {}
+        "50000": {
+          "price": 40,
+          "target": 3750,
+          "dd": 1000,
+          "contracts": "6/60"
+        },
+        "100000": {
+          "price": 65,
+          "target": 5750,
+          "dd": 1500,
+          "contracts": "8/80"
+        }
       },
       "split": 100,
       "source": "https://daytraders.com/help/articles/9855052-drawdown-threshold-guide-trailing-static-eod",
-      "secondhand": true
+      "secondhand": true,
+      "payout_days": 8,
+      "billing": "one_time",
+      "platforms": "NinjaTrader;TradingView;Tradovate;Quantower;Rithmic;R Trader Pro;Sierra Chart;ATAS;Bookmap;MotiveWave;Jigsaw",
+      "data_feed": "Rithmic, Tradovate, WealthCharts"
     },
     {
       "firm": "DayTraders",
       "product": "S2F",
-      "program": "direct_funding",
+      "program": "instant_funding",
       "drawdown_type": "eod_trailing",
       "consistency": "required",
       "consistency_pct": 20,
-      "notes": "No traditional evaluation. Funded progression rules apply. Price varies.",
+      "notes": "No traditional evaluation. Funded progression rules apply. Price varies. The supplied platform list for this firm ends in 'etc.', so the platforms on file are the ones named rather than the complete set — treat an absence here as unrecorded, not unsupported.",
       "sizes": {
-        "50000": {}
+        "50000": {
+          "price": 342,
+          "dd": 2500,
+          "contracts": "10/100"
+        }
       },
       "split": 100,
       "source": "https://daytraders.com/help/articles/9855052-drawdown-threshold-guide-trailing-static-eod",
-      "secondhand": true
+      "secondhand": true,
+      "payout_days": 8,
+      "billing": "one_time",
+      "platforms": "NinjaTrader;TradingView;Tradovate;Quantower;Rithmic;R Trader Pro;Sierra Chart;ATAS;Bookmap;MotiveWave;Jigsaw",
+      "data_feed": "Rithmic, Tradovate, WealthCharts"
     },
     {
       "firm": "DayTraders",
       "product": "S2L",
       "program": "direct_funding",
       "uncertain": true,
-      "notes": "Direct funded progression with rules separate from S2F. Price varies.",
+      "notes": "Direct funded progression with rules separate from S2F. Price varies. The supplied platform list for this firm ends in 'etc.', so the platforms on file are the ones named rather than the complete set — treat an absence here as unrecorded, not unsupported.",
       "sizes": {
         "50000": {}
       },
       "split": 100,
       "source": "https://daytraders.com/",
-      "secondhand": true
+      "secondhand": true,
+      "platforms": "NinjaTrader;TradingView;Tradovate;Quantower;Rithmic;R Trader Pro;Sierra Chart;ATAS;Bookmap;MotiveWave;Jigsaw",
+      "data_feed": "Rithmic, Tradovate, WealthCharts"
     },
     {
       "firm": "Goat Funded Futures",
@@ -1051,20 +1321,22 @@
           "price": 69
         },
         "100000": {
-          "target": 6500,
+          "target": 6000,
           "dd": 3000,
-          "price": 264
+          "price": 132
         },
         "150000": {
           "dd": 4500,
-          "price": 374,
+          "price": 185,
           "target": 9000
         }
       },
       "payout_days": 7,
       "source": "https://help.goatfundedfutures.com/en/articles/14095302-eod-challenge-specifications-rules-and-payouts",
       "source_note": "Payout eligibility is every 7 winning days; a winning day is at least 0.2% of the starting balance. Minimum payout $500. No activation fee. The 30% cap is on the best day's share of total profit and gates the payout, not the pass.",
-      "secondhand": true
+      "secondhand": true,
+      "platforms": "NinjaTrader;Quantower;TradingView;Tradovate;ATAS;Deepcharts;Deepmap;Tickblaze;Volumetrica",
+      "data_feed": "CQG, DXFeed, Tickblaze"
     },
     {
       "firm": "Goat Funded Futures",
@@ -1076,14 +1348,25 @@
       "dailyUnknown": true,
       "notes": "No challenge consistency, but a funded consistency rule of 35% applies. 90/10 from the first dollar. 5 winning days for a payout. Price varies.",
       "sizes": {
-        "25000": {},
-        "50000": {},
+        "25000": {
+          "price": 79,
+          "target": 1500,
+          "dd": 1000
+        },
+        "50000": {
+          "price": 109,
+          "target": 3000,
+          "dd": 2000
+        },
         "100000": {}
       },
       "target_pct": 6,
       "source": "https://help.goatfundedfutures.com/en/articles/14523731-what-are-the-specifications-of-each-type-and-account-size",
       "source_note": "No consistency rule during the evaluation.",
-      "secondhand": true
+      "secondhand": true,
+      "billing": "one_time",
+      "platforms": "NinjaTrader;Quantower;TradingView;Tradovate;ATAS;Deepcharts;Deepmap;Tickblaze;Volumetrica",
+      "data_feed": "CQG, DXFeed, Tickblaze"
     },
     {
       "firm": "Goat Funded Futures",
@@ -1106,7 +1389,9 @@
       "payout_days": 7,
       "source": "https://help.goatfundedfutures.com/en/articles/14095625-what-are-the-instant-funded-specifications",
       "source_note": "No evaluation. Before a first payout the balance must grow 7%, over at least 7 winning days and 10 calendar days. The daily loss limit is a soft breach that pauses the account until the next session. Profit on any one day is capped at 5% of the balance, after which trading stops for the day.",
-      "secondhand": true
+      "secondhand": true,
+      "platforms": "NinjaTrader;Quantower;TradingView;Tradovate;ATAS;Deepcharts;Deepmap;Tickblaze;Volumetrica",
+      "data_feed": "CQG, DXFeed, Tickblaze"
     },
     {
       "firm": "Goat Funded Futures",
@@ -1115,36 +1400,63 @@
       "drawdown_type": "eod_trailing",
       "consistency": "not_required",
       "split": 80,
-      "notes": "No daily loss limit, no consistency rule, no time limit, no microscalping restriction and no two-minute holding rule. 80/20 by default, 90/10 optional. 5 winning days for a payout. Price varies.",
+      "notes": "No daily loss limit, no consistency rule, no time limit, no microscalping restriction and no two-minute holding rule. 80/20 by default, 90/10 optional. 5 winning days for a payout. Price varies. The table shows a 90% split on the 100K Flex against 80% on the other Flex sizes; 80 is kept as the plan rate and the discrepancy needs settling.",
       "sizes": {
-        "50000": {},
-        "100000": {},
-        "150000": {}
+        "50000": {
+          "price": 99,
+          "target": 3000,
+          "dd": 2000
+        },
+        "100000": {
+          "price": 159,
+          "target": 5000,
+          "dd": 3000
+        },
+        "150000": {
+          "price": 299,
+          "target": 9000,
+          "dd": 4500
+        }
       },
       "target_pct": 6,
       "source": "https://help.goatfundedfutures.com/en/articles/14888545-flex-challenge-specifications-rules-and-payouts",
       "source_note": "No daily loss limit and no consistency rule once funded. Default split 80/20, with a 90/10 add-on sold for an extra 20% of the challenge price.",
-      "secondhand": true
+      "secondhand": true,
+      "billing": "one_time",
+      "platforms": "NinjaTrader;Quantower;TradingView;Tradovate;ATAS;Deepcharts;Deepmap;Tickblaze;Volumetrica",
+      "data_feed": "CQG, DXFeed, Tickblaze"
     },
     {
       "firm": "Earn2Trade",
       "product": "Trader Career Path",
       "program": "evaluation",
-      "drawdown_type": "eod_trailing",
+      "drawdown_type": "trailing",
       "consistency": "required",
       "consistency_pct": 30,
       "dailyUnknown": true,
       "notes": "Daily loss limit and a position-size progression ladder, with approved trading hours. Buying-power level depends on the selected plan. No formal minimum trading days, but 30% consistency generally needs at least 4 profitable days. Price varies by account.",
       "sizes": {
-        "25000": {},
-        "50000": {},
-        "100000": {},
+        "25000": {
+          "price": 90
+        },
+        "50000": {
+          "price": 114
+        },
+        "100000": {
+          "price": 210,
+          "target": 6000,
+          "dd": 3500,
+          "contracts": "12/120"
+        },
         "150000": {}
       },
       "split": 80,
       "source": "https://www.earn2trade.com/",
       "secondhand": true,
-      "billing": "monthly"
+      "billing": "monthly",
+      "payout_days": 7,
+      "platforms": "NinjaTrader;TradingView;Tradovate;Quantower;Rithmic;R Trader;R Trader Pro;Sierra Chart;ATAS;Bookmap;Finamark;Jigsaw;MotiveWave;MultiCharts;OverCharts;Photon;QScalp;QSI;Scalp Tool;Trade Navigator;Investor/RT;Inside Edge Trader",
+      "data_feed": "Dorman, EdgeClear, Lunaro Markets, NinjaTrader, Phillip Capital"
     },
     {
       "firm": "Earn2Trade",
@@ -1159,16 +1471,23 @@
         "25000": {},
         "50000": {
           "target": 3000,
-          "daily": 1100
+          "daily": 1100,
+          "price": 102
         },
-        "100000": {},
-        "150000": {}
+        "100000": {
+          "price": 189
+        },
+        "150000": {
+          "price": 225
+        }
       },
       "split": 80,
       "payout_days": 7,
       "source": "https://help.earn2trade.com/en/articles/3292341-what-are-the-gauntlet-mini-rules",
       "secondhand": true,
-      "billing": "monthly"
+      "billing": "monthly",
+      "platforms": "NinjaTrader;TradingView;Tradovate;Quantower;Rithmic;R Trader;R Trader Pro;Sierra Chart;ATAS;Bookmap;Finamark;Jigsaw;MotiveWave;MultiCharts;OverCharts;Photon;QScalp;QSI;Scalp Tool;Trade Navigator;Investor/RT;Inside Edge Trader",
+      "data_feed": "Dorman, EdgeClear, Lunaro Markets, NinjaTrader, Phillip Capital"
     },
     {
       "firm": "The5ers Futures",
@@ -1189,7 +1508,9 @@
       "split": 80,
       "source": "https://the5ers.com/futures-faqs/",
       "source_note": "Objectives are identical across the Rebate and Basecamp fee structures, which differ only in how you pay: Basecamp is $50 at 25K and $100 at 50K plus an activation fee of $70 and $140 on funding, while Rebate is a one-off fee that returns commissions daily.",
-      "secondhand": true
+      "secondhand": true,
+      "platforms": "BlackArrow",
+      "data_feed": "BlackArrow"
     },
     {
       "firm": "The5ers Futures",
@@ -1209,7 +1530,9 @@
       },
       "split": 80,
       "source": "https://the5ers.com/futures-faqs/",
-      "secondhand": true
+      "secondhand": true,
+      "platforms": "BlackArrow",
+      "data_feed": "BlackArrow"
     },
     {
       "firm": "AquaFutures",
@@ -1236,7 +1559,9 @@
       "drawdown_type": "eod_trailing",
       "source": "https://help.aquafutures.io/en/articles/10080201-aquafutures-trading-parameters",
       "source_note": "No daily loss limit on Standard. Maximum drawdown runs from 6% at the smallest size down to 3.3% at the largest, so it is not recorded as a single figure.",
-      "secondhand": true
+      "secondhand": true,
+      "platforms": "Deepcharts;Tradovate",
+      "data_feed": "CME Group"
     },
     {
       "firm": "AquaFutures",
@@ -1254,7 +1579,9 @@
       "drawdown_type": "eod_trailing",
       "source": "https://www.aquafutures.io/blogs/instant-funding-rules",
       "source_note": "The maximum drawdown is 4% at most sizes but 3% on the $100K account.",
-      "secondhand": true
+      "secondhand": true,
+      "platforms": "Deepcharts;Tradovate",
+      "data_feed": "CME Group"
     },
     {
       "firm": "AquaFutures",
@@ -1269,17 +1596,19 @@
       "payout_days": 7,
       "source": "https://www.proptradingvibes.com/blog/aquafutures-beginner-vs-standard-account",
       "source_note": "Published as a 6-8% profit target and a maximum drawdown between 6% and 3.3% depending on size, so neither is recorded as a single figure.",
-      "secondhand": true
+      "secondhand": true,
+      "platforms": "Deepcharts;Tradovate",
+      "data_feed": "CME Group"
     },
     {
       "firm": "Blue Guardian Futures",
       "product": "Standard",
       "program": "evaluation",
-      "drawdown_type": "eod_trailing",
+      "drawdown_type": "trailing",
       "consistency": "not_required",
       "news": "allowed",
       "billing": "one_time",
-      "notes": "News trading allowed. The $25K account has no daily loss limit. 40% consistency once funded. $209 is the regular price for the 50K.",
+      "notes": "News trading allowed. The $25K account has no daily loss limit. 40% consistency once funded. $209 is the regular price for the 50K. The supplied price carries an asterisk in the source table, so treat it as provisional.",
       "sizes": {
         "25000": {
           "target": 1500,
@@ -1289,7 +1618,7 @@
           "target": 3000,
           "dd": 2000,
           "daily": 1000,
-          "price": 209
+          "price": 115.5
         },
         "100000": {
           "target": 6000,
@@ -1304,7 +1633,10 @@
       },
       "split": 90,
       "source": "https://helpfutures.blueguardian.com/en/articles/15654479-standard-account-rules",
-      "secondhand": true
+      "secondhand": true,
+      "payout_days": 5,
+      "platforms": "Deepcharts;NinjaTrader;TradingView;Tradovate",
+      "data_feed": "DXFeed, NinjaTrader"
     },
     {
       "firm": "Blue Guardian Futures",
@@ -1332,7 +1664,9 @@
       },
       "split": 90,
       "source": "https://helpfutures.blueguardian.com/en/articles/15678716-reserve-account-rules",
-      "secondhand": true
+      "secondhand": true,
+      "platforms": "Deepcharts;NinjaTrader;TradingView;Tradovate",
+      "data_feed": "DXFeed, NinjaTrader"
     },
     {
       "firm": "Blue Guardian Futures",
@@ -1350,7 +1684,9 @@
       },
       "split": 90,
       "source": "https://helpfutures.blueguardian.com/en/articles/15772960-payout-policy",
-      "secondhand": true
+      "secondhand": true,
+      "platforms": "Deepcharts;NinjaTrader;TradingView;Tradovate",
+      "data_feed": "DXFeed, NinjaTrader"
     },
     {
       "firm": "Blue Guardian Futures",
@@ -1373,7 +1709,9 @@
       "split": 90,
       "source": "https://helpfutures.blueguardian.com/en/articles/15679519-direct-account-rules",
       "source_note": "Payouts carry a 2% processing fee. A payout processed after the 24-business-hour window pays 100% instead of 90% for that request.",
-      "secondhand": true
+      "secondhand": true,
+      "platforms": "Deepcharts;NinjaTrader;TradingView;Tradovate",
+      "data_feed": "DXFeed, NinjaTrader"
     },
     {
       "firm": "The Trading Pit Futures",
@@ -1381,7 +1719,7 @@
       "program": "evaluation",
       "weekend": "prohibited",
       "overnight": "allowed",
-      "notes": "Activation fee $129 on top of the price. Maximum contracts roughly 5 / 10 / 15 by size. Resets cost about $79 / $149 / $229. Weekday overnight holding generally allowed; weekend holding prohibited. Price varies.",
+      "notes": "Activation fee $129 on top of the price. Maximum contracts roughly 5 / 10 / 15 by size. Resets cost about $79 / $149 / $229. Weekday overnight holding generally allowed; weekend holding prohibited. Price varies. The supplied platform list for this firm ends in 'etc.', so the platforms on file are the ones named rather than the complete set — treat an absence here as unrecorded, not unsupported.",
       "sizes": {
         "50000": {
           "dd": 2000,
@@ -1400,14 +1738,16 @@
       "source": "https://www.thetradingpit.com/faq/what-are-the-rules-in-futures-trading",
       "source_note": "Positions are force-closed at 14:55 CT, so overnight holding is not available. High-frequency trading is prohibited. The daily pause runs $1,000-$3,000 by size; only the drawdown endpoints were published per size, so the middle size is left blank rather than interpolated.",
       "secondhand": true,
-      "billing": "one_time"
+      "billing": "one_time",
+      "platforms": "MotiveWave;Volumetrica Trading;Rithmic",
+      "data_feed": "Varies by program"
     },
     {
       "firm": "The Trading Pit Futures",
       "product": "Futures Classic",
       "program": "evaluation",
       "uncertain": true,
-      "notes": "Current sizes differ from the 50K/100K/150K assumption and include larger accounts. Rules depend on the selected Classic account.",
+      "notes": "Current sizes differ from the 50K/100K/150K assumption and include larger accounts. Rules depend on the selected Classic account. The supplied platform list for this firm ends in 'etc.', so the platforms on file are the ones named rather than the complete set — treat an absence here as unrecorded, not unsupported.",
       "sizes": {
         "20000": {},
         "150000": {},
@@ -1423,7 +1763,9 @@
       "weekend": "prohibited",
       "source": "https://www.thetradingpit.com/faq/what-are-the-rules-in-futures-trading",
       "source_note": "The trailing floor moves up in real time whenever the closed balance sets a new high.",
-      "secondhand": true
+      "secondhand": true,
+      "platforms": "MotiveWave;Volumetrica Trading;Rithmic",
+      "data_feed": "Varies by program"
     },
     {
       "firm": "Blueberry Futures",
@@ -1436,29 +1778,37 @@
       "sizes": {
         "25000": {
           "target": 1500,
-          "dd": 1000
+          "dd": 1000,
+          "price": 55.6,
+          "contracts": "1/10"
         },
         "50000": {
           "target": 3000,
           "dd": 2000,
-          "price": 245
+          "price": 98,
+          "contracts": "2/20"
         },
         "100000": {
           "target": 6000,
           "dd": 3000,
-          "price": 368
+          "price": 147.2,
+          "contracts": "6/60"
         },
         "150000": {
           "target": 10000,
           "dd": 4500,
-          "price": 607
+          "price": 242.8,
+          "contracts": "9/90"
         }
       },
       "split": 90,
       "billing": "monthly",
       "source": "https://blueberryfutures.com/",
       "source_note": "A monthly subscription, not a one-off: the fee recurs while the account is active, and there are no refunds. No hard daily loss limit — traders set their own in the platform's risk manager. Payout after 5 profitable days, a profitable day being $200.",
-      "secondhand": true
+      "secondhand": true,
+      "payout_days": 5,
+      "platforms": "BlackArrow",
+      "data_feed": "BlackArrow"
     },
     {
       "firm": "Blueberry Futures",
@@ -1472,27 +1822,36 @@
         "25000": {
           "target": 1500,
           "dd": 1000,
-          "price": 110.4
+          "price": 44.16,
+          "contracts": "1/10"
         },
         "50000": {
           "target": 3000,
           "dd": 2000,
-          "price": 184
+          "price": 73.6,
+          "contracts": "2/20"
         },
         "100000": {
           "target": 6000,
-          "dd": 3000
+          "dd": 3000,
+          "price": 110.4,
+          "contracts": "6/60"
         },
         "150000": {
           "target": 10000,
-          "dd": 4500
+          "dd": 4500,
+          "price": 181.6,
+          "contracts": "9/90"
         }
       },
       "split": 90,
       "billing": "monthly",
       "source": "https://blueberryfutures.com/",
       "source_note": "A monthly subscription, not a one-off. No hard daily loss limit.",
-      "secondhand": true
+      "secondhand": true,
+      "payout_days": 5,
+      "platforms": "BlackArrow",
+      "data_feed": "BlackArrow"
     },
     {
       "firm": "Top One Futures",
@@ -1512,7 +1871,9 @@
       "drawdown_type": "eod_trailing",
       "source": "https://damnpropfirms.com/prop-firms/top-one-futures-account-types-plans-compared-2026/",
       "source_note": "No evaluation; a one-time fee from $167.60 depending on size.",
-      "secondhand": true
+      "secondhand": true,
+      "platforms": "NinjaTrader;TradingView;Tradovate",
+      "data_feed": "NinjaTrader"
     },
     {
       "firm": "Topstep",
@@ -1528,15 +1889,29 @@
       "secondhand": true,
       "sizes": {
         "50000": {
-          "price": 49
+          "price": 49,
+          "target": 3000,
+          "dd": 2000,
+          "contracts": "5/50",
+          "activation_fee": 149
         },
         "100000": {
-          "price": 99
+          "price": 99,
+          "target": 6000,
+          "dd": 3000,
+          "contracts": "10/100",
+          "activation_fee": 149
         },
         "150000": {
-          "price": 199
+          "price": 199,
+          "target": 9000,
+          "dd": 4500,
+          "contracts": "15/150",
+          "activation_fee": 149
         }
-      }
+      },
+      "platforms": "TopstepX;Quantower",
+      "data_feed": "TopstepX own data feed"
     },
     {
       "firm": "Topstep",
@@ -1552,15 +1927,239 @@
       "secondhand": true,
       "sizes": {
         "50000": {
-          "price": 95
+          "price": 95,
+          "target": 3000,
+          "dd": 2000,
+          "contracts": "5/50",
+          "activation_fee": 0
         },
         "100000": {
-          "price": 149
+          "price": 149,
+          "target": 6000,
+          "dd": 3000,
+          "contracts": "10/100",
+          "activation_fee": 0
         },
         "150000": {
-          "price": 229
+          "price": 229,
+          "target": 9000,
+          "dd": 4500,
+          "contracts": "15/150",
+          "activation_fee": 0
         }
-      }
+      },
+      "platforms": "TopstepX;Quantower",
+      "data_feed": "TopstepX own data feed"
+    },
+    {
+      "firm": "My Funded Futures",
+      "product": "Rapid 25K Trailing",
+      "program": "evaluation",
+      "sizes": {
+        "25000": {
+          "price": 19.99,
+          "target": 1500,
+          "dd": 1000,
+          "contracts": "3/30"
+        }
+      },
+      "source": "Supplied master rules table",
+      "secondhand": true,
+      "drawdown_type": "trailing",
+      "split": 90,
+      "billing": "monthly",
+      "platforms": "NinjaTrader;Quantower;TradingView;Tradovate;ATAS;Deepcharts;DeepDom;Volumetrica Trading",
+      "notes": "Split out from the main Rapid plan because this size uses a trailing drawdown while the larger Rapid sizes use end-of-day, and the mechanic is stored per product.",
+      "data_feed": "DXFeed, NinjaTrader"
+    },
+    {
+      "firm": "My Funded Futures",
+      "product": "Rapid EOD",
+      "program": "evaluation",
+      "sizes": {
+        "50000": {
+          "price": 125.6,
+          "target": 3000,
+          "dd": 2000,
+          "contracts": "3/30"
+        }
+      },
+      "source": "Supplied master rules table",
+      "secondhand": true,
+      "drawdown_type": "eod_trailing",
+      "split": 90,
+      "billing": "one_time",
+      "platforms": "NinjaTrader;Quantower;TradingView;Tradovate;ATAS;Deepcharts;DeepDom;Volumetrica Trading",
+      "data_feed": "DXFeed, NinjaTrader"
+    },
+    {
+      "firm": "E8 Futures",
+      "product": "Challenge",
+      "program": "evaluation",
+      "sizes": {
+        "25000": {
+          "price": 88,
+          "target": 1500,
+          "dd": 1000
+        },
+        "50000": {
+          "price": 120,
+          "target": 3000,
+          "dd": 2000
+        },
+        "100000": {
+          "price": 208,
+          "target": 6000,
+          "dd": 4000
+        },
+        "150000": {
+          "price": 312,
+          "target": 9000,
+          "dd": 6000
+        }
+      },
+      "source": "Supplied master rules table",
+      "secondhand": true,
+      "drawdown_type": "eod_trailing",
+      "split": 80,
+      "payout_days": 5,
+      "billing": "one_time",
+      "platforms": "TradingView;Tradovate",
+      "data_feed": "NinjaTrader"
+    },
+    {
+      "firm": "E8 Futures",
+      "product": "Challenge Daily",
+      "program": "evaluation",
+      "sizes": {
+        "50000": {
+          "price": 115.7,
+          "target": 3000,
+          "dd": 1500
+        },
+        "100000": {
+          "price": 180.7,
+          "target": 6500,
+          "dd": 3000
+        }
+      },
+      "source": "Supplied master rules table",
+      "secondhand": true,
+      "drawdown_type": "trailing",
+      "split": 80,
+      "payout_days": 1,
+      "billing": "one_time",
+      "platforms": "TradingView;Tradovate",
+      "data_feed": "NinjaTrader"
+    },
+    {
+      "firm": "E8 Futures",
+      "product": "Challenge Static",
+      "program": "evaluation",
+      "sizes": {
+        "200000": {
+          "price": 362.7,
+          "target": 13500,
+          "dd": 6000
+        }
+      },
+      "source": "Supplied master rules table",
+      "secondhand": true,
+      "drawdown_type": "static",
+      "split": 80,
+      "payout_days": 1,
+      "billing": "one_time",
+      "platforms": "TradingView;Tradovate",
+      "data_feed": "NinjaTrader"
+    },
+    {
+      "firm": "Funded Futures Family",
+      "product": "Premier Plus",
+      "program": "evaluation",
+      "sizes": {
+        "25000": {
+          "price": 68.4,
+          "target": 1500,
+          "dd": 1000
+        },
+        "50000": {
+          "price": 92.4,
+          "target": 3000,
+          "dd": 2000
+        },
+        "100000": {
+          "price": 137.4,
+          "target": 7000,
+          "dd": 3250
+        },
+        "150000": {
+          "price": 191.4,
+          "target": 10000,
+          "dd": 4750
+        }
+      },
+      "source": "Supplied master rules table",
+      "secondhand": true,
+      "drawdown_type": "intraday_trailing",
+      "billing": "monthly",
+      "platforms": "NinjaTrader;TradingView;Tradovate;WealthCharts",
+      "data_feed": "NinjaTrader, WealthCharts"
+    },
+    {
+      "firm": "Traders Launch",
+      "product": "Futures Evaluation 80% Split",
+      "program": "evaluation",
+      "sizes": {
+        "300000": {
+          "price": 223.2,
+          "target": 5000,
+          "dd": 2000,
+          "contracts": "2/20"
+        }
+      },
+      "source": "Supplied master rules table",
+      "secondhand": true,
+      "drawdown_type": "eod_trailing",
+      "split": 80,
+      "payout_days": 3,
+      "billing": "one_time",
+      "notes": "The same size sold at a higher price for a better split — the two are separate products because the split is what you are buying.",
+      "platforms": "Interactive Brokers;NinjaTrader;Quantower;Volumetrica Trading",
+      "data_feed": "Interactive Brokers, NinjaTrader"
+    },
+    {
+      "firm": "DayTraders",
+      "product": "Trail 80% Split",
+      "program": "evaluation",
+      "sizes": {
+        "50000": {
+          "price": 179,
+          "target": 3000,
+          "dd": 2000,
+          "contracts": "2/20"
+        },
+        "150000": {
+          "price": 319,
+          "target": 8500,
+          "dd": 4500,
+          "contracts": "3/30"
+        },
+        "300000": {
+          "price": 449,
+          "target": 15000,
+          "dd": 7000,
+          "contracts": "4/40"
+        }
+      },
+      "source": "Supplied master rules table",
+      "secondhand": true,
+      "drawdown_type": "intraday_trailing",
+      "split": 80,
+      "payout_days": 8,
+      "billing": "one_time",
+      "platforms": "NinjaTrader;TradingView;Tradovate;Quantower;Rithmic;R Trader Pro;Sierra Chart;ATAS;Bookmap;MotiveWave;Jigsaw",
+      "data_feed": "Rithmic, Tradovate, WealthCharts",
+      "notes": "The supplied platform list for this firm ends in 'etc.', so the platforms on file are the ones named rather than the complete set — treat an absence here as unrecorded, not unsupported."
     }
   ]
 }

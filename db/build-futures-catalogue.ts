@@ -31,7 +31,15 @@ import fs from "node:fs";
 import path from "node:path";
 import { CHALLENGE_COLUMNS } from "../src/lib/import";
 
-interface SizeSpec { target?: number; dd?: number; daily?: number; price?: number }
+interface SizeSpec {
+  target?: number;
+  dd?: number;
+  daily?: number;
+  price?: number;
+  /** Position limits vary by size far more often than any other rule. */
+  contracts?: string;
+  activation_fee?: number;
+}
 interface Product {
   firm: string;
   product: string;
@@ -56,6 +64,16 @@ interface Product {
   phases_override?: number;
   /** Where the firm prices in something other than USD. */
   currency?: string;
+  /** Charged on passing, on top of the entry price. Product-level default. */
+  activation_fee?: number;
+  /** Cap on a single withdrawal. */
+  max_payout?: number;
+  /** Position limits as the firm writes them, e.g. "5/50" for minis/micros. */
+  contracts?: string;
+  /** Semicolon-separated, matching the import format. */
+  platforms?: string;
+  /** Broker or data connection behind the account. */
+  data_feed?: string;
   /** Percentages stated directly by the firm rather than as dollars. */
   target_pct?: number;
   dd_pct?: number;
@@ -178,6 +196,21 @@ for (const p of specs.products) {
       payout_frequency_days: p.payout_days !== undefined ? String(p.payout_days) : "",
       payout_split_pct: p.split !== undefined ? String(p.split) : "",
       payout_conditions: conditions.join(" "),
+      // Per size first: contract limits scale with the account almost always,
+      // and an activation fee occasionally does too.
+      contracts: spec.contracts ?? p.contracts ?? "",
+      activation_fee:
+        spec.activation_fee !== undefined
+          ? String(spec.activation_fee)
+          : p.activation_fee !== undefined
+            ? String(p.activation_fee)
+            : "",
+      max_payout: p.max_payout !== undefined ? String(p.max_payout) : "",
+      // Platform support is a hard filter for an algorithmic trader and a
+      // scored preference for everyone else, so it has to reach the column
+      // rather than staying in the specs file.
+      platforms: p.platforms ?? "",
+      data_feed: p.data_feed ?? "",
       phases: isInstant ? "0" : String(p.phases_override ?? 1),
       news_trading: p.news ?? "",
       overnight: p.overnight ?? "",

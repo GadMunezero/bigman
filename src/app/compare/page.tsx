@@ -225,6 +225,45 @@ export default async function ComparePage({ searchParams }: { searchParams: Sear
                   render={(c) => <Figure value={c.payout_split_pct} suffix="%" />}
                 />
                 <ComparisonRow
+                  label="Max payout"
+                  items={selected}
+                  render={(c) => <Money value={c.max_payout} currency={c.currency} />}
+                />
+                {/*
+                  The true cost of a challenge is the price plus whatever is
+                  charged on passing, and firms compete on exactly that — Topstep
+                  sells the same evaluation twice, once cheaper with a $149
+                  activation fee and once dearer with none. Showing price alone
+                  makes the wrong one look better.
+                */}
+                <ComparisonRow
+                  label="Activation fee"
+                  items={selected}
+                  render={(c) =>
+                    c.activation_fee === null ? (
+                      <span className="muted">Not confirmed</span>
+                    ) : c.activation_fee === 0 ? (
+                      "None"
+                    ) : (
+                      <Money value={c.activation_fee} currency={c.currency} />
+                    )
+                  }
+                />
+                <ComparisonRow
+                  label="Contracts"
+                  items={selected}
+                  render={(c) =>
+                    c.contracts ? c.contracts : <span className="muted">Not confirmed</span>
+                  }
+                />
+                <ComparisonRow
+                  label="Data / broker"
+                  items={selected}
+                  render={(c) =>
+                    c.data_feed ? c.data_feed : <span className="muted">Not confirmed</span>
+                  }
+                />
+                <ComparisonRow
                   label="Consistency"
                   items={selected}
                   render={(c) => <RuleBadge label="" status={c.rules.consistency_rule} />}

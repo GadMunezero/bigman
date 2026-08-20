@@ -36,6 +36,10 @@ const ADDED_COLUMNS: { table: string; column: string; definition: string }[] = [
   { table: "challenges", column: "leverage", definition: "TEXT" },
   { table: "challenges", column: "refund_policy", definition: "TEXT" },
   { table: "challenges", column: "country_restrictions", definition: "TEXT" },
+  { table: "challenges", column: "activation_fee", definition: "REAL" },
+  { table: "challenges", column: "max_payout", definition: "REAL" },
+  { table: "challenges", column: "contracts", definition: "TEXT" },
+  { table: "challenges", column: "data_feed", definition: "TEXT" },
   { table: "trader_profiles", column: "challenge_approach", definition: "TEXT" },
   { table: "trader_profiles", column: "risk_style", definition: "TEXT" },
   // The four measured answers the archetype classifier reads. A profile saved
