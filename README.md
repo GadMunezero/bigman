@@ -14,7 +14,7 @@ cannot work for you, scores the rest, and explains every number.
 ASK → UNDERSTAND → FILTER → MATCH → EXPLAIN → COMPARE → REFER
 ```
 
-Six to eight questions produce a trading profile. The engine then runs two stages that are
+About a dozen questions produce a trading profile. The engine then runs two stages that are
 never blended:
 
 1. **Hard filtering.** A challenge that conflicts with a stated requirement is removed
@@ -67,7 +67,7 @@ built and verified, how to add data and features, and how to host it.
 ADMIN_PASSWORD=demo npm run catalogue
 ```
 
-Builds the whole catalogue and starts the dev server: **24 futures firms, 184 challenges** across
+Builds the whole catalogue and starts the dev server: **23 futures firms, 183 challenges** across
 nine account sizes (20K to 300K), with official websites applied.
 
 The catalogue is **futures-only**. CFD and forex firms were removed deliberately: the only data
@@ -141,7 +141,7 @@ to configure it gets a locked door.
 ## About the data
 
 **The repository contains real firm names and real supplied figures, and none of it is
-verified.** `data/futures-specs.json` holds 24 futures firms transcribed from supplied research;
+verified.** `data/futures-specs.json` holds 21 futures firms transcribed from supplied research;
 every row imports as `needs_review` and `draft`, and nothing reaches a trader until a person
 publishes it in `/admin`.
 

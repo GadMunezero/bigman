@@ -462,7 +462,7 @@ export default async function ChallengeDetailPage({
         <div className="panel panel-quiet spread">
           <div>
             <strong>Want a recommendation based on how you trade?</strong>
-            <p className="small muted">Six to eight questions. No account needed.</p>
+            <p className="small muted">About a dozen questions. No account needed.</p>
           </div>
           <Link href="/find-my-challenge" className="btn btn-primary">
             Find My Challenge

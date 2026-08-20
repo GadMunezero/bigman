@@ -37,7 +37,10 @@ COPY --from=deps /app/node_modules/.bin/tsx ./node_modules/.bin/tsx
 
 COPY --from=build /app/.next/standalone ./
 COPY --from=build /app/.next/static ./.next/static
-COPY --from=build /app/public ./public
+# There is deliberately no `public/` to copy. robots.txt and sitemap.xml are
+# route handlers, not static files. Adding `COPY /app/public ./public` back
+# fails the build outright while the directory does not exist — create it first
+# if you ever add a static asset.
 
 # Needed at runtime, not build time: the schema is applied to the volume on
 # first boot and the CSVs are what the seed reads.

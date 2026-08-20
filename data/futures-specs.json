@@ -22,7 +22,15 @@
     "  Take Profit Trader  — 50K/75K/100K/150K; the 25K was not in the priced list",
     "  Traders Launch      — 100K/200K, the only sizes given concrete figures",
     "  DayTraders S2F      — 50K only",
-    "  The5ers Futures     — Day Trade and Swing at 25K/50K, replacing a generic ladder"
+    "  The5ers Futures     — Day Trade and Swing at 25K/50K, replacing a generic ladder",
+    "",
+    "Firm names are the brand that actually sells the futures product, not the",
+    "group that owns it. The supplied list said `AquaFunded Futures`; the firm",
+    "trades as AquaFutures (aquafutures.io), the futures division of the",
+    "AquaFunded group, and the aggregator export lists it under that name too.",
+    "Carrying both spellings produced two firms in the catalogue for one",
+    "company, so this file uses the trading name and db/convert-propfirmmatch.ts",
+    "maps the alias."
   ],
   "products": [
     {
@@ -959,7 +967,7 @@
       }
     },
     {
-      "firm": "AquaFunded Futures",
+      "firm": "AquaFutures",
       "product": "Standard Evaluation",
       "program": "evaluation",
       "billing": "one_time",
@@ -974,7 +982,7 @@
       }
     },
     {
-      "firm": "AquaFunded Futures",
+      "firm": "AquaFutures",
       "product": "Instant Standard",
       "program": "instant_funding",
       "billing": "one_time",
@@ -986,7 +994,7 @@
       }
     },
     {
-      "firm": "AquaFunded Futures",
+      "firm": "AquaFutures",
       "product": "Beginner",
       "program": "evaluation",
       "uncertain": true,

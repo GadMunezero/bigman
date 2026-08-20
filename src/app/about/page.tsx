@@ -24,7 +24,7 @@ export default function AboutPage() {
           {
             heading: "What we built instead",
             paragraphs: [
-              "A recommendation engine. You answer six to eight questions, we eliminate the challenges that fundamentally cannot work for you, score the rest against your profile, and show you the reasoning behind every number.",
+              "A recommendation engine. You answer about a dozen questions, we eliminate the challenges that fundamentally cannot work for you, score the rest against your profile, and show you the reasoning behind every number.",
               "The directory, the comparison table, the reviews and the articles all exist to support that. They are not the product.",
             ],
           },

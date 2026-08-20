@@ -5,7 +5,7 @@ import { Quiz } from "./Quiz";
 export const metadata = {
   title: "Find my challenge",
   description:
-    "Six to eight questions about how you trade. We remove the challenges that cannot work for you and score the rest against your answers.",
+    "About a dozen questions on how you trade. We remove the challenges that cannot work for you and score the rest against your answers.",
 };
 
 export const dynamic = "force-dynamic";

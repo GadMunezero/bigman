@@ -73,7 +73,7 @@ export default function LearnPage() {
         <div className="panel panel-accent spread">
           <div>
             <strong>Want a recommendation based on YOUR trading style?</strong>
-            <p className="small muted">Six to eight questions, no account needed.</p>
+            <p className="small muted">About a dozen questions, no account needed.</p>
           </div>
           <Link href="/find-my-challenge" className="btn btn-primary">
             Find My Challenge

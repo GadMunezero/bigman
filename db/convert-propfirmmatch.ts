@@ -45,6 +45,26 @@ const SPECS_FIRMS: ReadonlySet<string> = new Set(
   ).products.map((p) => p.firm.toLowerCase()),
 );
 
+/**
+ * Names the export uses for a firm the specs file already covers under a
+ * different one. Without this the same company enters the catalogue twice —
+ * AquaFutures (the trading name, aquafutures.io) arrived alongside the
+ * supplied list's "AquaFunded Futures" and both appeared as separate firms.
+ *
+ * Only add an entry once you have confirmed the two names are one company.
+ * Two firms with similar names is the normal case in this industry — Blue
+ * Guardian and Blue Guardian Futures are genuinely different products, and
+ * Goat Funded Trader is not Goat Funded Futures.
+ */
+const FIRM_ALIASES: Record<string, string> = {
+  "aquafunded futures": "aquafutures",
+};
+
+const coveredBySpecs = (firm: string): boolean => {
+  const key = firm.toLowerCase();
+  return SPECS_FIRMS.has(FIRM_ALIASES[key] ?? key);
+};
+
 const RULE_MAP: Record<string, string> = {
   yes: "allowed",
   allowed: "allowed",
@@ -167,10 +187,10 @@ for (let i = 1; i < table.length; i++) {
   // leave the real numbers stuck in the pending queue behind templated ones.
   //
   // What survives is the handful of futures firms the specs file does not cover
-  // (Topstep, Hola Prime Futures, AquaFutures). A row flagged
-  // `aggregator_unverified` is still better than dropping a real firm.
+  // (Topstep, Hola Prime Futures). A row flagged `aggregator_unverified` is
+  // still better than dropping a real firm.
   if (col(r, "category").toLowerCase() !== "futures") { skippedCfd++; continue; }
-  if (SPECS_FIRMS.has(firm.toLowerCase())) { skippedFutures++; continue; }
+  if (coveredBySpecs(firm)) { skippedFutures++; continue; }
 
   const rowNote = (m: string) => notes.push(`  ${firm}: ${m}`);
   const size = accountSize(col(r, "starting_account_size"));
@@ -188,11 +208,18 @@ for (let i = 1; i < table.length; i++) {
 
   // A blank daily cell reads as "no daily loss rule" to the engine, which is a
   // claim, not an absence. The export leaves it blank for most futures firms,
-  // and futures firms very often do have one — so these get listed loudly.
+  // and futures firms very often do have one — so the row carries the same
+  // caveat db/build-futures-catalogue.ts writes for `dailyUnknown`, and the
+  // firms are listed loudly at the end.
   if (!dailyRaw) unknownDaily.push(firm);
 
   const activation = col(r, "activation_fee");
   const conditions: string[] = [];
+  if (!dailyRaw) {
+    conditions.push(
+      "The source does not record a daily loss limit — do not read the blank as 'no daily rule'",
+    );
+  }
   const freqRaw = col(r, "payout_frequency");
   const freq = PAYOUT_DAYS[freqRaw.toLowerCase()] ?? "";
   if (freqRaw && !freq) conditions.push(`Payout frequency: ${freqRaw}`);
@@ -263,8 +290,8 @@ fs.writeFileSync(outPath, csv + "\n");
 console.log(`Wrote ${out.length - 1} rows to ${outPath}`);
 if (skippedFutures) {
   console.log(`Skipped ${skippedFutures} futures rows whose firm is covered by data/futures-specs.json.`);
-if (skippedCfd) console.log(`Skipped ${skippedCfd} CFD rows — this catalogue is futures-only.`);
 }
+if (skippedCfd) console.log(`Skipped ${skippedCfd} CFD rows — this catalogue is futures-only.`);
 if (notes.length) {
   console.log(`\nConversion notes (${notes.length}):`);
   console.log(notes.join("\n"));

@@ -7,11 +7,16 @@ What is built, what is verified, what to do next, and how to put it online.
 ## What this is
 
 A futures prop firm **challenge finder** — a recommendation engine, not a
-directory. Twelve questions produce a trading profile; the engine removes the
+directory. Eleven questions produce a trading profile; the engine removes the
 challenges that cannot work for you, ranks what is left on nine weighted
 criteria, and shows the working.
 
-**24 firms · 184 challenges · nine account sizes (20K–300K).**
+**23 firms · 183 challenges · nine account sizes (20K–300K).**
+
+Eleven, not twelve: the questionnaire asks what you trade only when the
+catalogue covers more than one market. While it is futures-only that question
+has a single possible answer, so it is filled in rather than asked. Add CFDs and
+it comes back on its own.
 
 ---
 
@@ -23,12 +28,20 @@ Everything below was checked by running it, not by reading the code.
 | ---- | ----- |
 | Test suite | **73 passing** |
 | Production build | Compiles clean, full typecheck passes |
-| Routes | **26 pages** all return 200 |
-| Questionnaire | All 12 questions → results. Verified end to end in a browser |
-| Engine | Ranks all 184; "57 of 184 compatible" on a real run |
-| Clean rebuild | `db:reset` → import → publish reproduces the catalogue exactly |
+| Routes | **28 checked**, all return 200 |
+| Questionnaire | All 11 questions → results. Verified end to end in a browser |
+| Engine | Ranks all 183; "57 of 183 compatible" on a real run |
+| Clean rebuild | `npm run catalogue:build` reproduces the catalogue exactly |
+| Container boot | `migrate-or-create` + `seed-if-empty` against an empty volume path gives 23 firms / 183 challenges, all draft; running them again leaves it alone |
+| Standalone server | `node .next/standalone/server.js` boots and serves — the mode the Dockerfile runs |
 | Pending changes | 0 — no import collisions |
-| Console errors | None on any page walked |
+| Firm websites | 23 of 23 on file |
+| Console errors | None on any page walked, no failed requests |
+
+**Not verified here: the Docker image itself.** This machine has the Docker CLI
+but no daemon, so `docker build` cannot run. The boot sequence the image
+executes was verified natively instead, which is the part most likely to be
+wrong. Build it once before you rely on it.
 
 The pages: home, find-my-challenge (+ results), challenges, challenge detail,
 firms, firm detail, compare, reviews, psychology (12 tabs), tools (2
@@ -39,13 +52,20 @@ articles, the recommendation tester, outcomes and analytics.
 
 ### Known gaps, stated plainly
 
-- **138 of 184 challenges have no price.** The source said "varies by
-  configuration" for most products. They rank last on purpose.
-- **103 have no drawdown figure.** Same reason.
-- **14 of 24 firms have no website**, so their outbound buttons say "official
-  link not on file" rather than guessing a domain.
+- **138 of 183 challenges have no price.** The source said "varies by
+  configuration" for most products. They rank last on purpose, and the page
+  says "Price not confirmed" rather than showing a sibling size's number.
+- **103 have no drawdown figure.** Same reason. This is the criterion the
+  engine weights most heavily, so these rows rank poorly and deserve to.
 - **Nothing is verified.** Every row is `needs_review`. The catalogue is a
   research starting point, not a published product.
+- **Firm websites came from search results, not from opening the pages.** This
+  environment has no outbound access to firm domains, so each domain is
+  recorded with the reasoning in `data/firm-websites.csv` and none has been
+  loaded. Several firms run a near-identical sister domain — Goat Funded
+  Futures is not Goat Funded Trader, Blue Guardian Futures is not Blue
+  Guardian, Top One Futures is not Top One Trader. Click each one once before
+  a trader does.
 
 ---
 
@@ -109,7 +129,27 @@ weights most heavily.
 Add the domain in `/admin/firms`, or append to `data/firm-websites.csv` and run
 `npm run db:firm-websites -- --apply` (dry run by default; it never overwrites
 a value someone typed). **Confirm the domain first** — Alpha Futures is
-`alpha-futures.com`, hyphenated, and the obvious guess is wrong.
+`alpha-futures.com`, hyphenated, and the obvious guess is wrong; AquaFutures is
+`.io`, not `.com`; Tradeify is `.co`.
+
+Rows in that file for firms not in the catalogue are marked `NOT IN THE
+CATALOGUE` and reported as unmatched on every run. They are kept deliberately —
+the research is done for when those firms are added.
+
+### One company, two names
+
+A firm that sells futures under a sub-brand will appear in two sources under two
+names. `AquaFunded Futures` and `AquaFutures` were one company (aquafutures.io,
+the AquaFunded group's futures division) and produced two firms in the
+catalogue until they were merged. The fix has two halves: `data/futures-specs.json`
+uses the name the firm actually trades under, and `FIRM_ALIASES` in
+`db/convert-propfirmmatch.ts` maps the other spelling onto it so the aggregator
+row is dropped rather than imported alongside.
+
+Only add an alias once you have confirmed the two names are one company.
+Similar names are usually **different** products: Blue Guardian and Blue
+Guardian Futures, Goat Funded Trader and Goat Funded Futures, Top One Trader and
+Top One Futures are all separate firms with separate rules.
 
 ### Publishing
 

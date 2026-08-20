@@ -61,6 +61,12 @@ function buildQuestions(
       // nothing published would walk the trader through the whole questionnaire
       // to a guaranteed no-match, and "multiple markets" is only a meaningful
       // answer when there is more than one to span.
+      //
+      // With one market there is nothing to choose, so the question is not
+      // asked at all and Quiz seeds the answer instead. Asking it anyway cost a
+      // click and made the progress counter jump — the later platform question
+      // depends on this answer, so the total went "1 of 11" then "2 of 12".
+      when: () => markets.length > 1,
       options: [
         ...markets.map((m) => MARKET_OPTIONS[m]).filter(Boolean),
         ...(markets.length > 1
@@ -262,7 +268,14 @@ export function Quiz({
     () => buildQuestions(accountSizes, platforms, markets),
     [accountSizes, platforms, markets],
   );
-  const [answers, setAnswers] = useState<Answers>(initialAnswers ?? {});
+  // A single-market catalogue answers its own market question. The engine still
+  // needs the value — it is the first hard filter — so it is seeded rather than
+  // left undefined, and questions that branch on it behave as if it were asked.
+  const [answers, setAnswers] = useState<Answers>(() => {
+    const seeded: Answers = { ...(initialAnswers ?? {}) };
+    if (markets.length === 1 && !seeded.market) seeded.market = markets[0];
+    return seeded;
+  });
   const [index, setIndex] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [analysisStep, setAnalysisStep] = useState(-1);

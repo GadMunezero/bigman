@@ -18,8 +18,8 @@ export default function HowItWorksPage() {
           {
             heading: "1. You tell us how you trade",
             paragraphs: [
-              "Six to eight questions: your market, your style, how long you hold, whether you trade news, whether you need overnight positions, your budget, the account size you want, and up to three things that matter most to you.",
-              "A few follow-up questions only appear when your earlier answers make them relevant. If you say you trade algorithmically, we ask whether automation is a hard requirement. If you swing trade, we ask about weekends. Everyone else never sees those questions.",
+              "About a dozen short questions: your style, how long you hold, whether you trade news, whether you need overnight positions, how you want to approach the challenge, your risk appetite, the drawdown mechanics you can live with, your budget, the account size you want, your platform, and up to three things that matter most to you.",
+              "Some questions never appear. A follow-up only shows when your earlier answers make it relevant \u2014 if you trade algorithmically we ask whether automation is a hard requirement, and if you swing trade we ask about weekends. We also skip anything the catalogue already answers: while every challenge on file is futures, asking which market you trade would be a question with one possible answer, so we fill it in instead of asking.",
             ],
           },
           {

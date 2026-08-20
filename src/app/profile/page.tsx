@@ -52,7 +52,7 @@ export default async function ProfilePage() {
       <div className="shell-narrow section">
         <h1>You haven&apos;t built a trading profile yet.</h1>
         <p className="lede" style={{ marginTop: "1rem" }}>
-          Answer six to eight questions and we&apos;ll keep your profile on this device so every
+          Answer about a dozen questions and we&apos;ll keep your profile on this device so every
           challenge on the site shows your personal match score.
         </p>
         <Link href="/find-my-challenge" className="btn btn-primary btn-lg" style={{ marginTop: "2rem" }}>

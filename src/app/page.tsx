@@ -62,7 +62,7 @@ const FAQS = [
   },
   {
     q: "How long does it take?",
-    a: "Six to eight questions, about a minute. A few follow-up questions only appear when your earlier answers make them relevant.",
+    a: "About a dozen short questions, two or three minutes. Some are skipped: a follow-up only appears when your earlier answers make it relevant, and we never ask something the catalogue can already answer for you.",
   },
   {
     q: "Do I need an account?",

@@ -21,8 +21,8 @@ docker run -d --name propfirm \
   propfirm
 ```
 
-On first boot the entrypoint creates the schema and loads the catalogue — 52
-firms and 215 challenges — then starts the server. On every boot after that it
+On first boot the entrypoint creates the schema and loads the catalogue — 23
+firms and 183 challenges — then starts the server. On every boot after that it
 finds an existing database and leaves it alone, so a restart never overwrites
 work done in `/admin`.
 
@@ -79,14 +79,18 @@ public deployment is a different promise from a local demo.
 1. **Do not set `SEED_PUBLISH=1`.** Publish challenges in `/admin/challenges`
    as you verify them, so the public catalogue only ever contains figures a
    person has checked against the firm's own page.
-2. **126 of the 215 challenges have no price, profit target or drawdown.**
+2. **138 of the 183 challenges have no price, and 103 have no drawdown.**
    They come from a product matrix that listed which plans exist at which
    account sizes, not what they cost. They rank last by design, and there is a
    test enforcing that, but they are not ready to show as recommendations.
-3. **Only 10 of 52 firms have a website on file.** Outbound buttons correctly
-   say "official link not on file" for the rest rather than guessing a domain.
-4. **The aggregator rows are templated.** 18 of the CFD rows share identical
-   figures — see `docs/DATA-SOURCING.md`. Treat every one as a hypothesis.
+3. **All 23 firm websites came from search results, not from opening the
+   pages.** Load each one once before a trader clicks it. Several firms run a
+   near-identical sister domain for a different product — Goat Funded Futures
+   is not Goat Funded Trader — and a lookalike domain in an outbound link is
+   the most damaging error this catalogue can make.
+4. **The two aggregator rows are templated.** Topstep and Hola Prime Futures
+   came from an export whose figures repeat across firms — see
+   `docs/DATA-SOURCING.md`. Treat both as a hypothesis.
 
 `/admin/challenges` is the queue for all of this.
 
