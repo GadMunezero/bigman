@@ -51,6 +51,7 @@ function load(file: string): void {
 // their slugs first; the importer never overwrites, so if the aggregator rows
 // landed first the real numbers would sit unapplied in the pending queue.
 load("data/futures-catalogue.csv");
+load("data/cfd-catalogue.csv");
 load("data/propfirmmatch-import.csv");
 
 // Websites are applied directly rather than through the importer, because the

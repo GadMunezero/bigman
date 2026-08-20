@@ -6,17 +6,17 @@ What is built, what is verified, what to do next, and how to put it online.
 
 ## What this is
 
-A futures prop firm **challenge finder** — a recommendation engine, not a
+A prop firm **challenge finder** — a recommendation engine, not a
 directory. Fourteen questions produce a trading profile; the engine works out
 what kind of trader you are, removes the challenges that cannot work for you,
 ranks what is left on ten weighted criteria, and shows the working.
 
-**23 firms · 183 challenges · nine account sizes (20K–300K).**
+**38 firms · 297 challenges · futures and CFDs.**
 
-Fourteen, not fifteen: the questionnaire asks what you trade only when the
-catalogue covers more than one market. While it is futures-only that question
-has a single possible answer, so it is filled in rather than asked. Add CFDs and
-it comes back on its own.
+The questionnaire asks what you trade only when the catalogue covers more than
+one market. It was futures-only for a while, and the question was filled in
+rather than asked; adding CFDs brought it back with no code change, which is
+what the data-driven option list was for.
 
 ### The one idea the engine is built on
 
@@ -44,16 +44,16 @@ Everything below was checked by running it, not by reading the code.
 
 | Area | State |
 | ---- | ----- |
-| Test suite | **93 passing** |
+| Test suite | **96 passing** |
 | Production build | Compiles clean, full typecheck passes |
 | Routes | **28 checked**, all return 200 |
 | Questionnaire | All 14 questions → results. Two different traders driven through it in a browser get different archetypes and different top matches |
-| Engine | Ranks all 183. A swing/high-R:R/low-frequency trader tops out on Blue Guardian Standard; a scalper/even-earner/payout-focused trader on Top One Elite Access — same catalogue, different questions |
+| Engine | Ranks all 297. A swing/high-R:R/low-frequency trader tops out on Blue Guardian Standard; a scalper/even-earner/payout-focused trader on The Trading Pit Futures Prime — same catalogue, different questions |
 | Clean rebuild | `npm run catalogue:build` reproduces the catalogue exactly |
-| Container boot | `migrate-or-create` + `seed-if-empty` against an empty volume path gives 23 firms / 183 challenges, all draft; running them again leaves it alone |
+| Container boot | `migrate-or-create` + `seed-if-empty` against an empty volume path gives 38 firms / 297 challenges, all draft; running them again leaves it alone |
 | Standalone server | `node .next/standalone/server.js` boots and serves — the mode the Dockerfile runs |
 | Pending changes | 0 — no import collisions |
-| Firm websites | 23 of 23 on file |
+| Firm websites | 23 of 23 futures firms on file; the 15 CFD firms have none yet |
 | Console errors | None on any page walked, no failed requests |
 
 **Not verified here: the Docker image itself.** This machine has the Docker CLI
@@ -70,11 +70,16 @@ articles, the recommendation tester, outcomes and analytics.
 
 ### Known gaps, stated plainly
 
-- **138 of 183 challenges have no price.** The source said "varies by
-  configuration" for most products. They rank last on purpose, and the page
-  says "Price not confirmed" rather than showing a sibling size's number.
-- **103 have no drawdown figure.** Same reason. This is the criterion the
-  engine weights most heavily, so these rows rank poorly and deserve to.
+- **119 of 297 challenges have no price**, and 123 have no profit split. Where
+  a firm publishes a range or a promotional price rather than one figure, the
+  range is recorded in the row's notes and the price column stays empty. They
+  rank last on purpose, and the page says "Price not confirmed" rather than
+  showing a sibling size's number.
+- **The 105 CFD rows carry prices and nothing else.** The supplied CFD table
+  had no targets, drawdowns, splits or rules, so every one of those fields is
+  unconfirmed. CFD rows therefore rank below futures rows, which is correct
+  behaviour rather than something to tune away — add the rules and they compete
+  on merit.
 - **Nothing is verified.** Every row is `needs_review`. The catalogue is a
   research starting point, not a published product.
 - **Firm websites came from search results, not from opening the pages.** This
@@ -189,10 +194,18 @@ is why `db/seed-if-empty.ts` loads the specs file before the aggregator file.
 
 ---
 
-## Adding CFDs or another market later
+## Adding another market
 
-The pipeline is market-agnostic. Create `data/cfd-specs.json` in the same shape
-with `"market": "cfd"` at the top level, then:
+The pipeline is market-agnostic, and CFDs went in this way — `data/cfd-specs.json`
+carries `"market": "cfd"` at the top level and nothing else changed. The
+questionnaire's market question reappeared on its own, because its options are
+built from what is actually published.
+
+Two fields exist for markets that are not futures: `phases_override`, because
+CFD firms routinely sell two- and three-step evaluations where futures is almost
+always one, and `currency`, because BrightFunded prices in euros.
+
+For a third market, same shape:
 
 ```bash
 npm run db:futures -- data/cfd-specs.json data/cfd-catalogue.csv

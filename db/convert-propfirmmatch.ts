@@ -181,10 +181,15 @@ for (let i = 1; i < table.length; i++) {
   const firm = col(r, "prop_firm");
   if (!firm) continue;
 
-  // The catalogue is futures-only. CFD rows are dropped outright, and futures
-  // rows are dropped where data/futures-specs.json already covers the firm with
-  // real per-size figures — importing both would collide on the same slugs and
-  // leave the real numbers stuck in the pending queue behind templated ones.
+  // CFD rows from this export are dropped even though the catalogue now carries
+  // CFDs, because these particular rows failed a consistency check: 18 of the 28
+  // shared byte-identical figures. data/cfd-specs.json covers that market from a
+  // supplied price table instead.
+  //
+  // Futures rows are dropped where data/futures-specs.json already covers the
+  // firm with real per-size figures — importing both would collide on the same
+  // slugs and leave the real numbers stuck in the pending queue behind
+  // templated ones.
   //
   // What survives is the handful of futures firms the specs file does not cover
   // (Topstep, Hola Prime Futures). A row flagged `aggregator_unverified` is
@@ -291,7 +296,7 @@ console.log(`Wrote ${out.length - 1} rows to ${outPath}`);
 if (skippedFutures) {
   console.log(`Skipped ${skippedFutures} futures rows whose firm is covered by data/futures-specs.json.`);
 }
-if (skippedCfd) console.log(`Skipped ${skippedCfd} CFD rows — this catalogue is futures-only.`);
+if (skippedCfd) console.log(`Skipped ${skippedCfd} CFD rows — templated figures; data/cfd-specs.json covers that market.`);
 if (notes.length) {
   console.log(`\nConversion notes (${notes.length}):`);
   console.log(notes.join("\n"));

@@ -48,6 +48,14 @@ interface Product {
   payout_days?: number;
   /** "monthly" where the firm bills a recurring subscription. */
   billing?: string;
+  /**
+   * How many evaluation phases. Futures is almost always one, so it defaults
+   * to one; CFD firms routinely sell two- and three-step evaluations, and a
+   * two-step scored as a one-step understates how hard it is to reach funding.
+   */
+  phases_override?: number;
+  /** Where the firm prices in something other than USD. */
+  currency?: string;
   /** Percentages stated directly by the firm rather than as dollars. */
   target_pct?: number;
   dd_pct?: number;
@@ -151,7 +159,7 @@ for (const p of specs.products) {
       challenge_name: `${p.product} ${label}`,
       markets: MARKET,
       account_size: String(size),
-      currency: "USD",
+      currency: p.currency ?? "USD",
       // Priced per size, never carried across sizes: Tradeify Growth is $145 at
       // 50K and $369 at 150K, and Take Profit Trader bills monthly where Goat
       // charges once. A price on the wrong row is worse than none.
@@ -170,7 +178,7 @@ for (const p of specs.products) {
       payout_frequency_days: p.payout_days !== undefined ? String(p.payout_days) : "",
       payout_split_pct: p.split !== undefined ? String(p.split) : "",
       payout_conditions: conditions.join(" "),
-      phases: isInstant ? "0" : "1",
+      phases: isInstant ? "0" : String(p.phases_override ?? 1),
       news_trading: p.news ?? "",
       overnight: p.overnight ?? "",
       weekend: p.weekend ?? "",

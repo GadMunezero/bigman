@@ -46,18 +46,21 @@
       "notes": "No daily loss limit. No consistency rule once funded. No activation fee.",
       "sizes": {
         "25000": {
-          "dd": 1000
+          "dd": 1000,
+          "price": 65.3
         },
         "50000": {
           "target": 3000,
           "dd": 2000,
-          "price": 140
+          "price": 105.2
         },
         "100000": {
-          "dd": 3000
+          "dd": 3000,
+          "price": 215.6
         },
         "150000": {
-          "dd": 4500
+          "dd": 4500,
+          "price": 295.4
         }
       }
     },
@@ -72,7 +75,7 @@
       "payout_days": 3,
       "split": 90,
       "billing": "one_time",
-      "notes": "No daily loss limit. The 40% consistency rule applies once funded. No activation fee.",
+      "notes": "No daily loss limit. The 40% consistency rule applies once funded. No activation fee. The supplied table lists 50K alternatives at $115.20–$140.40 and a $25K alternative at $85 without saying which Lucid product each belongs to. Published as a range rather than one figure: $115.20–$140.40. Not recorded as a price.",
       "sizes": {
         "50000": {
           "target": 3000,
@@ -137,25 +140,28 @@
       "program": "evaluation",
       "drawdown_type": "intraday_trailing",
       "consistency": "not_required",
-      "billing": "one_time",
-      "notes": "Maximum 5 minis / 50 micros. No consistency rule once funded. No activation fee.",
+      "billing": "monthly",
+      "notes": "Maximum 5 minis / 50 micros. No consistency rule once funded. No activation fee. A one-off $125.60 Rapid EOD variant at $50K is also sold; it is not a separate product on file.",
       "sizes": {
         "25000": {
           "target": 1500,
-          "dd": 1000
+          "dd": 1000,
+          "price": 54.5
         },
         "50000": {
           "target": 3000,
           "dd": 2000,
-          "price": 157
+          "price": 78.5
         },
         "100000": {
           "target": 6000,
-          "dd": 3000
+          "dd": 3000,
+          "price": 133.5
         },
         "150000": {
           "target": 9000,
-          "dd": 4500
+          "dd": 4500,
+          "price": 173.5
         }
       },
       "split": 90,
@@ -177,17 +183,21 @@
       "sizes": {
         "50000": {
           "target": 3000,
-          "dd": 2000
+          "dd": 2000,
+          "price": 113.5
         },
         "100000": {
           "target": 6000,
-          "dd": 3000
+          "dd": 3000,
+          "price": 172
         },
         "150000": {
           "target": 9000,
-          "dd": 4500
+          "dd": 4500,
+          "price": 238.5
         }
-      }
+      },
+      "billing": "monthly"
     },
     {
       "firm": "My Funded Futures",
@@ -195,11 +205,14 @@
       "program": "evaluation",
       "notes": "One-step evaluation with an EOD-style risk structure and two Max Loss Limit options chosen at checkout, so price and drawdown both depend on that choice. No activation fee.",
       "sizes": {
-        "25000": {},
+        "25000": {
+          "price": 52.5
+        },
         "50000": {
           "target": 3000,
           "dd": 2000,
-          "daily": 1000
+          "daily": 1000,
+          "price": 76.5
         },
         "100000": {},
         "150000": {}
@@ -209,7 +222,8 @@
       "drawdown_type": "eod_trailing",
       "source": "https://help.myfundedfutures.com/en/articles/14290805-builder-plan-50k-a-comprehensive-guide",
       "source_note": "The daily loss limit is a soft pause rather than a breach.",
-      "secondhand": true
+      "secondhand": true,
+      "billing": "monthly"
     },
     {
       "firm": "My Funded Futures",
@@ -234,25 +248,26 @@
         "25000": {
           "target": 1500,
           "dd": 1000,
-          "daily": 600
+          "daily": 600,
+          "price": 59.4
         },
         "50000": {
           "target": 3000,
           "dd": 2000,
           "daily": 1250,
-          "price": 145
+          "price": 99
         },
         "100000": {
           "target": 6000,
           "dd": 3500,
           "daily": 2500,
-          "price": 255
+          "price": 159
         },
         "150000": {
           "target": 9000,
           "dd": 5000,
           "daily": 3750,
-          "price": 369
+          "price": 221.4
         }
       },
       "split": 90,
@@ -273,22 +288,23 @@
       "sizes": {
         "25000": {
           "target": 1500,
-          "dd": 1000
+          "dd": 1000,
+          "price": 65.4
         },
         "50000": {
           "target": 3000,
           "dd": 2000,
-          "price": 165
+          "price": 99
         },
         "100000": {
           "target": 6000,
           "dd": 3000,
-          "price": 265
+          "price": 159
         },
         "150000": {
           "target": 9000,
           "dd": 4500,
-          "price": 369
+          "price": 221.4
         }
       },
       "split": 90,
@@ -305,22 +321,23 @@
       "notes": "Immediate simulated funding, no evaluation. Consistency is progressive. The $25K account has no daily loss limit. No activation fee.",
       "sizes": {
         "25000": {
-          "dd": 1000
+          "dd": 1000,
+          "price": 207
         },
         "50000": {
           "dd": 2000,
           "daily": 1250,
-          "price": 492
+          "price": 295.2
         },
         "100000": {
           "dd": 4000,
           "daily": 2500,
-          "price": 660
+          "price": 396
         },
         "150000": {
           "dd": 5250,
           "daily": 3000,
-          "price": 796
+          "price": 477.6
         }
       },
       "split": 90,
@@ -340,7 +357,7 @@
       "split": 90,
       "payout_days": 3,
       "billing": "one_time",
-      "notes": "No daily loss limit by default. Can pass in one day. Consistency applies once funded.",
+      "notes": "No daily loss limit by default. Can pass in one day. Consistency applies once funded. Published as a range rather than one figure: $60.30–$149.99. Not recorded as a price. Published as a range rather than one figure: $112.50–$249.99. Not recorded as a price.",
       "sizes": {
         "25000": {
           "target": 1500,
@@ -407,9 +424,11 @@
         },
         "150000": {
           "target": 8000,
-          "dd": 4000
+          "dd": 4000,
+          "price": 217.8
         }
-      }
+      },
+      "billing": "one_time"
     },
     {
       "firm": "FundedNext Futures",
@@ -459,7 +478,7 @@
       "firm": "Apex Trader Funding",
       "product": "Evaluation",
       "program": "evaluation",
-      "notes": "The product lineup has changed significantly and the current sizes differ from the older 25K/50K/75K/100K/150K structure. Target, drawdown, contract limits and pricing all vary by model, and legacy accounts are not current purchase options. No price is recorded rather than an invented one.",
+      "notes": "The product lineup has changed significantly and the current sizes differ from the older 25K/50K/75K/100K/150K structure. Target, drawdown, contract limits and pricing all vary by model, and legacy accounts are not current purchase options. No price is recorded rather than an invented one. Apex prices move with a running promotion and are published as ranges, so none is recorded as the price. Published as a range rather than one figure: $16.70–$24.90 at 25K, $19.70–$24.90 at 50K, $29.70–$39.90 at 100K, $49.70–$59.90 at 150K. Not recorded as a price.",
       "sizes": {
         "25000": {},
         "50000": {},
@@ -545,7 +564,7 @@
       "min_days": 3,
       "split": 90,
       "billing": "monthly",
-      "notes": "Monthly account. Standard payout needs 3 winning days; the Daily Payout add-on removes both that and the consistency rule. Profit split up to 90%.",
+      "notes": "Monthly account. Standard payout needs 3 winning days; the Daily Payout add-on removes both that and the consistency rule. Profit split up to 90%. A $25 monthly promotional price and a $142.80 monthly standard price are both published for $50K; a promotional price is not the price, so neither replaces what is on file.",
       "sizes": {
         "25000": {},
         "50000": {
@@ -583,13 +602,17 @@
       "billing": "one_time",
       "notes": "Weekly payouts after qualifying winning days.",
       "sizes": {
-        "25000": {},
+        "25000": {
+          "price": 39
+        },
         "50000": {
           "target": 3000,
           "dd": 2000,
           "price": 39
         },
-        "100000": {},
+        "100000": {
+          "price": 39
+        },
         "150000": {}
       },
       "source": "https://damnpropfirms.com/prop-firms/top-one-futures-account-types-plans-compared-2026/",
@@ -640,11 +663,20 @@
       "program": "evaluation",
       "drawdown_type": "eod_trailing",
       "payout_days": 1,
-      "billing": "one_time",
+      "billing": "monthly",
       "notes": "Daily payout structure. Consistency rules are account-specific. $398 is the regular price; the current listed price varies.",
       "sizes": {
+        "25000": {
+          "price": 71.2
+        },
+        "50000": {
+          "price": 87.2
+        },
         "100000": {
-          "price": 398
+          "price": 159.2
+        },
+        "150000": {
+          "price": 219.6
         }
       },
       "split": 90,
@@ -661,11 +693,14 @@
       "consistency": "required",
       "consistency_pct": 20,
       "billing": "one_time",
-      "notes": "No evaluation. The first payout requires 6% profit. Payouts on demand. $419 is the regular price.",
+      "notes": "No evaluation. The first payout requires 6% profit. Payouts on demand. $419 is the regular price. The larger Instant sizes are published as ranges, so they are not on file as priced rows. Published as a range rather than one figure: $225.20–$328.40 at 100K and $319.60–$375.60 at 150K. Not recorded as a price.",
       "sizes": {
         "25000": {
           "dd": 1000,
-          "price": 419
+          "price": 167.6
+        },
+        "50000": {
+          "price": 271.6
         }
       },
       "split": 90,
@@ -787,13 +822,15 @@
       "firm": "E8 Futures",
       "product": "E8 Signature",
       "program": "evaluation",
-      "notes": "One phase, with a rule structure separate from Zero. Prices vary by size.",
+      "notes": "One phase, with a rule structure separate from Zero. Prices vary by size. Published as a range rather than one figure: $115.70–$213.20 at 50K, $180.70–$382.20 at 100K, $362.70–$707.20 at 200K, and $88 at 25K (a size not on file). Not recorded as a price.",
       "sizes": {
         "50000": {
           "target": 3000
         },
         "100000": {},
-        "150000": {},
+        "150000": {
+          "price": 312
+        },
         "200000": {}
       },
       "target_pct": 6,
@@ -803,7 +840,8 @@
       "consistency_pct": 35,
       "source": "https://helpfutures.e8markets.com/en/articles/11864618-e8-signature-futures",
       "source_note": "The drawdown is an end-of-day dynamic floor: it moves only at market close, follows the highest end-of-day balance, and locks permanently once it reaches the starting balance. The 35% consistency rule applies to funded accounts.",
-      "secondhand": true
+      "secondhand": true,
+      "billing": "one_time"
     },
     {
       "firm": "Traders Launch",
@@ -1105,7 +1143,8 @@
       },
       "split": 80,
       "source": "https://www.earn2trade.com/",
-      "secondhand": true
+      "secondhand": true,
+      "billing": "monthly"
     },
     {
       "firm": "Earn2Trade",
@@ -1115,7 +1154,7 @@
       "consistency": "required",
       "consistency_pct": 30,
       "dailyUnknown": true,
-      "notes": "Same core risk framework as Trader Career Path: daily loss limit, position-size progression, trading-hour restrictions. Price varies by selected account.",
+      "notes": "Same core risk framework as Trader Career Path: daily loss limit, position-size progression, trading-hour restrictions. Price varies by selected account. Published as a range rather than one figure: $85–$95. Not recorded as a price.",
       "sizes": {
         "25000": {},
         "50000": {
@@ -1128,7 +1167,8 @@
       "split": 80,
       "payout_days": 7,
       "source": "https://help.earn2trade.com/en/articles/3292341-what-are-the-gauntlet-mini-rules",
-      "secondhand": true
+      "secondhand": true,
+      "billing": "monthly"
     },
     {
       "firm": "The5ers Futures",
@@ -1344,7 +1384,8 @@
       "notes": "Activation fee $129 on top of the price. Maximum contracts roughly 5 / 10 / 15 by size. Resets cost about $79 / $149 / $229. Weekday overnight holding generally allowed; weekend holding prohibited. Price varies.",
       "sizes": {
         "50000": {
-          "dd": 2000
+          "dd": 2000,
+          "price": 84.15
         },
         "100000": {},
         "150000": {
@@ -1358,7 +1399,8 @@
       "max_days": 30,
       "source": "https://www.thetradingpit.com/faq/what-are-the-rules-in-futures-trading",
       "source_note": "Positions are force-closed at 14:55 CT, so overnight holding is not available. High-frequency trading is prohibited. The daily pause runs $1,000-$3,000 by size; only the drawdown endpoints were published per size, so the middle size is left blank rather than interpolated.",
-      "secondhand": true
+      "secondhand": true,
+      "billing": "one_time"
     },
     {
       "firm": "The Trading Pit Futures",
@@ -1471,6 +1513,54 @@
       "source": "https://damnpropfirms.com/prop-firms/top-one-futures-account-types-plans-compared-2026/",
       "source_note": "No evaluation; a one-time fee from $167.60 depending on size.",
       "secondhand": true
+    },
+    {
+      "firm": "Topstep",
+      "product": "Trading Combine",
+      "program": "evaluation",
+      "drawdown_type": "eod_trailing",
+      "consistency": "required",
+      "consistency_pct": 50,
+      "split": 90,
+      "billing": "monthly",
+      "notes": "A monthly subscription with an activation fee on passing. Moved here from the aggregator export, which carried a single templated row for this firm; the supplied price table is a better source than that.",
+      "source": "https://help.topstep.com/en/articles/8284197-trading-combine-parameters",
+      "secondhand": true,
+      "sizes": {
+        "50000": {
+          "price": 49
+        },
+        "100000": {
+          "price": 99
+        },
+        "150000": {
+          "price": 199
+        }
+      }
+    },
+    {
+      "firm": "Topstep",
+      "product": "Trading Combine No Activation Fee",
+      "program": "evaluation",
+      "drawdown_type": "eod_trailing",
+      "consistency": "required",
+      "consistency_pct": 50,
+      "split": 90,
+      "billing": "monthly",
+      "notes": "The same evaluation sold at a higher monthly fee in exchange for no activation fee on passing. Which is cheaper depends entirely on how long the attempt takes.",
+      "source": "https://help.topstep.com/en/articles/8284197-trading-combine-parameters",
+      "secondhand": true,
+      "sizes": {
+        "50000": {
+          "price": 95
+        },
+        "100000": {
+          "price": 149
+        },
+        "150000": {
+          "price": 229
+        }
+      }
     }
   ]
 }

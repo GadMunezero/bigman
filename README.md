@@ -78,14 +78,14 @@ built and verified, how to add data and features, and how to host it.
 ADMIN_PASSWORD=demo npm run catalogue
 ```
 
-Builds the whole catalogue and starts the dev server: **23 futures firms, 183 challenges** across
+Builds the whole catalogue and starts the dev server: **38 firms and 297 challenges across futures and CFDs** across
 nine account sizes (20K to 300K), with official websites applied.
 
-The catalogue is **futures-only**. CFD and forex firms were removed deliberately: the only data
-for them was an aggregator export in which 18 of 28 rows carried byte-identical figures. The
-questionnaire reads its market options from what is actually published, so it currently offers
-Futures alone rather than walking a forex trader through nine questions to a guaranteed
-no-match — add CFD data later and the option reappears with no code change. Admin is at
+The questionnaire reads its market options from what is actually published, so it never walks a
+trader through a dozen questions to a guaranteed no-match. The catalogue was futures-only for a
+while and the market question was filled in rather than asked; adding CFDs brought it back with
+no code change. The CFD rows carry prices and nothing else so far, so they rank below futures
+rows until somebody adds the rules — which is the right behaviour, not a bug. Admin is at
 `/admin`.
 
 To put it online **free** on your own domain, see **[docs/HOSTING-FREE.md](docs/HOSTING-FREE.md)**
