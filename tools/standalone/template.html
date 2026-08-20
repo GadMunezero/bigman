@@ -1,4 +1,4 @@
-<title>PropFirm Challenge Finder</title>
+<title>PropFirm for Dummies</title>
 <style>
 __GLOBALS__
 
@@ -86,6 +86,26 @@ __GLOBALS__
   .alt .who { flex:1 1 auto; min-width:0; }
   .alt .who b { display:block; font-weight:600; font-size:0.92rem; }
   .alt .who span { font-size:0.8rem; color:var(--ink-3); }
+
+  /* The trader's own profile, above the ranking derived from it ---------- */
+  .fit .arches { display:grid; grid-template-columns:repeat(auto-fit,minmax(14rem,1fr)); gap:0.7rem; margin:1rem 0 1.3rem; }
+  .arch { border:1px solid var(--accent-line); border-radius:0.7rem; background:var(--accent-dim); padding:0.8rem 0.9rem; }
+  .arch-head { display:flex; align-items:baseline; justify-content:space-between; gap:0.7rem; }
+  .arch-head b { font-size:0.95rem; }
+  /* Quiet on purpose: it is a real number the engine used, so it belongs on
+     the page, but leading with it invites reading a classification as a score. */
+  .arch-head span { font-family:var(--mono); font-size:0.7rem; color:var(--ink-3); flex:none; }
+  .arch p { margin:0.35rem 0 0; font-size:0.82rem; color:var(--ink-3); line-height:1.5; }
+  .fit-cols { display:grid; grid-template-columns:repeat(auto-fit,minmax(17rem,1fr)); gap:1.4rem; padding-top:1.2rem; border-top:1px solid var(--line); }
+  .fit-col { min-width:0; }
+  .fit-col h3 { display:flex; align-items:center; gap:0.5rem; margin:0 0 0.7rem; font-size:0.82rem; }
+  .fit-col h3 span { display:grid; place-items:center; width:1.15rem; height:1.15rem; border-radius:50%; font-size:0.7rem; flex:none; }
+  .fit-col h3 .good { background:var(--accent-dim); color:var(--accent); }
+  .fit-col h3 .bad { background:rgba(255,159,28,0.14); color:var(--warn,#ff9f1c); }
+  .fit-col ul { list-style:none; padding:0; margin:0; display:grid; gap:0.65rem; }
+  .fit-col li { font-size:0.85rem; line-height:1.55; color:var(--ink-3); }
+  .fit-col li b { color:var(--ink); }
+  .fit-note { margin:1.2rem 0 0; padding-top:1rem; border-top:1px solid var(--line); }
 
   .elim ul { list-style:none; padding:0; margin:0.5rem 0 0; }
   .elim li { display:flex; justify-content:space-between; gap:1rem; padding:0.5rem 0; border-bottom:1px solid var(--line); font-size:0.9rem; }
@@ -178,77 +198,165 @@ __GLOBALS__
   function viewHome() { return '<div id="island-home"></div>'; }
 
   // ---- Questionnaire ----------------------------------------------------
+  /*
+   * The market question is built from what the catalogue actually contains,
+   * exactly as the server app does it. Offering CFDs when nothing published is
+   * a CFD would walk someone through the whole questionnaire to a guaranteed
+   * no-match; and with one market there is nothing to choose, so the question
+   * is skipped and the answer filled in.
+   */
+  var MARKET_COPY = {
+    futures: ["Futures", "ES, NQ, CL, GC and similar"],
+    forex: ["Forex", "Currency pairs"],
+    cfd: ["CFDs", "Indices, commodities, shares"],
+    crypto: ["Crypto", ""]
+  };
+  var CATALOGUE_MARKETS = (function () {
+    var seen = {}, out = [];
+    DATA.forEach(function (c) { (c.markets || []).forEach(function (m) { if (!seen[m]) { seen[m] = 1; out.push(m); } }); });
+    return out;
+  })();
+
   var QUESTIONS = [
-    { key:"market", title:"Which market do you trade?", options:[
-      ["futures","Futures","ES, NQ, CL, GC and similar"],["forex","Forex","Currency pairs"],
-      ["cfd","CFDs","Indices, commodities, shares"],["crypto","Crypto",""],
-      ["multiple","Multiple markets","Don't narrow by market"]] },
+    { key:"market", title:"Which market do you trade?",
+      when: function () { return CATALOGUE_MARKETS.length > 1; },
+      options: CATALOGUE_MARKETS.map(function (m) {
+        return [m, (MARKET_COPY[m] || [m, ""])[0], (MARKET_COPY[m] || [m, ""])[1]];
+      }).concat(CATALOGUE_MARKETS.length > 1 ? [["multiple","Multiple markets","Don't narrow by market"]] : []) },
     { key:"trading_style", title:"How would you describe your style?", options:[
       ["scalping","Scalping","Many trades, seconds to minutes"],["day_trading","Day trading","Flat by the close"],
       ["swing_trading","Swing trading","Positions held for days"],["news_trading","News trading","Around scheduled releases"],
-      ["algorithmic","Algorithmic","Automated execution"],["mixed","A mix",""]] },
+      ["algorithmic","Algorithmic","Automated execution"],["copy_trading","Copy trading",""],["mixed","A mix",""]] },
     { key:"holding_period", title:"How long do you hold a position?", options:[
       ["seconds","Seconds",""],["minutes","Minutes",""],["hours","Hours",""],
       ["overnight","Overnight",""],["several_days","Several days",""]] },
+    { key:"news_trading", title:"Do you trade around major economic news?",
+      hint:"If you trade news frequently, challenges that prohibit it are removed rather than ranked lower.", options:[
+      ["frequently","Yes, frequently",""],["sometimes","Sometimes",""],
+      ["rarely","Rarely",""],["never","Never",""]] },
     { key:"overnight_required", title:"Do you need to hold overnight?", options:[
       ["yes","Yes","Essential to how I trade"],["sometimes","Sometimes","I'd rather have the option"],
       ["no","No","I'm flat by the close"]] },
+    { key:"weekend_required", title:"Do you need to hold through the weekend?",
+      when: function (a) { return a.trading_style === "swing_trading" || a.holding_period === "several_days"; },
+      options:[["true","Yes, I hold over weekends",""],["false","No, I close before Friday's close",""]] },
+    { key:"ea_required", title:"Do you require automated trading?",
+      when: function (a) { return a.trading_style === "algorithmic"; },
+      options:[["true","Yes, my strategy is automated",""],["false","No, I execute manually",""]] },
     { key:"challenge_approach", title:"How do you want to approach the challenge?", options:[
       ["pass_fast","Pass it fast","Take more risk to clear the target quickly"],
       ["normal","Normal pace","No strong preference"],
       ["protect","Protect the account","Slower, but far less likely to breach"]] },
-    { key:"risk_style", title:"How do you size your risk?", options:[
-      ["aggressive","Aggressive","Larger size, bigger swings"],["balanced","Balanced",""],
-      ["conservative","Conservative","Small size, tight losses"]] },
+    /*
+     * The four measured questions. These replaced "would you call yourself
+     * aggressive?", which asked about self-image. Each of these decides one
+     * specific rule, and together they are what the archetype classifier reads.
+     */
+    { key:"trade_frequency", title:"How often do you actually trade?",
+      hint:"This decides whether a minimum-trading-days rule is harmless or disqualifying for you.", options:[
+      ["many_daily","20+ trades a day","High frequency, small holds"],["few_daily","A few trades a day",""],
+      ["few_weekly","A few trades a week",""],["few_monthly","A few trades a month","Only A+ setups"]] },
+    { key:"profit_shape", title:"When you have a profitable month, where does the profit come from?",
+      hint:"The most useful thing you can tell us. A consistency rule caps what share of your profit one day may contribute — meaningless for an even earner, and able to block a withdrawal entirely for a trader whose month is made on two days.", options:[
+      ["one_big_day","One or two big days carry it","Many small losses, occasional large winners"],
+      ["mixed","Some days matter more than others",""],
+      ["even","It accumulates fairly evenly","Similar profit most days"],
+      ["unsure","I don't know yet",""]] },
+    { key:"risk_width", title:"How much do you risk on a single trade?",
+      hint:"Against the account, not in dollars. A wide stop needs a daily loss limit it can fit inside.", options:[
+      ["wide","A lot","Wide stops, or big size on few trades"],["moderate","A moderate amount",""],
+      ["tight","Very little","Small, tightly controlled risk"],["unsure","I don't know",""]] },
+    { key:"primary_goal", title:"Once you're funded, what does winning look like?",
+      hint:"Two accounts with the same profit split can have completely different real payout economics.", options:[
+      ["get_funded","Just reach a funded account",""],
+      ["fast_payouts","Withdraw money quickly","Cadence and buffers outrank the headline split"],
+      ["cheapest_route","Spend as little as possible getting there","Willing to retry"],
+      ["long_term_seat","Hold a funded seat long term",""]] },
     { key:"budget", title:"What can you spend on the evaluation?", options:[
       ["under_50","Under $50",""],["50_100","$50 – $100",""],["100_200","$100 – $200",""],
       ["200_300","$200 – $300",""],["300_plus","$300+",""],["no_preference","No limit",""]] },
-    { key:"desired_account_size", title:"What account size are you after?", options:[
-      ["25000","$25K",""],["50000","$50K",""],["75000","$75K",""],["100000","$100K",""],
-      ["150000","$150K",""],["no_preference","No preference",""]] },
+    { key:"desired_account_size", title:"What account size are you after?",
+      options: (function () {
+        var seen = {}, sizes = [];
+        DATA.forEach(function (c) { if (c.account_size && !seen[c.account_size]) { seen[c.account_size] = 1; sizes.push(c.account_size); } });
+        sizes.sort(function (a, b) { return a - b; });
+        return sizes.map(function (s) { return [String(s), "$" + (s / 1000) + "K", ""]; })
+          .concat([["no_preference", "No preference", ""]]);
+      })() },
     { key:"deal_breakers", multi:true, title:"Anything that's a deal-breaker?",
-      hint:"Pick any that would rule a challenge out entirely. Skip if none apply.", options:[] }
+      hint:"Pick any that would rule a challenge out entirely. Skip if none apply.",
+      options: V.DEAL_BREAKERS.map(function (k) { return [k, V.DEAL_BREAKER_LABELS[k] || k, ""]; }) },
+    { key:"priorities", multi:true, max:3, title:"What matters most to you?",
+      hint:"Pick up to three. Each one multiplies the weight of the criterion it maps to.",
+      options: V.PRIORITIES.map(function (k) { return [k, V.PRIORITY_LABELS[k] || k, ""]; }) }
   ];
-  QUESTIONS[8].options = V.DEAL_BREAKERS.map(function (k) { return [k, V.DEAL_BREAKER_LABELS[k] || k, ""]; });
 
-  var step = 0, answers = { deal_breakers: [] }, lastResult = null;
+  // Only the questions that apply to the answers given so far — the same
+  // adaptive rule the server app uses.
+  function activeQuestions() {
+    return QUESTIONS.filter(function (q) { return !q.when || q.when(answers); });
+  }
+
+  var step = 0, answers = { deal_breakers: [], priorities: [] }, lastResult = null;
+  // With one market there is nothing to ask, so the answer is seeded instead.
+  if (CATALOGUE_MARKETS.length === 1) answers.market = CATALOGUE_MARKETS[0];
+
+  var tri = function (v) { return v === undefined || v === null ? null : v === "true"; };
 
   function profile() {
     return { market: answers.market || null, trading_style: answers.trading_style || null,
-      holding_period: answers.holding_period || null, news_trading: "sometimes",
+      holding_period: answers.holding_period || null, news_trading: answers.news_trading || null,
       overnight_required: answers.overnight_required || null,
-      challenge_approach: answers.challenge_approach || null, risk_style: answers.risk_style || null,
+      challenge_approach: answers.challenge_approach || null,
+      // risk_style is derived from the measured answer, never asked.
+      risk_style: null,
+      trade_frequency: answers.trade_frequency || null,
+      profit_shape: answers.profit_shape || null,
+      risk_width: answers.risk_width || null,
+      primary_goal: answers.primary_goal || null,
       deal_breakers: answers.deal_breakers, budget: answers.budget || null,
-      desired_account_size: answers.desired_account_size || null, priorities: [],
-      platform: null, ea_required: null, weekend_required: null };
+      desired_account_size: answers.desired_account_size || null,
+      priorities: answers.priorities,
+      platform: null, ea_required: tri(answers.ea_required), weekend_required: tri(answers.weekend_required) };
   }
 
   function viewFind() {
-    var q = QUESTIONS[step], chosen = answers[q.key] || (q.multi ? [] : null);
+    var qs = activeQuestions();
+    if (step >= qs.length) step = qs.length - 1;
+    var q = qs[step], chosen = answers[q.key] || (q.multi ? [] : null);
+    var last = step === qs.length - 1;
     var bars = "";
-    for (var i = 0; i < QUESTIONS.length; i++) bars += '<i class="' + (i <= step ? "done" : "") + '"></i>';
+    for (var i = 0; i < qs.length; i++) bars += '<i class="' + (i <= step ? "done" : "") + '"></i>';
     var h = '<div class="section"><div class="progress" role="progressbar" aria-valuemin="1" aria-valuemax="' +
-      QUESTIONS.length + '" aria-valuenow="' + (step + 1) + '">' + bars + "</div>" +
-      '<span class="eyebrow">Question ' + (step + 1) + " of " + QUESTIONS.length + "</span><h1>" +
+      qs.length + '" aria-valuenow="' + (step + 1) + '">' + bars + "</div>" +
+      '<span class="eyebrow">Question ' + (step + 1) + " of " + qs.length + "</span><h1>" +
       esc(q.title) + "</h1>" + (q.hint ? "<p>" + esc(q.hint) + "</p>" : "") + '<div class="choices">';
     q.options.forEach(function (o) {
       var on = q.multi ? chosen.indexOf(o[0]) !== -1 : chosen === o[0];
       h += '<button type="button" class="choice" aria-pressed="' + on + '" data-v="' + esc(o[0]) + '"><b>' +
         esc(o[1]) + "</b>" + (o[2] ? "<em>" + esc(o[2]) + "</em>" : "") + "</button>";
     });
+    // Multi-selects accept an empty answer; single-selects need one, so the
+    // button says so rather than sitting dead with no explanation.
+    var ready = q.multi || !!chosen;
     return h + '</div><div class="actions">' +
       (step > 0 ? '<button type="button" class="btn" data-act="back">Back</button>' : "") +
-      '<button type="button" class="btn btn-primary" data-act="next">' +
-      (step === QUESTIONS.length - 1 ? "See my matches" : "Continue") + "</button></div></div>";
+      '<button type="button" class="btn btn-primary" data-act="next"' + (ready ? "" : " disabled") + ">" +
+      (last ? "See my matches" : "Continue") + "</button>" +
+      (ready ? "" : '<span class="small muted">Pick an option to continue</span>') + "</div></div>";
   }
 
   function bindFind() {
+    var qs = activeQuestions();
     app.querySelectorAll(".choice").forEach(function (b) {
       b.addEventListener("click", function () {
-        var q = QUESTIONS[step], v = b.getAttribute("data-v");
+        var q = qs[step], v = b.getAttribute("data-v");
         if (q.multi) {
           var i = answers[q.key].indexOf(v);
-          if (i === -1) answers[q.key].push(v); else answers[q.key].splice(i, 1);
+          if (i !== -1) answers[q.key].splice(i, 1);
+          // A cap that silently ignores the click looks broken. Dropping the
+          // oldest choice keeps the last thing you pressed selected.
+          else { answers[q.key].push(v); if (q.max && answers[q.key].length > q.max) answers[q.key].shift(); }
         } else { answers[q.key] = v; }
         render();
       });
@@ -256,10 +364,43 @@ __GLOBALS__
     app.querySelectorAll("[data-act]").forEach(function (b) {
       b.addEventListener("click", function () {
         if (b.getAttribute("data-act") === "back") { step--; render(); return; }
-        if (step === QUESTIONS.length - 1) { lastResult = PF.getChallengeRecommendations(profile(), DATA); location.hash = "#/results"; }
+        // Recomputed after the click: answering a branching question can add or
+        // remove a later one, so "is this the last question" changes with it.
+        var live = activeQuestions();
+        if (step >= live.length - 1) { lastResult = PF.getChallengeRecommendations(profile(), DATA); location.hash = "#/results"; }
         else { step++; render(); }
       });
     });
+  }
+
+  /*
+   * The reading the engine made of the trader, shown above the ranking it
+   * produced. If the reading is wrong the ranking is wrong, and the trader is
+   * the only person who can tell — which is the whole reason it is displayed.
+   */
+  function fitProfilePanel(fit) {
+    if (!fit || !fit.archetypes || !fit.archetypes.length) return "";
+    var cards = fit.archetypes.map(function (a) {
+      return '<div class="arch"><div class="arch-head"><b>' + esc(a.label) + "</b><span>" +
+        Math.round(a.strength * 100) + "%</span></div><p>" + esc(a.summary) + "</p></div>";
+    }).join("");
+    var col = function (title, mark, items) {
+      if (!items || !items.length) return "";
+      return '<div class="fit-col"><h3><span class="' + mark + '">' + (mark === "good" ? "✓" : "!") +
+        "</span>" + title + "</h3><ul>" + items.map(function (r) {
+          return "<li><b>" + esc(r.label) + "</b> — " + esc(r.because) + "</li>";
+        }).join("") + "</ul></div>";
+    };
+    return '<div class="panel fit"><h2>How we read your trading</h2>' +
+      '<p class="small muted">Everything below is ranked against this. If it does not describe you, ' +
+      '<a href="#/find" data-act="again">change your answers</a> — the ranking will change with them.</p>' +
+      '<div class="arches">' + cards + "</div>" +
+      '<div class="fit-cols">' + col("What you need", "good", fit.must_have) +
+      col("What works against you", "bad", fit.avoid) + "</div>" +
+      '<p class="small muted fit-note">These are not universal rules. A consistency rule is close to ' +
+      "irrelevant for a trader whose profit accumulates evenly, and close to disqualifying for one whose " +
+      "month is made on two days. The list above is what these rules mean <em>for the way you said you " +
+      "trade</em>.</p></div>";
   }
 
   function breakdownTable(rec) {
@@ -279,6 +420,10 @@ __GLOBALS__
   function viewResults() {
     if (!lastResult) { location.hash = "#/find"; return ""; }
     var recs = lastResult.recommendations || [], h = '<div class="section stack">';
+    h += '<div><span class="eyebrow">Your results</span><h1>Your challenge matches</h1>' +
+      "<p>Based on the trading preferences you gave us. " + recs.length + " of " + DATA.length +
+      " challenges are compatible with your requirements.</p></div>";
+    h += fitProfilePanel(lastResult.fit_profile);
     if (!recs.length) {
       h += '<div class="panel panel-accent"><span class="eyebrow">No match</span>' +
         "<h1>We couldn't find a challenge that meets every requirement.</h1>" +
