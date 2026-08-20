@@ -13,7 +13,7 @@ or one of the free-forever VMs in the guide linked below.
 
 > **Hosting it for free on your own domain?** Follow
 > **[docs/HOSTING-FREE.md](HOSTING-FREE.md)** instead — Oracle Cloud or Google
-> Cloud, Namecheap DNS, automatic HTTPS, $0/month. This document is the
+> Cloud, a domain you already own, automatic HTTPS, $0/month. This document is the
 > platform-agnostic reference.
 
 ## The fastest path: Docker

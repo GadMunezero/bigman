@@ -88,7 +88,7 @@ rows until somebody adds the rules — which is the right behaviour, not a bug. 
 `/admin`.
 
 To put it online **free** on your own domain, see **[docs/HOSTING-FREE.md](docs/HOSTING-FREE.md)**
-— Oracle Cloud or Google Cloud, a Namecheap domain, automatic HTTPS, $0/month for the server.
+— Oracle Cloud or Google Cloud, a domain you already own, automatic HTTPS, $0/month for the server.
 For the platform-agnostic reference see **[docs/DEPLOY.md](docs/DEPLOY.md)** — there is a Dockerfile
 that seeds the catalogue on first boot and a persistent volume for the database.
 

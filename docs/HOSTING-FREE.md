@@ -1,7 +1,7 @@
-# Putting it online for free, on a Namecheap domain
+# Putting it online for free, on a domain you own
 
-Server hosting: **$0/month.** Domain: whatever Namecheap charges you, usually
-$10–15 a year. Nothing else.
+Server hosting: **$0/month.** If you already have a domain, that is the whole
+bill — you are only pointing it somewhere new.
 
 ---
 
@@ -123,22 +123,47 @@ docker --version
 
 ---
 
-## 4. Point the Namecheap domain at the server
+## 4. Point your domain at the server
 
-Do this **before** you start the app. Caddy proves domain ownership over HTTP
+Do this **before** you start the app. Caddy proves it owns the domain over HTTP
 to get a certificate, and it cannot do that until DNS resolves to your machine.
 
-In Namecheap: **Domain List → Manage → Advanced DNS.** Delete the default
-"parking page" CNAME and URL redirect records — they will fight you — and add:
+Whatever registrar you use, you want the same two records:
 
-| Type | Host | Value | TTL |
-| ---- | ---- | ----- | --- |
-| A Record | `@` | your server's public IP | Automatic |
-| A Record | `www` | your server's public IP | Automatic |
+| Type | Host / Name | Value | TTL |
+| ---- | ----------- | ----- | --- |
+| A | `@` | your server's public IP | Automatic |
+| A | `www` | your server's public IP | Automatic |
 
-Two A records, not a CNAME for `www`: the compose stack serves both names, and
-a CNAME at `www` pointing to a domain that is itself an A record works but adds
-a lookup for no benefit.
+Two A records rather than a CNAME for `www`: the stack serves both names, and a
+CNAME pointing at a name that is itself an A record works but adds a lookup for
+nothing.
+
+**Delete whatever is already there first.** A domain you have owned for a while
+almost certainly has a parking-page A record, a forwarding rule, or a wildcard
+CNAME from a previous host. Any of those will fight the new records, and a
+forwarding rule in particular will keep sending visitors somewhere else long
+after DNS looks correct.
+
+Where the setting lives, by registrar:
+
+| Registrar | Where |
+| --------- | ----- |
+| Namecheap | Domain List → Manage → **Advanced DNS**. Remove the default parking CNAME and any URL Redirect record. |
+| GoDaddy | My Products → DNS → **Manage Zones**. Remove the `@` A record pointing at their parking IP. |
+| Cloudflare | DNS → Records. See the warning below — this one has a real trap. |
+| Google Domains / Squarespace | DNS → **Custom records**. |
+| Porkbun | Details → **DNS Records**. |
+
+> **If your DNS is on Cloudflare, turn the proxy OFF first.** Set both records
+> to **DNS only** — the grey cloud, not the orange one. With the proxy on,
+> Cloudflare terminates TLS itself and Caddy cannot complete the HTTP challenge,
+> so you get a certificate error that looks like a server fault and is not one.
+>
+> Once the site is up and you have seen the padlock, you may switch the proxy
+> back on — but only with SSL/TLS mode set to **Full (strict)**. The default
+> "Flexible" mode talks plain HTTP to your server while promising HTTPS to the
+> visitor, which produces an infinite redirect loop.
 
 Wait for it to take effect, and **check before continuing**:
 
@@ -147,9 +172,16 @@ dig +short your-domain.com
 dig +short www.your-domain.com
 ```
 
-Both must print your server's IP. Namecheap is usually a few minutes; it can be
-up to an hour. Trying to start the stack before this resolves will burn a
-Let's Encrypt failure against your rate limit.
+Both must print your server's IP. Usually a few minutes; it can be up to an
+hour if the old records had a long TTL. Starting the stack before this resolves
+burns a Let's Encrypt failure against your rate limit, so it is worth the wait.
+
+If `dig` still shows the old address long after you changed it, your local
+resolver is caching. Check what the internet sees instead:
+
+```bash
+dig +short your-domain.com @1.1.1.1
+```
 
 ---
 
@@ -282,15 +314,19 @@ docker compose -f deploy/docker-compose.yml down          # stop (keeps the volu
 
 ## When it does not work
 
-**The site does not load at all.** Check DNS first — `dig +short your-domain.com`
-must return your IP. Then check that ports 80 and 443 are open in *both* places:
+**The site does not load at all.** Check DNS first — `dig +short your-domain.com @1.1.1.1`
+must return your IP. If it returns something else, an old record survived. Then check that ports 80 and 443 are open in *both* places:
 the cloud firewall (Oracle security list / GCP firewall rules) and, on Oracle,
 the machine's own iptables. Opening only one is the usual cause.
 
 **"Your connection is not private."** Caddy has not got a certificate yet.
 `docker compose -f deploy/docker-compose.yml logs caddy` will say why. Almost
-always DNS: the domain was not resolving to this server when Caddy first asked.
-Fix DNS, then `restart caddy`.
+always one of two things: the domain was not resolving to this server when
+Caddy first asked, or Cloudflare's proxy is on and intercepting the challenge.
+Fix whichever it is, then `restart caddy`.
+
+**The page redirects forever.** Cloudflare proxy with SSL/TLS set to
+"Flexible". Switch it to **Full (strict)**, or turn the proxy off.
 
 **The build is killed partway through.** Out of memory — the `e2-micro` case.
 Add the swap file from Option B and build again.

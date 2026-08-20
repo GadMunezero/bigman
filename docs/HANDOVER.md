@@ -255,7 +255,7 @@ volume (Render's free web services spin down and keep nothing).
 **To host it for free on your own domain, follow
 [docs/HOSTING-FREE.md](HOSTING-FREE.md).** It covers Oracle Cloud's Always Free
 ARM VM and Google Cloud's `e2-micro`, both genuinely free indefinitely, with
-Namecheap DNS and automatic HTTPS. `deploy/docker-compose.yml` runs the whole
+DNS on any registrar and automatic HTTPS. `deploy/docker-compose.yml` runs the whole
 stack; the rest of this section is the manual equivalent.
 
 ### Docker (works anywhere)
