@@ -88,7 +88,9 @@ Futures alone rather than walking a forex trader through nine questions to a gua
 no-match — add CFD data later and the option reappears with no code change. Admin is at
 `/admin`.
 
-To put it on a real server, see **[docs/DEPLOY.md](docs/DEPLOY.md)** — there is a Dockerfile
+To put it online **free** on your own domain, see **[docs/HOSTING-FREE.md](docs/HOSTING-FREE.md)**
+— Oracle Cloud or Google Cloud, a Namecheap domain, automatic HTTPS, $0/month for the server.
+For the platform-agnostic reference see **[docs/DEPLOY.md](docs/DEPLOY.md)** — there is a Dockerfile
 that seeds the catalogue on first boot and a persistent volume for the database.
 
 Two things to expect, both correct behaviour rather than bugs:

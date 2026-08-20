@@ -18,6 +18,17 @@ FROM node:22-bookworm-slim AS build
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+
+# NEXT_PUBLIC_* is inlined at build time, not read at runtime, so the public
+# URL has to arrive here rather than in `docker run -e`. It is not cosmetic:
+# /sitemap.xml and /robots.txt are statically prerendered, and built without
+# this they hand search engines a sitemap of http://localhost:3000 URLs. The
+# same value also sets `metadataBase`, which is what canonical and Open Graph
+# URLs are resolved against on every prerendered page.
+#
+#   docker build --build-arg NEXT_PUBLIC_SITE_URL=https://your-domain.com .
+ARG NEXT_PUBLIC_SITE_URL=http://localhost:3000
+ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 

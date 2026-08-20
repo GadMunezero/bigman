@@ -236,13 +236,25 @@ scoring, weighting and honesty guarantees.
 
 The app writes — admin edits, rule approvals, reviews, outcome journeys — so it
 needs a host with a **persistent disk**. That rules out serverless platforms
-whose filesystem resets between requests, and rules in Railway, Render, Fly.io,
-or any VPS.
+whose filesystem resets between requests, and rules out free tiers without a
+volume (Render's free web services spin down and keep nothing).
+
+**To host it for free on your own domain, follow
+[docs/HOSTING-FREE.md](HOSTING-FREE.md).** It covers Oracle Cloud's Always Free
+ARM VM and Google Cloud's `e2-micro`, both genuinely free indefinitely, with
+Namecheap DNS and automatic HTTPS. `deploy/docker-compose.yml` runs the whole
+stack; the rest of this section is the manual equivalent.
 
 ### Docker (works anywhere)
 
+One thing that is not optional: `NEXT_PUBLIC_SITE_URL` is a **build argument**,
+not a runtime variable. Next.js inlines `NEXT_PUBLIC_*` during the build, and
+`/sitemap.xml` and `/robots.txt` are prerendered — built without it, they hand
+search engines a sitemap full of `http://localhost:3000` URLs. Change your
+domain and you must rebuild, not just restart.
+
 ```bash
-docker build -t propfirm .
+docker build -t propfirm --build-arg NEXT_PUBLIC_SITE_URL=https://your-domain.com .
 docker run -d --name propfirm \
   -p 3000:3000 \
   -v propfirm-data:/data \

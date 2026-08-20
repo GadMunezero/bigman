@@ -4,15 +4,27 @@ The app is server-rendered Next.js with SQLite. It writes — admin edits, rule
 approvals, reviews, outcome journeys — so it needs a host with a **persistent
 disk**, not a serverless platform whose filesystem resets between requests.
 
-That rules out plain Vercel/Netlify functions and rules in Railway, Render,
-Fly.io, a DigitalOcean droplet, or any VPS running Docker.
+That rules out plain Vercel/Netlify functions, and rules out free tiers with no
+volume — Render's free web services keep nothing between deploys. It rules in
+any VPS running Docker, a paid Railway or Render instance with a disk attached,
+or one of the free-forever VMs in the guide linked below.
 
 ---
 
+> **Hosting it for free on your own domain?** Follow
+> **[docs/HOSTING-FREE.md](HOSTING-FREE.md)** instead — Oracle Cloud or Google
+> Cloud, Namecheap DNS, automatic HTTPS, $0/month. This document is the
+> platform-agnostic reference.
+
 ## The fastest path: Docker
 
+`NEXT_PUBLIC_SITE_URL` is a **build argument**, not a runtime variable — Next.js
+inlines `NEXT_PUBLIC_*` at build time and `/sitemap.xml` and `/robots.txt` are
+prerendered, so built without it they publish `http://localhost:3000` URLs to
+search engines. Changing your domain means rebuilding, not restarting.
+
 ```bash
-docker build -t propfirm .
+docker build -t propfirm --build-arg NEXT_PUBLIC_SITE_URL=https://your-domain.com .
 docker run -d --name propfirm \
   -p 3000:3000 \
   -v propfirm-data:/data \
