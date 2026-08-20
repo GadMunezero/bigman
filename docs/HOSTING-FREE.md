@@ -145,11 +145,41 @@ CNAME from a previous host. Any of those will fight the new records, and a
 forwarding rule in particular will keep sending visitors somewhere else long
 after DNS looks correct.
 
-Where the setting lives, by registrar:
+### Namecheap, click by click
+
+1. Sign in, then **Domain List** in the left sidebar, and **Manage** next to
+   the domain.
+2. **Check the Nameservers box on the `Domain` tab first.** It has to read
+   **Namecheap BasicDNS** (PremiumDNS and FreeDNS also work). If it says
+   *Custom DNS* — pointing at a previous host — then the Advanced DNS tab is
+   not what serves your domain, and records you add there are ignored
+   completely. Switch it to BasicDNS and give it a few minutes before going on.
+   This is the single most common reason a correct-looking record does nothing.
+3. Open the **Advanced DNS** tab.
+4. Under **Host Records**, delete what is already there:
+   - the `@` A record pointing at a Namecheap parking IP (`192.64.119.x`),
+   - the `www` CNAME pointing at `parkingpage.namecheap.com`,
+   - anything in the **Redirect Domain** section further down. A URL redirect
+     survives a DNS change and keeps sending visitors to the old destination.
+5. **Add New Record** twice:
+
+   | Type | Host | Value | TTL |
+   | ---- | ---- | ----- | --- |
+   | A Record | `@` | your server's IP | Automatic |
+   | A Record | `www` | your server's IP | Automatic |
+
+   Save each with the green tick on the right of the row — a row left in edit
+   mode is not saved.
+
+**Leave MX records alone.** If email runs on this domain, deleting the MX
+records breaks it, and nothing about this deployment needs them touched.
+
+Namecheap usually propagates within about half an hour.
+
+### Other registrars
 
 | Registrar | Where |
 | --------- | ----- |
-| Namecheap | Domain List → Manage → **Advanced DNS**. Remove the default parking CNAME and any URL Redirect record. |
 | GoDaddy | My Products → DNS → **Manage Zones**. Remove the `@` A record pointing at their parking IP. |
 | Cloudflare | DNS → Records. See the warning below — this one has a real trap. |
 | Google Domains / Squarespace | DNS → **Custom records**. |
