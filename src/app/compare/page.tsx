@@ -23,6 +23,20 @@ function first(value: string | string[] | undefined): string {
   return Array.isArray(value) ? (value[0] ?? "") : (value ?? "");
 }
 
+/**
+ * Reads an id list that may arrive in either of two shapes.
+ *
+ * The links across the site build `?ids=a,b,c`. The multi-select on this page
+ * is a plain HTML form, so the browser submits `?ids=a&ids=b&ids=c` instead —
+ * and reading only the first of those meant choosing three challenges in the
+ * picker compared one and answered "pick at least two". The form was the main
+ * way anyone reached this page, so the feature was broken by its own control.
+ */
+function idList(value: string | string[] | undefined): string[] {
+  const raw = Array.isArray(value) ? value : value ? [value] : [];
+  return raw.flatMap((entry) => entry.split(",")).filter(Boolean);
+}
+
 export default async function ComparePage({ searchParams }: { searchParams: SearchParams }) {
   const params = await searchParams;
   const profile = await getCurrentProfile();
@@ -30,11 +44,8 @@ export default async function ComparePage({ searchParams }: { searchParams: Sear
 
   // `ids` is the canonical list; `add` appends one, which is what the "Compare"
   // buttons across the site link to.
-  const idsParam = first(params.ids);
   const add = first(params.add);
-  const ids = [
-    ...new Set([...idsParam.split(",").filter(Boolean), ...(add ? [add] : [])]),
-  ].slice(0, MAX_COMPARE);
+  const ids = [...new Set([...idList(params.ids), ...(add ? [add] : [])])].slice(0, MAX_COMPARE);
 
   const selected = getChallengeRecordsByIds(ids).filter((c) => c.status === "published");
 

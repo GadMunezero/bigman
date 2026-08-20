@@ -38,7 +38,10 @@ import json, os
 data = json.load(open("dist/catalogue.json"))
 for r in data:
     for k in [k for k in r if k.startswith("f_")]: del r[k]
-    for k in ("created_at", "updated_at", "billing_type", "firm_id"): r.pop(k, None)
+    # billing_type is kept: a $125/month evaluation and a $69 one-off are not
+    # comparable on price alone, so the comparison table has to show which is
+    # which rather than putting both in a "Price" row and leaving it there.
+    for k in ("created_at", "updated_at", "firm_id"): r.pop(k, None)
     for k in ("created_at", "updated_at", "logo_url", "description", "id"): r["firm"].pop(k, None)
     for k in ("challenge_id", "updated_at", "notes"): r["rules"].pop(k, None)
 cat = json.dumps(data, separators=(",", ":")).replace("</", "<\\/")

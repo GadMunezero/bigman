@@ -140,15 +140,28 @@
       "billing": "one_time",
       "notes": "Maximum 5 minis / 50 micros. No consistency rule once funded. No activation fee.",
       "sizes": {
-        "25000": {},
+        "25000": {
+          "target": 1500,
+          "dd": 1000
+        },
         "50000": {
           "target": 3000,
           "dd": 2000,
           "price": 157
         },
-        "100000": {},
-        "150000": {}
-      }
+        "100000": {
+          "target": 6000,
+          "dd": 3000
+        },
+        "150000": {
+          "target": 9000,
+          "dd": 4500
+        }
+      },
+      "split": 90,
+      "source": "https://myfundedfutures.com/plans/rapid",
+      "source_note": "Daily payouts, no activation fee. One source describes the maximum loss as end-of-day while the supplied product table records intraday trailing — the recorded mechanic was left alone and the disagreement needs settling on the firm's own page.",
+      "secondhand": true
     },
     {
       "firm": "My Funded Futures",
@@ -180,14 +193,23 @@
       "firm": "My Funded Futures",
       "product": "Builder",
       "program": "evaluation",
-      "uncertain": true,
       "notes": "One-step evaluation with an EOD-style risk structure and two Max Loss Limit options chosen at checkout, so price and drawdown both depend on that choice. No activation fee.",
       "sizes": {
         "25000": {},
-        "50000": {},
+        "50000": {
+          "target": 3000,
+          "dd": 2000,
+          "daily": 1000
+        },
         "100000": {},
         "150000": {}
-      }
+      },
+      "split": 80,
+      "min_days": 1,
+      "drawdown_type": "eod_trailing",
+      "source": "https://help.myfundedfutures.com/en/articles/14290805-builder-plan-50k-a-comprehensive-guide",
+      "source_note": "The daily loss limit is a soft pause rather than a breach.",
+      "secondhand": true
     },
     {
       "firm": "My Funded Futures",
@@ -232,7 +254,11 @@
           "daily": 3750,
           "price": 369
         }
-      }
+      },
+      "split": 90,
+      "consistency_pct": 35,
+      "source": "https://help.tradeify.co/en/articles/14369021-tradeify-pricing-reference",
+      "secondhand": true
     },
     {
       "firm": "Tradeify",
@@ -264,7 +290,11 @@
           "dd": 4500,
           "price": 369
         }
-      }
+      },
+      "split": 90,
+      "source": "https://help.tradeify.co/en/articles/14369021-tradeify-pricing-reference",
+      "source_note": "The 40% consistency rule applies during the evaluation only and is dropped once funded.",
+      "secondhand": true
     },
     {
       "firm": "Tradeify",
@@ -292,7 +322,13 @@
           "daily": 3000,
           "price": 796
         }
-      }
+      },
+      "split": 90,
+      "consistency": "required",
+      "consistency_pct": 30,
+      "source": "https://help.tradeify.co/en/articles/14369021-tradeify-pricing-reference",
+      "source_note": "Published as a 20-30% band; the looser end is recorded so the rule is not overstated.",
+      "secondhand": true
     },
     {
       "firm": "FundedNext Futures",
@@ -409,13 +445,20 @@
         "50000": {},
         "100000": {},
         "150000": {}
-      }
+      },
+      "split": 100,
+      "drawdown_type": "intraday_trailing",
+      "consistency": "required",
+      "consistency_pct": 40,
+      "min_days": 10,
+      "source": "https://ylostrading.com/",
+      "source_note": "100% split applies to payouts up to $15,000. Funded accounts use a real-time drawdown. A payout needs 10 days each clearing $150. No renewal fees.",
+      "secondhand": true
     },
     {
       "firm": "Apex Trader Funding",
       "product": "Evaluation",
       "program": "evaluation",
-      "uncertain": true,
       "notes": "The product lineup has changed significantly and the current sizes differ from the older 25K/50K/75K/100K/150K structure. Target, drawdown, contract limits and pricing all vary by model, and legacy accounts are not current purchase options. No price is recorded rather than an invented one.",
       "sizes": {
         "25000": {},
@@ -423,7 +466,13 @@
         "75000": {},
         "100000": {},
         "150000": {}
-      }
+      },
+      "target_pct": 5,
+      "split": 90,
+      "billing": "monthly",
+      "source": "https://apextraderfunding.com/help-center/evaluation-accounts-ea/intraday-trailing-drawdown-evaluations/",
+      "source_note": "The 5% target is stated by the firm as uniform across every account size. The split is 100% of the first $25,000 and 90/10 after it; 90 is recorded as the ongoing rate. Both end-of-day and intraday trailing variants are sold. An activation fee applies on passing.",
+      "secondhand": true
     },
     {
       "firm": "FuturesElite",
@@ -433,8 +482,18 @@
       "sizes": {
         "50000": {},
         "100000": {},
-        "150000": {}
-      }
+        "150000": {
+          "target": 9000,
+          "dd": 4500
+        }
+      },
+      "split": 80,
+      "target_pct": 6,
+      "drawdown_type": "intraday_trailing",
+      "payout_days": 5,
+      "source": "https://faq.futureselite.com/en/",
+      "source_note": "No daily loss limit on this plan.",
+      "secondhand": true
     },
     {
       "firm": "FuturesElite",
@@ -442,10 +501,20 @@
       "program": "evaluation",
       "notes": "Higher tier than Prime. Contract limits depend on size. Price varies.",
       "sizes": {
-        "50000": {},
+        "50000": {
+          "target": 3000,
+          "dd": 2000
+        },
         "100000": {},
         "150000": {}
-      }
+      },
+      "split": 80,
+      "target_pct": 6,
+      "drawdown_type": "eod_trailing",
+      "payout_days": 5,
+      "source": "https://faq.futureselite.com/en/",
+      "source_note": "No daily loss limit on this plan.",
+      "secondhand": true
     },
     {
       "firm": "FuturesElite",
@@ -460,7 +529,11 @@
         "50000": {},
         "100000": {},
         "150000": {}
-      }
+      },
+      "split": 80,
+      "payout_days": 5,
+      "source": "https://faq.futureselite.com/en/",
+      "secondhand": true
     },
     {
       "firm": "Funded Futures Family",
@@ -518,7 +591,10 @@
         },
         "100000": {},
         "150000": {}
-      }
+      },
+      "source": "https://damnpropfirms.com/prop-firms/top-one-futures-account-types-plans-compared-2026/",
+      "source_note": "No daily loss limit during the challenge; the 40% consistency rule applies at payout. Sources disagree on this firm's profit targets: one publishes a flat 6% and another a tiered 6% at 25K and 50K, 5% at 75K and 100K, 4% at 150K. The recorded figures follow the first; settle it on the firm's own page before publishing.",
+      "secondhand": true
     },
     {
       "firm": "Top One Futures",
@@ -527,14 +603,36 @@
       "drawdown_type": "eod_trailing",
       "notes": "One-step evaluation. Consistency depends on the program. Price varies by current offer. Activation fee $149 on top of the evaluation price.",
       "sizes": {
-        "25000": {},
+        "25000": {
+          "price": 200,
+          "target": 1500,
+          "dd": 1000,
+          "daily": 625
+        },
         "50000": {
           "target": 3000,
-          "dd": 2000
+          "dd": 2000,
+          "price": 250,
+          "daily": 1250
         },
-        "100000": {},
-        "150000": {}
-      }
+        "100000": {
+          "price": 300,
+          "target": 6000,
+          "dd": 3000,
+          "daily": 2500
+        },
+        "150000": {
+          "price": 350,
+          "target": 9000,
+          "dd": 4500,
+          "daily": 3750
+        }
+      },
+      "source": "https://help.toponefutures.com/en/articles/14595016-elite-access-accounts-overview",
+      "secondhand": true,
+      "split": 90,
+      "consistency": "required",
+      "consistency_pct": 25
     },
     {
       "firm": "Top One Futures",
@@ -548,7 +646,12 @@
         "100000": {
           "price": 398
         }
-      }
+      },
+      "split": 90,
+      "consistency": "required",
+      "consistency_pct": 40,
+      "source": "https://damnpropfirms.com/prop-firms/top-one-futures-account-types-plans-compared-2026/",
+      "secondhand": true
     },
     {
       "firm": "Top One Futures",
@@ -564,7 +667,10 @@
           "dd": 1000,
           "price": 419
         }
-      }
+      },
+      "split": 90,
+      "source": "https://damnpropfirms.com/prop-firms/top-one-futures-account-types-plans-compared-2026/",
+      "secondhand": true
     },
     {
       "firm": "Top One Futures",
@@ -586,7 +692,13 @@
           "dd": 6000,
           "daily": 3000
         }
-      }
+      },
+      "consistency": "required",
+      "consistency_pct": 15,
+      "drawdown_type": "eod_trailing",
+      "source": "https://damnpropfirms.com/prop-firms/top-one-futures-account-types-plans-compared-2026/",
+      "source_note": "No evaluation. The tightest consistency rule the firm sells.",
+      "secondhand": true
     },
     {
       "firm": "Take Profit Trader",
@@ -641,7 +753,10 @@
         "200000": {
           "price": 558
         }
-      }
+      },
+      "source": "https://e8futures.com/e8-zero",
+      "source_note": "NEEDS REVIEW: research describes E8's futures line as Signature-only, with E8 Zero sold for forex and crypto rather than futures. This product came from the supplied table and has been kept rather than deleted, but confirm it exists as a futures account before publishing.",
+      "secondhand": true
     },
     {
       "firm": "E8 Futures",
@@ -663,7 +778,10 @@
         "200000": {
           "price": 1088
         }
-      }
+      },
+      "source": "https://e8futures.com/e8-zero",
+      "source_note": "NEEDS REVIEW: research describes E8's futures line as Signature-only, with E8 Zero sold for forex and crypto rather than futures. Confirm before publishing.",
+      "secondhand": true
     },
     {
       "firm": "E8 Futures",
@@ -671,11 +789,21 @@
       "program": "evaluation",
       "notes": "One phase, with a rule structure separate from Zero. Prices vary by size.",
       "sizes": {
-        "50000": {},
+        "50000": {
+          "target": 3000
+        },
         "100000": {},
         "150000": {},
         "200000": {}
-      }
+      },
+      "target_pct": 6,
+      "split": 80,
+      "drawdown_type": "eod_trailing",
+      "consistency": "required",
+      "consistency_pct": 35,
+      "source": "https://helpfutures.e8markets.com/en/articles/11864618-e8-signature-futures",
+      "source_note": "The drawdown is an end-of-day dynamic floor: it moves only at market close, follows the highest end-of-day balance, and locks permanently once it reaches the starting balance. The 35% consistency rule applies to funded accounts.",
+      "secondhand": true
     },
     {
       "firm": "Traders Launch",
@@ -716,7 +844,13 @@
           "target": 9000,
           "dd": 4500
         }
-      }
+      },
+      "split": 80,
+      "consistency": "required",
+      "consistency_pct": 30,
+      "source": "https://tradeday.freshdesk.com/en/support/solutions/articles/103000335937-quick-pay-funded-sim-payout-policy",
+      "source_note": "The split is 50/50 on the first $4,000 of net profit per account and 80/20 above it; 80 is recorded as the ongoing rate. The consistency rule applies during evaluation only. Minimum payout $250, no activation fee.",
+      "secondhand": true
     },
     {
       "firm": "TradeDay",
@@ -739,7 +873,13 @@
           "target": 9000,
           "dd": 4500
         }
-      }
+      },
+      "split": 80,
+      "consistency": "required",
+      "consistency_pct": 30,
+      "source": "https://tradeday.freshdesk.com/en/support/solutions/articles/103000335937-quick-pay-funded-sim-payout-policy",
+      "source_note": "50/50 on the first $4,000 then 80/20. Consistency applies during evaluation only.",
+      "secondhand": true
     },
     {
       "firm": "TradeDay",
@@ -759,7 +899,14 @@
           "target": 9000,
           "dd": 4500
         }
-      }
+      },
+      "split": 80,
+      "consistency": "required",
+      "consistency_pct": 45,
+      "billing": "monthly",
+      "source": "https://tradeday.freshdesk.com/en/support/solutions/articles/103000404096-fast-pass-funded-sim-payout-policy",
+      "source_note": "Flat 80/20 in funded sim. The consistency rule applies during evaluation only.",
+      "secondhand": true
     },
     {
       "firm": "DayTraders",
@@ -770,7 +917,10 @@
       "notes": "Two qualifying days. Price varies.",
       "sizes": {
         "50000": {}
-      }
+      },
+      "split": 100,
+      "source": "https://daytraders.com/trailing-drawdown-explained",
+      "secondhand": true
     },
     {
       "firm": "DayTraders",
@@ -782,7 +932,10 @@
       "min_days": 2,
       "notes": "Two qualifying days. Sizes run to 300K. Price varies.",
       "sizes": {
-        "25000": {},
+        "25000": {
+          "price": 570,
+          "dd": 1000
+        },
         "50000": {
           "target": 3000,
           "dd": 2000,
@@ -791,10 +944,15 @@
         "150000": {
           "target": 8500,
           "dd": 4000,
-          "daily": 2000
+          "daily": 2000,
+          "price": 825
         },
         "300000": {}
-      }
+      },
+      "split": 100,
+      "source": "https://daytraders.com/help/articles/9855052-drawdown-threshold-guide-trailing-static-eod",
+      "source_note": "The firm advertises 100% profit retention with no split. Fees are quoted as one-time or monthly depending on the plan chosen.",
+      "secondhand": true
     },
     {
       "firm": "DayTraders",
@@ -805,7 +963,10 @@
       "notes": "Fixed drawdown rather than trailing. Two qualifying days. Price varies.",
       "sizes": {
         "50000": {}
-      }
+      },
+      "split": 100,
+      "source": "https://daytraders.com/help/articles/9855052-drawdown-threshold-guide-trailing-static-eod",
+      "secondhand": true
     },
     {
       "firm": "DayTraders",
@@ -817,7 +978,10 @@
       "notes": "No traditional evaluation. Funded progression rules apply. Price varies.",
       "sizes": {
         "50000": {}
-      }
+      },
+      "split": 100,
+      "source": "https://daytraders.com/help/articles/9855052-drawdown-threshold-guide-trailing-static-eod",
+      "secondhand": true
     },
     {
       "firm": "DayTraders",
@@ -827,7 +991,10 @@
       "notes": "Direct funded progression with rules separate from S2F. Price varies.",
       "sizes": {
         "50000": {}
-      }
+      },
+      "split": 100,
+      "source": "https://daytraders.com/",
+      "secondhand": true
     },
     {
       "firm": "Goat Funded Futures",
@@ -847,12 +1014,19 @@
         },
         "100000": {
           "target": 6500,
-          "dd": 3000
+          "dd": 3000,
+          "price": 264
         },
         "150000": {
-          "dd": 4500
+          "dd": 4500,
+          "price": 374,
+          "target": 9000
         }
-      }
+      },
+      "payout_days": 7,
+      "source": "https://help.goatfundedfutures.com/en/articles/14095302-eod-challenge-specifications-rules-and-payouts",
+      "source_note": "Payout eligibility is every 7 winning days; a winning day is at least 0.2% of the starting balance. Minimum payout $500. No activation fee. The 30% cap is on the best day's share of total profit and gates the payout, not the pass.",
+      "secondhand": true
     },
     {
       "firm": "Goat Funded Futures",
@@ -867,7 +1041,11 @@
         "25000": {},
         "50000": {},
         "100000": {}
-      }
+      },
+      "target_pct": 6,
+      "source": "https://help.goatfundedfutures.com/en/articles/14523731-what-are-the-specifications-of-each-type-and-account-size",
+      "source_note": "No consistency rule during the evaluation.",
+      "secondhand": true
     },
     {
       "firm": "Goat Funded Futures",
@@ -884,7 +1062,13 @@
         "75000": {},
         "100000": {},
         "150000": {}
-      }
+      },
+      "daily_pct": 3,
+      "min_days": 10,
+      "payout_days": 7,
+      "source": "https://help.goatfundedfutures.com/en/articles/14095625-what-are-the-instant-funded-specifications",
+      "source_note": "No evaluation. Before a first payout the balance must grow 7%, over at least 7 winning days and 10 calendar days. The daily loss limit is a soft breach that pauses the account until the next session. Profit on any one day is capped at 5% of the balance, after which trading stops for the day.",
+      "secondhand": true
     },
     {
       "firm": "Goat Funded Futures",
@@ -898,7 +1082,11 @@
         "50000": {},
         "100000": {},
         "150000": {}
-      }
+      },
+      "target_pct": 6,
+      "source": "https://help.goatfundedfutures.com/en/articles/14888545-flex-challenge-specifications-rules-and-payouts",
+      "source_note": "No daily loss limit and no consistency rule once funded. Default split 80/20, with a 90/10 add-on sold for an extra 20% of the challenge price.",
+      "secondhand": true
     },
     {
       "firm": "Earn2Trade",
@@ -914,7 +1102,10 @@
         "50000": {},
         "100000": {},
         "150000": {}
-      }
+      },
+      "split": 80,
+      "source": "https://www.earn2trade.com/",
+      "secondhand": true
     },
     {
       "firm": "Earn2Trade",
@@ -927,10 +1118,17 @@
       "notes": "Same core risk framework as Trader Career Path: daily loss limit, position-size progression, trading-hour restrictions. Price varies by selected account.",
       "sizes": {
         "25000": {},
-        "50000": {},
+        "50000": {
+          "target": 3000,
+          "daily": 1100
+        },
         "100000": {},
         "150000": {}
-      }
+      },
+      "split": 80,
+      "payout_days": 7,
+      "source": "https://help.earn2trade.com/en/articles/3292341-what-are-the-gauntlet-mini-rules",
+      "secondhand": true
     },
     {
       "firm": "The5ers Futures",
@@ -947,7 +1145,11 @@
       "sizes": {
         "25000": {},
         "50000": {}
-      }
+      },
+      "split": 80,
+      "source": "https://the5ers.com/futures-faqs/",
+      "source_note": "Objectives are identical across the Rebate and Basecamp fee structures, which differ only in how you pay: Basecamp is $50 at 25K and $100 at 50K plus an activation fee of $70 and $140 on funding, while Rebate is a one-off fee that returns commissions daily.",
+      "secondhand": true
     },
     {
       "firm": "The5ers Futures",
@@ -964,7 +1166,10 @@
       "sizes": {
         "25000": {},
         "50000": {}
-      }
+      },
+      "split": 80,
+      "source": "https://the5ers.com/futures-faqs/",
+      "secondhand": true
     },
     {
       "firm": "AquaFutures",
@@ -973,13 +1178,25 @@
       "billing": "one_time",
       "notes": "One-step futures evaluation. $163 is the regular price. Drawdown and payout rules depend on the current Standard specification.",
       "sizes": {
-        "25000": {},
+        "25000": {
+          "price": 149
+        },
         "50000": {
           "price": 163
         },
-        "100000": {},
+        "100000": {
+          "price": 306
+        },
         "150000": {}
-      }
+      },
+      "target_pct": 8,
+      "consistency": "required",
+      "consistency_pct": 40,
+      "payout_days": 14,
+      "drawdown_type": "eod_trailing",
+      "source": "https://help.aquafutures.io/en/articles/10080201-aquafutures-trading-parameters",
+      "source_note": "No daily loss limit on Standard. Maximum drawdown runs from 6% at the smallest size down to 3.3% at the largest, so it is not recorded as a single figure.",
+      "secondhand": true
     },
     {
       "firm": "AquaFutures",
@@ -991,17 +1208,28 @@
         "50000": {
           "price": 447
         }
-      }
+      },
+      "daily_pct": 2.5,
+      "dd_pct": 4,
+      "drawdown_type": "eod_trailing",
+      "source": "https://www.aquafutures.io/blogs/instant-funding-rules",
+      "source_note": "The maximum drawdown is 4% at most sizes but 3% on the $100K account.",
+      "secondhand": true
     },
     {
       "firm": "AquaFutures",
       "product": "Beginner",
       "program": "evaluation",
-      "uncertain": true,
       "notes": "The programme has been updated with a soft daily drawdown and a one-time payment structure. Price depends on account size.",
       "sizes": {
         "50000": {}
-      }
+      },
+      "daily_pct": 2.5,
+      "drawdown_type": "eod_trailing",
+      "payout_days": 7,
+      "source": "https://www.proptradingvibes.com/blog/aquafutures-beginner-vs-standard-account",
+      "source_note": "Published as a 6-8% profit target and a maximum drawdown between 6% and 3.3% depending on size, so neither is recorded as a single figure.",
+      "secondhand": true
     },
     {
       "firm": "Blue Guardian Futures",
@@ -1033,7 +1261,10 @@
           "dd": 5000,
           "daily": 3000
         }
-      }
+      },
+      "split": 90,
+      "source": "https://helpfutures.blueguardian.com/en/articles/15654479-standard-account-rules",
+      "secondhand": true
     },
     {
       "firm": "Blue Guardian Futures",
@@ -1058,7 +1289,10 @@
         "150000": {
           "target": 9000
         }
-      }
+      },
+      "split": 90,
+      "source": "https://helpfutures.blueguardian.com/en/articles/15678716-reserve-account-rules",
+      "secondhand": true
     },
     {
       "firm": "Blue Guardian Futures",
@@ -1073,7 +1307,10 @@
         },
         "100000": {},
         "150000": {}
-      }
+      },
+      "split": 90,
+      "source": "https://helpfutures.blueguardian.com/en/articles/15772960-payout-policy",
+      "secondhand": true
     },
     {
       "firm": "Blue Guardian Futures",
@@ -1092,7 +1329,11 @@
         "150000": {
           "price": 824
         }
-      }
+      },
+      "split": 90,
+      "source": "https://helpfutures.blueguardian.com/en/articles/15679519-direct-account-rules",
+      "source_note": "Payouts carry a 2% processing fee. A payout processed after the 24-business-hour window pays 100% instead of 90% for that request.",
+      "secondhand": true
     },
     {
       "firm": "The Trading Pit Futures",
@@ -1102,10 +1343,22 @@
       "overnight": "allowed",
       "notes": "Activation fee $129 on top of the price. Maximum contracts roughly 5 / 10 / 15 by size. Resets cost about $79 / $149 / $229. Weekday overnight holding generally allowed; weekend holding prohibited. Price varies.",
       "sizes": {
-        "50000": {},
+        "50000": {
+          "dd": 2000
+        },
         "100000": {},
-        "150000": {}
-      }
+        "150000": {
+          "dd": 4500
+        }
+      },
+      "split": 80,
+      "drawdown_type": "eod_trailing",
+      "consistency": "required",
+      "consistency_pct": 40,
+      "max_days": 30,
+      "source": "https://www.thetradingpit.com/faq/what-are-the-rules-in-futures-trading",
+      "source_note": "Positions are force-closed at 14:55 CT, so overnight holding is not available. High-frequency trading is prohibited. The daily pause runs $1,000-$3,000 by size; only the drawdown endpoints were published per size, so the middle size is left blank rather than interpolated.",
+      "secondhand": true
     },
     {
       "firm": "The Trading Pit Futures",
@@ -1118,7 +1371,17 @@
         "150000": {},
         "200000": {},
         "250000": {}
-      }
+      },
+      "split": 80,
+      "drawdown_type": "trailing",
+      "consistency": "required",
+      "consistency_pct": 40,
+      "max_days": 30,
+      "overnight": "allowed",
+      "weekend": "prohibited",
+      "source": "https://www.thetradingpit.com/faq/what-are-the-rules-in-futures-trading",
+      "source_note": "The trailing floor moves up in real time whenever the closed balance sets a new high.",
+      "secondhand": true
     },
     {
       "firm": "Blueberry Futures",
@@ -1135,17 +1398,25 @@
         },
         "50000": {
           "target": 3000,
-          "dd": 2000
+          "dd": 2000,
+          "price": 245
         },
         "100000": {
           "target": 6000,
-          "dd": 3000
+          "dd": 3000,
+          "price": 368
         },
         "150000": {
           "target": 10000,
-          "dd": 4500
+          "dd": 4500,
+          "price": 607
         }
-      }
+      },
+      "split": 90,
+      "billing": "monthly",
+      "source": "https://blueberryfutures.com/",
+      "source_note": "A monthly subscription, not a one-off: the fee recurs while the account is active, and there are no refunds. No hard daily loss limit — traders set their own in the platform's risk manager. Payout after 5 profitable days, a profitable day being $200.",
+      "secondhand": true
     },
     {
       "firm": "Blueberry Futures",
@@ -1158,11 +1429,13 @@
       "sizes": {
         "25000": {
           "target": 1500,
-          "dd": 1000
+          "dd": 1000,
+          "price": 110.4
         },
         "50000": {
           "target": 3000,
-          "dd": 2000
+          "dd": 2000,
+          "price": 184
         },
         "100000": {
           "target": 6000,
@@ -1172,7 +1445,12 @@
           "target": 10000,
           "dd": 4500
         }
-      }
+      },
+      "split": 90,
+      "billing": "monthly",
+      "source": "https://blueberryfutures.com/",
+      "source_note": "A monthly subscription, not a one-off. No hard daily loss limit.",
+      "secondhand": true
     },
     {
       "firm": "Top One Futures",
@@ -1185,7 +1463,14 @@
         "50000": {},
         "100000": {},
         "150000": {}
-      }
+      },
+      "split": 90,
+      "consistency": "required",
+      "consistency_pct": 20,
+      "drawdown_type": "eod_trailing",
+      "source": "https://damnpropfirms.com/prop-firms/top-one-futures-account-types-plans-compared-2026/",
+      "source_note": "No evaluation; a one-time fee from $167.60 depending on size.",
+      "secondhand": true
     }
   ]
 }

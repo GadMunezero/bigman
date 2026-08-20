@@ -667,10 +667,29 @@ __GLOBALS__
       ["Daily loss limit", function (c) { return pct(c.daily_drawdown_pct); }],
       ["Drawdown type", function (c) { return c.drawdown_type ? titleCase(c.drawdown_type) : null; }],
       ["Phases", function (c) { return c.phases === 0 ? "Instant" : c.phases; }],
+      ["Minimum days", function (c) { return c.minimum_days == null ? null : String(c.minimum_days); }],
+      ["Maximum days", function (c) { return c.maximum_days == null ? null : c.maximum_days + " days"; }],
+      ["Payout frequency", function (c) {
+        return c.payout_frequency_days == null ? null
+          : c.payout_frequency_days === 1 ? "Daily" : "Every " + c.payout_frequency_days + " days";
+      }],
       ["Profit split", function (c) { return pct(c.payout_split_pct); }],
+      ["Billing", function (c) { return c.billing_type === "monthly" ? "Monthly" : c.billing_type === "one_time" ? "One-off" : null; }],
+      // A consistency rule is the field most likely to decide the account for a
+      // trader whose month is made on a couple of days, so it belongs in the
+      // comparison rather than only on the detail page.
+      ["Consistency rule", function (c) {
+        if (c.rules.consistency_rule === "not_required") return "None";
+        if (c.rules.consistency_rule === "required") {
+          return c.rules.consistency_pct != null ? c.rules.consistency_pct + "% best day" : "Required";
+        }
+        return null;
+      }],
       ["Platforms", function (c) { return (c.platforms || []).join(", "); }],
       ["News trading", function (c) { return titleCase(c.rules.news_trading); }],
-      ["Overnight", function (c) { return titleCase(c.rules.overnight); }]
+      ["Overnight", function (c) { return titleCase(c.rules.overnight); }],
+      ["Weekend", function (c) { return titleCase(c.rules.weekend); }],
+      ["EA / automation", function (c) { return titleCase(c.rules.ea_allowed); }]
     ];
     h += '<div class="panel scroll-x"><table><thead><tr><th></th>' + picked.map(function (c) {
       return "<th>" + esc(c.firm.name) + "<br>" + esc(c.name) + "</th>"; }).join("") + "</tr></thead><tbody>" +

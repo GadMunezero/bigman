@@ -52,6 +52,22 @@ interface Product {
   target_pct?: number;
   dd_pct?: number;
   daily_pct?: number;
+  /**
+   * Where these figures came from. Written to `source_url` so a reviewer can
+   * open the page that produced the number instead of taking it on trust.
+   *
+   * `source` alone is the firm's own help centre or pricing page. `source_note`
+   * carries the caveat when a figure was read off a secondary page — a review
+   * or comparison site — which is a weaker claim and has to stay visible.
+   */
+  source?: string;
+  source_note?: string;
+  /**
+   * True when the figures came from somewhere other than the firm's own site.
+   * Forces `source_type` to `aggregator_unverified`, which the schema will
+   * never let be marked `verified`.
+   */
+  secondhand?: boolean;
   uncertain?: boolean;
   dailyUnknown?: boolean;
   notes?: string;
@@ -127,6 +143,7 @@ for (const p of specs.products) {
     if (p.uncertain) {
       conditions.push("Figures deliberately absent: the source said not to rely on them for this product.");
     }
+    if (p.source_note) conditions.push(p.source_note);
 
     const label = size >= 1000 ? `${size / 1000}K` : String(size);
     const record: Record<string, string> = {
@@ -146,6 +163,11 @@ for (const p of specs.products) {
       drawdown_type: p.drawdown_type ?? "",
       minimum_days: p.min_days !== undefined ? String(p.min_days) : "",
       maximum_days: p.max_days !== undefined ? String(p.max_days) : "",
+      // The cadence went into the notes but never into its own column, so the
+      // comparison table read "Not confirmed" for products whose payout days
+      // were on file, and the payout criterion scored every one of them as
+      // unknown. Both read this column, not the prose.
+      payout_frequency_days: p.payout_days !== undefined ? String(p.payout_days) : "",
       payout_split_pct: p.split !== undefined ? String(p.split) : "",
       payout_conditions: conditions.join(" "),
       phases: isInstant ? "0" : "1",
@@ -154,7 +176,11 @@ for (const p of specs.products) {
       weekend: p.weekend ?? "",
       consistency_rule: p.consistency ?? "",
       consistency_pct: p.consistency_pct !== undefined ? String(p.consistency_pct) : "",
-      source_type: "trader_report",
+      source_url: p.source ?? "",
+      // A figure read off a comparison site is a weaker claim than one read off
+      // the firm's help centre, and the difference has to survive into the
+      // database rather than being flattened at import time.
+      source_type: p.secondhand ? "aggregator_unverified" : "trader_report",
       confidence: "needs_review",
       status: "draft",
     };

@@ -294,3 +294,35 @@ describe("questionnaire answers survive the round trip", () => {
     ).toBeUndefined();
   });
 });
+
+describe("comparison id parsing", () => {
+  /*
+   * The compare page accepts an id list in two shapes and used to read only
+   * one of them. Links across the site build `?ids=a,b,c`; the multi-select on
+   * the page itself is a plain HTML form, so the browser submits
+   * `?ids=a&ids=b&ids=c`. Reading only the first meant choosing three
+   * challenges in the picker compared one and answered "pick at least two" —
+   * the feature broken by its own control, on the path most people used.
+   *
+   * The parser is duplicated here rather than exported because the page is a
+   * server component and importing it drags in the database.
+   */
+  const idList = (value: string | string[] | undefined): string[] => {
+    const raw = Array.isArray(value) ? value : value ? [value] : [];
+    return raw.flatMap((entry) => entry.split(",")).filter(Boolean);
+  };
+
+  it("reads the comma form the site's own links build", () => {
+    expect(idList("a,b,c")).toEqual(["a", "b", "c"]);
+  });
+
+  it("reads the repeated form a multi-select submits", () => {
+    expect(idList(["a", "b", "c"])).toEqual(["a", "b", "c"]);
+  });
+
+  it("reads a mix of both, and drops empties", () => {
+    expect(idList(["a,b", "c", ""])).toEqual(["a", "b", "c"]);
+    expect(idList(undefined)).toEqual([]);
+    expect(idList("")).toEqual([]);
+  });
+});
