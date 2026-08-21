@@ -220,6 +220,36 @@ which futures rarely has.
 
 ---
 
+## Planned: a news feed for psychology and prop firm updates
+
+Not built. Recorded here so the shape is decided before someone starts.
+
+**Most of it already exists.** The `articles` table has slug, title, summary,
+body, status and an admin editor at `/admin/articles`, with `/learn` and
+`/learn/[slug]` rendering it. A news feed is that same table with a third
+`kind` and a date-ordered index.
+
+Two things need real care:
+
+1. **`kind` has a CHECK constraint** — `CHECK (kind IN ('learn','landing'))`.
+   SQLite cannot alter a CHECK in place, so adding `'news'` means rebuilding
+   the table. `widenSourceTypeCheck()` in `src/lib/db.ts` is the pattern to
+   copy: it does exactly this for `sources.source_type`, guarded so it runs
+   once and only on databases that need it.
+
+2. **A prop firm update is a rule change, not just a post.** When a firm moves
+   a drawdown or a profit split, the catalogue has to move with it or the news
+   item contradicts the challenge page. `rule_history` already records dated
+   changes and the challenge page already renders them, so the honest flow is:
+   change the challenge in `/admin`, approve the pending change, and let the
+   news post link to it. A post that announces a change the catalogue has not
+   made is worse than no post.
+
+Psychology news is simpler — it has no catalogue to contradict, so it is
+ordinary editorial content and needs nothing beyond the third `kind`.
+
+---
+
 ## Adding features
 
 | Change | Where |
