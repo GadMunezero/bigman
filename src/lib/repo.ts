@@ -709,3 +709,129 @@ export function adminOverview() {
     resultsViewed: one(`SELECT COUNT(*) AS n FROM analytics_events WHERE event='results_viewed'`),
   };
 }
+
+// ---------------------------------------------------------------------------
+// Newsletter
+// ---------------------------------------------------------------------------
+
+export interface Subscriber {
+  id: string;
+  email: string;
+  status: "pending" | "confirmed" | "unsubscribed" | "bounced";
+  topics: string[];
+  token: string;
+  source: string | null;
+  created_at: string;
+  confirmed_at: string | null;
+  unsubscribed_at: string | null;
+}
+
+interface SubscriberRow extends Omit<Subscriber, "topics"> {
+  topics: string;
+}
+
+const mapSubscriber = (row: SubscriberRow): Subscriber => ({
+  ...row,
+  topics: parseJsonArray(row.topics),
+});
+
+/**
+ * Records a signup, or updates the topics on one that already exists.
+ *
+ * Returns the token so the caller can build a confirmation link, and a flag
+ * saying whether this address was already confirmed — but deliberately returns
+ * the SAME shape either way, because the caller must not tell the browser
+ * whether an address is already on the list. Anyone can type anyone's email
+ * into the form; a response that differs turns the signup box into a tool for
+ * checking whether a given person subscribed.
+ *
+ * An address that previously unsubscribed comes back as `pending`, never
+ * straight to `confirmed`. Re-consent has to be given again, not assumed from
+ * a form submission that could have come from anyone.
+ */
+export function subscribeToNewsletter(input: {
+  email: string;
+  topics: string[];
+  source?: string | null;
+}): { token: string; alreadyConfirmed: boolean } {
+  const db = getDb();
+  const email = input.email.trim().toLowerCase();
+  const existing = db
+    .prepare(`SELECT * FROM newsletter_subscribers WHERE email = ?`)
+    .get(email) as SubscriberRow | undefined;
+
+  if (existing) {
+    const alreadyConfirmed = existing.status === "confirmed";
+    db.prepare(
+      `UPDATE newsletter_subscribers
+         SET topics = ?, source = COALESCE(?, source),
+             status = CASE WHEN status = 'confirmed' THEN 'confirmed' ELSE 'pending' END,
+             unsubscribed_at = CASE WHEN status = 'confirmed' THEN unsubscribed_at ELSE NULL END
+       WHERE id = ?`,
+    ).run(JSON.stringify(input.topics), input.source ?? null, existing.id);
+    return { token: existing.token, alreadyConfirmed };
+  }
+
+  const token = newId("nl");
+  db.prepare(
+    `INSERT INTO newsletter_subscribers (id, email, topics, token, source)
+     VALUES (?, ?, ?, ?, ?)`,
+  ).run(newId("sub"), email, JSON.stringify(input.topics), token, input.source ?? null);
+  return { token, alreadyConfirmed: false };
+}
+
+export function getSubscriberByToken(token: string): Subscriber | null {
+  const row = getDb()
+    .prepare(`SELECT * FROM newsletter_subscribers WHERE token = ?`)
+    .get(token) as SubscriberRow | undefined;
+  return row ? mapSubscriber(row) : null;
+}
+
+/** Idempotent: confirming an already-confirmed address is not an error. */
+export function confirmSubscriber(token: string): Subscriber | null {
+  const db = getDb();
+  db.prepare(
+    `UPDATE newsletter_subscribers
+       SET status = 'confirmed', confirmed_at = COALESCE(confirmed_at, ?), unsubscribed_at = NULL
+     WHERE token = ? AND status IN ('pending','unsubscribed')`,
+  ).run(nowIso(), token);
+  return getSubscriberByToken(token);
+}
+
+/**
+ * Unsubscribing keeps the row rather than deleting it.
+ *
+ * Two reasons, both practical: a deleted address can be re-added by the next
+ * signup form and start receiving mail again, and there is no record that the
+ * person ever asked to stop. The row is the evidence.
+ */
+export function unsubscribeByToken(token: string): Subscriber | null {
+  getDb()
+    .prepare(
+      `UPDATE newsletter_subscribers
+         SET status = 'unsubscribed', unsubscribed_at = ?
+       WHERE token = ?`,
+    )
+    .run(nowIso(), token);
+  return getSubscriberByToken(token);
+}
+
+export function listSubscribers(status?: Subscriber["status"]): Subscriber[] {
+  const rows = status
+    ? (getDb()
+        .prepare(`SELECT * FROM newsletter_subscribers WHERE status = ? ORDER BY created_at DESC`)
+        .all(status) as SubscriberRow[])
+    : (getDb()
+        .prepare(`SELECT * FROM newsletter_subscribers ORDER BY created_at DESC`)
+        .all() as SubscriberRow[]);
+  return rows.map(mapSubscriber);
+}
+
+export function countSubscribers(): Record<Subscriber["status"], number> {
+  const rows = getDb()
+    .prepare(`SELECT status, COUNT(*) n FROM newsletter_subscribers GROUP BY status`)
+    .all() as { status: Subscriber["status"]; n: number }[];
+  const out = { pending: 0, confirmed: 0, unsubscribed: 0, bounced: 0 };
+  for (const r of rows) out[r.status] = r.n;
+  return out;
+}

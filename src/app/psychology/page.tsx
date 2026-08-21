@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { getCurrentProfile } from "@/lib/session";
 import { PsychologyWorkspace } from "./PsychologyWorkspace";
 
@@ -59,6 +60,18 @@ export default async function PsychologyPage({ searchParams }: { searchParams: S
       )}
 
       <PsychologyWorkspace initialTab={tab} />
+
+      {/* Psychology is pre-ticked here and the other two are not: someone on
+          this page came for the behavioural material, and a discount email is
+          not what they asked for. Every box stays editable. */}
+      <section className="panel" style={{ marginTop: "3rem" }}>
+        <NewsletterSignup
+          source="psychology"
+          defaultTopics={["psychology"]}
+          heading="One psychology idea at a time"
+          blurb="The drills above are the practice. The email is the part that arrives when you are not looking for it — a single idea about the behavioural half of passing a challenge, sent when there is one worth sending."
+        />
+      </section>
 
       <div className="panel panel-quiet" style={{ marginTop: "3rem" }}>
         <p className="small muted">

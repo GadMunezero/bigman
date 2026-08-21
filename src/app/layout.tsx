@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { NewsletterPopup } from "@/components/NewsletterPopup";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader, StickyCta } from "@/components/SiteHeader";
 import { BRAND } from "@/lib/brand";
@@ -36,6 +37,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main id="main">{children}</main>
         <SiteFooter />
         <StickyCta />
+        {/* Corner card, not an overlay: it decides for itself when to appear,
+            suppresses itself on the questionnaire, and blocks nothing. */}
+        <NewsletterPopup />
       </body>
     </html>
   );

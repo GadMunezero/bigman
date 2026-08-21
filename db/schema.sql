@@ -306,6 +306,40 @@ CREATE TABLE IF NOT EXISTS articles (
 );
 
 -- ---------------------------------------------------------------------------
+-- Newsletter subscribers.
+--
+-- Double opt-in by design: a row lands as `pending` and only becomes
+-- `confirmed` when someone clicks the link sent to that address. Anyone can
+-- type anyone else's email into a form, so a single-step signup means the site
+-- can end up mailing people who never asked — which is both rude and, in most
+-- of the world, illegal.
+--
+-- `token` is the capability for both confirming and unsubscribing. It is the
+-- only thing either link carries, so neither leaks the address in a URL that
+-- ends up in analytics or a referrer header.
+--
+-- `topics` records what they actually agreed to receive. Someone who ticked
+-- psychology tips did not thereby consent to discount emails, and the two are
+-- stored separately so that distinction survives.
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+  id              TEXT PRIMARY KEY,
+  email           TEXT NOT NULL UNIQUE,
+  status          TEXT NOT NULL DEFAULT 'pending'
+                  CHECK (status IN ('pending','confirmed','unsubscribed','bounced')),
+  topics          TEXT NOT NULL DEFAULT '[]',
+  token           TEXT NOT NULL UNIQUE,
+  -- Which page the signup came from, so it is possible to tell whether the
+  -- psychology page or the results page is actually earning subscribers.
+  source          TEXT,
+  created_at      TEXT NOT NULL DEFAULT (datetime('now')),
+  confirmed_at    TEXT,
+  unsubscribed_at TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_newsletter_status ON newsletter_subscribers(status);
+
+-- ---------------------------------------------------------------------------
 -- Configurable scoring weights. The engine reads these at request time so the
 -- algorithm can be tuned without a deploy.
 -- ---------------------------------------------------------------------------

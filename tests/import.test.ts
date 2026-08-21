@@ -212,6 +212,79 @@ describe("applying", () => {
     expect(challenge.price).toBe(40);
   });
 
+  /**
+   * The partial-CSV case. Someone filling in prices from a firm's pricing page
+   * has no reason to also carry the markets, platforms and rule columns, and a
+   * file that omits them must not wipe what is already stored. Lists and rule
+   * flags are the dangerous ones: an empty list serialises to "[]" and a blank
+   * rule cell used to default to "unknown", both of which look like real values
+   * to a naive diff.
+   */
+  it("does not erase lists or rule flags when the columns are absent from the file", () => {
+    applyImport(
+      planImport(
+        csv(
+          row({
+            firm_name: "Partial Co",
+            challenge_name: "$25K",
+            markets: "futures",
+            news_trading: "allowed",
+            consistency_rule: "required",
+          }),
+        ),
+      ),
+    );
+
+    const db = getDb();
+    db.prepare(
+      `UPDATE challenges SET platforms = '["NinjaTrader"]' WHERE slug = 'partial-co-25k'`,
+    ).run();
+
+    // A file carrying only the two required columns and a price.
+    const partial = "firm_name,challenge_name,price\nPartial Co,$25K,149";
+    const plan = planImport(partial);
+    const result = applyImport(plan);
+
+    const challenge = db
+      .prepare(`SELECT markets, platforms FROM challenges WHERE slug = 'partial-co-25k'`)
+      .get() as { markets: string; platforms: string };
+    const rules = db
+      .prepare(
+        `SELECT news_trading, consistency_rule FROM challenge_rules
+          WHERE challenge_id = (SELECT id FROM challenges WHERE slug = 'partial-co-25k')`,
+      )
+      .get() as { news_trading: string; consistency_rule: string };
+
+    expect(challenge.markets).toBe('["futures"]');
+    expect(challenge.platforms).toBe('["NinjaTrader"]');
+    expect(rules.news_trading).toBe("allowed");
+    expect(rules.consistency_rule).toBe("required");
+
+    // The price is a genuine change, so it is queued — and it is the ONLY one.
+    expect(result.pendingChanges).toBe(1);
+    expect(plan.changedChallenges[0].changes).toEqual(["price: 99 → 149"]);
+  });
+
+  it("gives a brand new challenge the schema defaults for anything the file omits", () => {
+    applyImport(planImport("firm_name,challenge_name\nSparse Co,$10K"));
+
+    const db = getDb();
+    const challenge = db
+      .prepare(`SELECT markets, platforms FROM challenges WHERE slug = 'sparse-co-10k'`)
+      .get() as { markets: string; platforms: string };
+    const rules = db
+      .prepare(
+        `SELECT news_trading, scalping FROM challenge_rules
+          WHERE challenge_id = (SELECT id FROM challenges WHERE slug = 'sparse-co-10k')`,
+      )
+      .get() as { news_trading: string; scalping: string };
+
+    expect(challenge.markets).toBe("[]");
+    expect(challenge.platforms).toBe("[]");
+    expect(rules.news_trading).toBe("unknown");
+    expect(rules.scalping).toBe("unknown");
+  });
+
   it("reports an unchanged re-import as unchanged", () => {
     applyImport(planImport(csv(row({ firm_name: "Same Co", challenge_name: "$1K" }))));
     const second = applyImport(planImport(csv(row({ firm_name: "Same Co", challenge_name: "$1K" }))));

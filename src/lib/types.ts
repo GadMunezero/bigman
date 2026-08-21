@@ -167,6 +167,29 @@ export const DEAL_BREAKER_LABELS: Record<DealBreaker, string> = {
   high_fees: "High fees",
 };
 
+/**
+ * What a subscriber can agree to receive.
+ *
+ * Separate topics rather than one "subscribe" flag, because they are different
+ * promises. Someone who wants psychology tips has not thereby agreed to be
+ * sent discount codes, and a discount email carries a commercial relationship
+ * that a tips email does not.
+ */
+export const NEWSLETTER_TOPICS = ["psychology", "rule_changes", "deals"] as const;
+export type NewsletterTopic = (typeof NEWSLETTER_TOPICS)[number];
+
+export const NEWSLETTER_TOPIC_LABELS: Record<NewsletterTopic, string> = {
+  psychology: "Trading psychology",
+  rule_changes: "Prop firm rule changes",
+  deals: "Discounts and offers",
+};
+
+export const NEWSLETTER_TOPIC_HINTS: Record<NewsletterTopic, string> = {
+  psychology: "The behavioural half of passing a challenge — one idea at a time, not a drip campaign.",
+  rule_changes: "When a firm moves a drawdown, a profit split or a payout rule, and what it means for you.",
+  deals: "Discount codes. We may earn a commission on these — it never affects how the engine ranks anything.",
+};
+
 export const BUDGETS = [
   "under_50",
   "50_100",

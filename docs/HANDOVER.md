@@ -220,9 +220,19 @@ which futures rarely has.
 
 ---
 
+## Newsletter
+
+Built. Signup, double opt-in, confirm and unsubscribe pages, a dismissible
+corner card, and `/admin/newsletter`. **No email provider is wired in, so
+nothing is actually sent yet** — see `docs/NEWSLETTER.md` for the integration
+point and what the confirmation email must contain.
+
+---
+
 ## Planned: a news feed for psychology and prop firm updates
 
-Not built. Recorded here so the shape is decided before someone starts.
+Not built, and separate from the newsletter above — this is on-site posts, not
+email. Recorded here so the shape is decided before someone starts.
 
 **Most of it already exists.** The `articles` table has slug, title, summary,
 body, status and an admin editor at `/admin/articles`, with `/learn` and

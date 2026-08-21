@@ -346,7 +346,8 @@ export function planImport(csv: string): ImportPlan {
       warnings.push({
         row: rowNumber,
         column: "markets",
-        message: "No market recorded — this challenge will never be filtered out by market",
+        message:
+          "No market recorded — an existing challenge keeps the markets it has, a new one will never be filtered out by market",
       });
     }
 
@@ -398,15 +399,26 @@ export function planImport(csv: string): ImportPlan {
       });
     }
 
+    const platforms = listValue(get("platforms"), null, rowNumber, "platforms", errors);
+
     const challenge: Record<string, string | number | null> = {
-      markets: JSON.stringify(markets),
+      // An empty list is `null`, not `"[]"`. Everything downstream treats null
+      // as "this row has no opinion" and leaves the stored value alone; `"[]"`
+      // is a value, and would let a spreadsheet that simply does not carry a
+      // markets or platforms column erase the ones already on file. A partial
+      // CSV is the normal case — someone filling in prices should not have to
+      // carry every other column to avoid destroying it.
+      markets: markets.length > 0 ? JSON.stringify(markets) : null,
       account_size: num(get("account_size"), rowNumber, "account_size", errors, { min: 0 }),
       price,
       // Futures evaluations are very often billed monthly. Without this the
       // budget criterion silently compares a recurring fee against a one-off
       // one, and the challenge page cannot say "/ month".
       billing_type: enumValue(get("billing_type"), BILLING, rowNumber, "billing_type", errors),
-      currency: get("currency").trim().toUpperCase() || "USD",
+      // Blank means "not stated", not "dollars". Defaulting to USD here turned
+      // every EUR challenge into a USD one the moment a file left the column
+      // out. New rows still get USD from the schema default.
+      currency: get("currency").trim().toUpperCase() || null,
       profit_target_pct: num(get("profit_target_pct"), rowNumber, "profit_target_pct", errors, { min: 0, max: 100 }),
       max_drawdown_pct: num(get("max_drawdown_pct"), rowNumber, "max_drawdown_pct", errors, { min: 0, max: 100 }),
       daily_drawdown_pct: num(get("daily_drawdown_pct"), rowNumber, "daily_drawdown_pct", errors, { min: 0, max: 100 }),
@@ -420,22 +432,26 @@ export function planImport(csv: string): ImportPlan {
       max_payout: num(get("max_payout"), rowNumber, "max_payout", errors, { min: 0 }),
       contracts: get("contracts").trim() || null,
       data_feed: get("data_feed").trim() || null,
-      platforms: JSON.stringify(listValue(get("platforms"), null, rowNumber, "platforms", errors)),
+      platforms: platforms.length > 0 ? JSON.stringify(platforms) : null,
       leverage: get("leverage").trim() || null,
       refund_policy: get("refund_policy").trim() || null,
       country_restrictions: get("country_restrictions").trim() || null,
       phases: num(get("phases"), rowNumber, "phases", errors, { min: 0, max: 5 }),
     };
 
+    // Blank leaves these null rather than defaulting to "unknown", for the same
+    // reason as markets above: "unknown" is a stored value meaning "we checked
+    // and could not find out", and a blank cell must never downgrade a rule we
+    // already know to that. New rows get 'unknown' from the schema default.
     const rules: Record<string, string | number | null> = {
-      news_trading: enumValue(get("news_trading"), RULE_STATUSES, rowNumber, "news_trading", errors, "unknown"),
-      overnight: enumValue(get("overnight"), RULE_STATUSES, rowNumber, "overnight", errors, "unknown"),
-      weekend: enumValue(get("weekend"), RULE_STATUSES, rowNumber, "weekend", errors, "unknown"),
-      ea_allowed: enumValue(get("ea_allowed"), RULE_STATUSES, rowNumber, "ea_allowed", errors, "unknown"),
-      copy_trading: enumValue(get("copy_trading"), RULE_STATUSES, rowNumber, "copy_trading", errors, "unknown"),
-      scalping: enumValue(get("scalping"), RULE_STATUSES, rowNumber, "scalping", errors, "unknown"),
-      hedging: enumValue(get("hedging"), RULE_STATUSES, rowNumber, "hedging", errors, "unknown"),
-      consistency_rule: enumValue(get("consistency_rule"), CONSISTENCY, rowNumber, "consistency_rule", errors, "unknown"),
+      news_trading: enumValue(get("news_trading"), RULE_STATUSES, rowNumber, "news_trading", errors),
+      overnight: enumValue(get("overnight"), RULE_STATUSES, rowNumber, "overnight", errors),
+      weekend: enumValue(get("weekend"), RULE_STATUSES, rowNumber, "weekend", errors),
+      ea_allowed: enumValue(get("ea_allowed"), RULE_STATUSES, rowNumber, "ea_allowed", errors),
+      copy_trading: enumValue(get("copy_trading"), RULE_STATUSES, rowNumber, "copy_trading", errors),
+      scalping: enumValue(get("scalping"), RULE_STATUSES, rowNumber, "scalping", errors),
+      hedging: enumValue(get("hedging"), RULE_STATUSES, rowNumber, "hedging", errors),
+      consistency_rule: enumValue(get("consistency_rule"), CONSISTENCY, rowNumber, "consistency_rule", errors),
       consistency_pct: num(get("consistency_pct"), rowNumber, "consistency_pct", errors, { min: 0, max: 100 }),
     };
 
@@ -571,10 +587,18 @@ export function applyImport(plan: ImportPlan): ImportResult {
 
       if (!existing) {
         challengeId = newId("chal");
-        const columns = Object.keys(row.challenge);
+        // Null means "this row said nothing", so the column is left out of the
+        // INSERT entirely and SQLite applies the schema default. Passing null
+        // instead would fail outright on the NOT NULL columns (markets,
+        // platforms, and every rule flag).
+        const columns = Object.keys(row.challenge).filter((c) => row.challenge[c] !== null);
+        // A file carrying nothing but the two required columns leaves this
+        // empty, and the trailing comma would be a syntax error.
+        const extra = columns.length > 0 ? `, ${columns.join(", ")}` : "";
+        const extraPlaceholders = columns.map(() => ", ?").join("");
         db.prepare(
-          `INSERT INTO challenges (id, firm_id, name, slug, status, ${columns.join(", ")})
-           VALUES (?, ?, ?, ?, ?, ${columns.map(() => "?").join(", ")})`,
+          `INSERT INTO challenges (id, firm_id, name, slug, status${extra})
+           VALUES (?, ?, ?, ?, ?${extraPlaceholders})`,
         ).run(
           challengeId,
           firm.id,
@@ -584,10 +608,13 @@ export function applyImport(plan: ImportPlan): ImportResult {
           ...columns.map((c) => row.challenge[c]),
         );
 
+        const ruleColumns = Object.keys(row.rules).filter((c) => row.rules[c] !== null);
         db.prepare(
-          `INSERT INTO challenge_rules (challenge_id, ${Object.keys(row.rules).join(", ")})
-           VALUES (?, ${Object.keys(row.rules).map(() => "?").join(", ")})`,
-        ).run(challengeId, ...Object.values(row.rules));
+          ruleColumns.length > 0
+            ? `INSERT INTO challenge_rules (challenge_id, ${ruleColumns.join(", ")})
+               VALUES (?, ${ruleColumns.map(() => "?").join(", ")})`
+            : `INSERT INTO challenge_rules (challenge_id) VALUES (?)`,
+        ).run(challengeId, ...ruleColumns.map((c) => row.rules[c]));
 
         result.challengesCreated += 1;
       } else {

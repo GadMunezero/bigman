@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { LANDING_PAGES } from "@/lib/landing";
 import { listArticles } from "@/lib/repo";
 
@@ -67,6 +68,17 @@ export default function LearnPage() {
             ))}
           </div>
         )}
+      </section>
+
+      {/* Rule changes lead here: the guides on this page go stale the moment a
+          firm moves a drawdown, and this is how a reader hears about it. */}
+      <section className="panel" style={{ marginTop: "3rem" }}>
+        <NewsletterSignup
+          source="learn"
+          defaultTopics={["rule_changes", "psychology"]}
+          heading="Rules change after you have read the guide"
+          blurb="Firms move drawdowns from end-of-day to intraday, change profit splits and rewrite payout terms — usually without an announcement. When one does, we send what changed and what it means for the kind of trader it hits."
+        />
       </section>
 
       <section style={{ marginTop: "3rem" }}>
