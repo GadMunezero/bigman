@@ -274,7 +274,15 @@ dig +short your-domain.com @1.1.1.1
 sudo apt update && sudo apt install -y git
 git clone https://github.com/GadMunezero/bigman.git
 cd bigman
+git checkout claude/prop-firm-challenge-finder-frpvmc
+```
 
+> **Do not skip the checkout.** `main` does not have this work — the
+> questionnaire, the archetype engine, the newsletter and the whole 324-row
+> catalogue are on that branch. Clone alone gets you an older site with none of
+> it. Once the branch is merged into `main`, drop the line.
+
+```bash
 cp deploy/.env.example deploy/.env
 nano deploy/.env
 ```
@@ -314,9 +322,29 @@ docker compose -f deploy/docker-compose.yml logs -f      # watch it come up
 3. Everything lands as **draft**, so the public site shows an empty catalogue
    until you publish challenges yourself in `/admin`.
 
-That last point is deliberate and worth not overriding. The figures are
-unverified research. Publishing all 324 at once puts numbers in front of
-traders that nobody has checked against the firm's own page.
+That last point is deliberate, and it means **your site will look empty the
+first time you open it.** That is the app working, not a broken deploy. The
+figures are unverified research, and publishing all 324 at once puts numbers in
+front of traders that nobody has checked against the firm's own page.
+
+You have three honest ways forward. Pick one before you share the link:
+
+- **Publish a handful you have checked.** Open `/admin/challenges`, verify a
+  few against the firm's own pricing and rules pages, publish those. The
+  questionnaire works fine with a small catalogue — it just has less to choose
+  from.
+- **Publish everything, and say so.** One command:
+
+  ```bash
+  docker compose -f deploy/docker-compose.yml exec app ./node_modules/.bin/tsx db/publish-all.ts
+  ```
+
+  If you do this, put a visible line on the site saying the figures are
+  unverified and traders should confirm on the firm's own page. Publishing
+  unchecked numbers silently is the one version of this that is not defensible.
+- **Fill the gaps first.** `docs/DATA-GAPS.md` ranks what is missing and
+  `npm run db:gaps` writes the worksheets. This is the slowest route and the
+  only one that makes the site genuinely better than a comparison table.
 
 Every boot after the first finds an existing database and leaves it alone, so
 restarting and redeploying never overwrite work done in `/admin`.
@@ -347,9 +375,11 @@ restarting and redeploying never overwrite work done in `/admin`.
 ### Updating after a code change
 
 ```bash
-cd bigman && git pull
+cd bigman && git pull origin claude/prop-firm-challenge-finder-frpvmc
 docker compose -f deploy/docker-compose.yml up -d --build
 ```
+
+(Once that branch is merged into `main`, this becomes a plain `git pull`.)
 
 The database is on a volume, so this replaces the app and keeps every row.
 

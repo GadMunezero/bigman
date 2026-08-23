@@ -13,7 +13,10 @@ data/app.db-shm
 data/app.db-wal
 
 # Build output of the offline single-file artifact — unrelated to the server.
+# `dist/` is a megabyte of bundled HTML and screenshots that the server never
+# reads; on a free-tier VM that is build context transferred for nothing.
 tools/standalone/build
+dist
 
 *.log
 npm-debug.log*
