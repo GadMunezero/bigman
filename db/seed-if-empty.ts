@@ -16,6 +16,7 @@
  * Everything lands as `draft`. Set SEED_PUBLISH=1 to publish it too, which is
  * what a demo deployment wants and what a real one must not do.
  */
+import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { getDb } from "../src/lib/db";
@@ -71,6 +72,29 @@ if (fs.existsSync(websitesPath)) {
     if (firm && !firm.website) { update.run(site, firm.id); n++; }
   }
   console.log(`[seed] ${n} firm websites applied.`);
+}
+
+// Company details — who runs each firm, where it is based. Applied through the
+// real script rather than reimplemented here, so the checks it makes (a
+// plausible founding year, key_people as a list, never overwriting a value
+// already on file) apply on a server exactly as they do locally.
+const profilesPath = path.join(process.cwd(), "data", "firm-profiles.csv");
+if (fs.existsSync(profilesPath)) {
+  try {
+    const out = execFileSync(
+      path.join("node_modules", ".bin", "tsx"),
+      [path.join("db", "apply-firm-profile.ts"), "--apply"],
+      { cwd: process.cwd(), encoding: "utf8" },
+    );
+    console.log(out.trim().split("\n").slice(-1)[0]);
+  } catch (error) {
+    // Company details are not worth failing a boot over — the site is fully
+    // usable without them, and a server that will not start is worse than a
+    // firm page with no CEO on it.
+    console.warn(`[seed] firm profiles could not be applied: ${(error as Error).message}`);
+  }
+} else {
+  console.log("[seed] no data/firm-profiles.csv — firm pages will have no company details.");
 }
 
 if (process.env.SEED_PUBLISH === "1") {

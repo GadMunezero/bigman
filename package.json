@@ -15,7 +15,7 @@
     "demo": "npm run db:reset && npm run db:seed:demo && next dev",
     "demo:build": "npm run db:reset && npm run db:seed:demo && next build && next start",
     "catalogue": "npm run catalogue:build && next dev",
-    "catalogue:build": "npm run db:reset && npm run db:futures -- data/futures-specs.json data/futures-catalogue.csv && npm run db:futures -- data/cfd-specs.json data/cfd-catalogue.csv && npm run db:import -- data/futures-catalogue.csv --apply && npm run db:import -- data/cfd-catalogue.csv --apply && npm run db:import -- data/propfirmmatch-import.csv --apply && npm run db:firm-websites -- --apply && npm run db:firm-profiles -- --apply && npm run db:research -- --apply && npm run db:prices -- --apply && npm run db:rules -- --apply && npm run db:platforms -- --apply && npm run db:publish:all",
+    "catalogue:build": "npm run db:reset && npm run db:futures -- data/futures-specs.json data/futures-catalogue.csv && npm run db:futures -- data/cfd-specs.json data/cfd-catalogue.csv && npm run db:import -- data/futures-catalogue.csv --apply && npm run db:import -- data/cfd-catalogue.csv --apply && npm run db:import -- data/propfirmmatch-import.csv --apply && npm run db:firm-websites -- --apply && npm run db:firm-profiles -- --apply && npm run db:publish:all",
     "db:import": "tsx db/import.ts",
     "db:convert": "tsx db/convert-propfirmmatch.ts",
     "db:expand-sizes": "tsx db/expand-sizes.ts",
