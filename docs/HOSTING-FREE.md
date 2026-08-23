@@ -3,6 +3,59 @@
 Server hosting: **$0/month.** If you already have a domain, that is the whole
 bill — you are only pointing it somewhere new.
 
+There are two different things you can put online, and they need different
+hosts. Decide which one you want before reading further.
+
+| | Single file | The real app |
+| --- | --- | --- |
+| What it is | `dist/propfirm-standalone.html` — one 1.1 MB file | The Next.js site with its database |
+| Questionnaire, matching, comparison, psychology tools | Yes | Yes |
+| Newsletter signup | **No** | Yes |
+| Admin, saved challenges, reviews, outcome tracking | **No** | Yes |
+| Updating the catalogue | Rebuild and re-upload the file | Edit in `/admin`, live immediately |
+| Host | Netlify drag-and-drop, 2 minutes | A small virtual machine, ~30 minutes |
+| Cost | $0 | $0 |
+
+The single file is a genuine version of the product, not a mock-up — the real
+recommendation engine is compiled into it and all 324 challenges are embedded.
+What it cannot do is remember anything, because there is no server to remember
+it. Put it up today to test the idea and share the link; move to the real app
+when you want signups and admin editing.
+
+---
+
+## The fast route — one file on Netlify
+
+Use this for the standalone file only. It takes about two minutes and needs no
+command line.
+
+1. Go to **app.netlify.com**, sign up free (GitHub or email).
+2. On the Sites page, find the **"Deploy manually"** drop zone (also reachable
+   at **app.netlify.com/drop**).
+3. Put `propfirm-standalone.html` in a folder on its own and **rename it
+   `index.html`** — a web server looks for that name, and a folder without one
+   shows a file listing instead of your site.
+4. Drag **the folder** onto the drop zone. Not the file — Netlify deploys
+   folders. It goes live in seconds at a `something-random.netlify.app` address.
+5. **Site configuration → Domain management → Add a domain** → type your
+   Namecheap domain. Netlify shows you the DNS records it wants.
+6. In Namecheap: **Domain List → Manage → Advanced DNS**. First confirm the
+   nameservers on the **Domain** tab say **Namecheap BasicDNS** — if they point
+   somewhere else, the Advanced DNS records are ignored and nothing you do here
+   takes effect. Then add what Netlify asked for, normally:
+   - `ALIAS` or `CNAME` record, host `@`, value `<your-site>.netlify.app`
+   - `CNAME` record, host `www`, value `<your-site>.netlify.app`
+7. Wait. DNS usually takes 15–30 minutes and can take a few hours. Netlify
+   issues the HTTPS certificate automatically once it sees the records.
+
+To update the site later, rebuild and drag the new folder onto the same site's
+**Deploys** tab.
+
+> **Netlify cannot host the real app.** It is serverless: the filesystem resets
+> between requests, so every admin edit, saved challenge and newsletter signup
+> would vanish. That is not a configuration you can change — it is what
+> serverless means. For the full app, use the virtual-machine route below.
+
 ---
 
 ## Why most free hosts will not work
