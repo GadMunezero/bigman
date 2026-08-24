@@ -423,6 +423,14 @@ __GLOBALS__
     h += '<div><span class="eyebrow">Your results</span><h1>Your challenge matches</h1>' +
       "<p>Based on the trading preferences you gave us. " + recs.length + " of " + DATA.length +
       " challenges are compatible with your requirements.</p></div>";
+    // The same notice the server build shows. A preview that quietly drops it
+    // would be the one version of this site that overstates what it knows.
+    h += '<div class="panel panel-warn"><strong>None of these figures has been checked ' +
+      "against the firm's own page yet.</strong>" +
+      '<p class="small muted" style="margin-top:0.4rem">Prices and rules change often and ' +
+      "without announcement. Treat this as a shortlist, and confirm the numbers on the firm's " +
+      "site before you pay for anything. Anything we do not know says so rather than guessing." +
+      "</p></div>";
     h += fitProfilePanel(lastResult.fit_profile);
     if (!recs.length) {
       h += '<div class="panel panel-accent"><span class="eyebrow">No match</span>' +

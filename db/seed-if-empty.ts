@@ -97,11 +97,61 @@ if (fs.existsSync(profilesPath)) {
   console.log("[seed] no data/firm-profiles.csv — firm pages will have no company details.");
 }
 
-if (process.env.SEED_PUBLISH === "1") {
+/**
+ * What a fresh deployment shows on its first morning.
+ *
+ * The old behaviour had two settings and neither was right. Unset published
+ * nothing, so a correct deploy looked like a broken one — an empty catalogue
+ * reads as a bug, not as caution. `SEED_PUBLISH=1` published all 324,
+ * including rows with no price, no drawdown and no profit split, which is
+ * putting a match score on a guess.
+ *
+ * The default is now the middle one, and it is the only one of the three that
+ * is both useful and honest: publish the challenges that carry every figure
+ * the engine scores on, and leave the rest as drafts to be finished in /admin.
+ * The site says on the results page and on every challenge page how much of it
+ * has been checked against a firm's own page, so nothing here is passing itself
+ * off as verified.
+ *
+ *   SEED_PUBLISH unset or 'ready'  publish only complete challenges (default)
+ *   SEED_PUBLISH=none              publish nothing; do it all by hand
+ *   SEED_PUBLISH=all               publish everything, gaps included
+ */
+const READY = `
+  price IS NOT NULL
+  AND max_drawdown_pct IS NOT NULL
+  AND drawdown_type IS NOT NULL
+  AND profit_target_pct IS NOT NULL
+  AND payout_split_pct IS NOT NULL
+`;
+
+const mode = (process.env.SEED_PUBLISH ?? "ready").toLowerCase();
+
+if (mode === "none") {
+  console.log("[seed] SEED_PUBLISH=none — everything left as draft. Publish in /admin.");
+} else if (mode === "all" || mode === "1") {
   const f = db.prepare(`UPDATE firms SET status = 'published' WHERE status = 'draft'`).run();
   const c = db.prepare(`UPDATE challenges SET status = 'published' WHERE status = 'draft'`).run();
-  console.log(`[seed] SEED_PUBLISH=1 — published ${f.changes} firms and ${c.changes} challenges.`);
-  console.log("[seed] These figures are unverified. Do not run this on a deployment traders use.");
+  console.log(`[seed] SEED_PUBLISH=all — published ${f.changes} firms and ${c.changes} challenges.`);
+  console.log("[seed] This includes challenges with no price, drawdown or profit split on file.");
+  console.log("[seed] Those get a match score built on gaps. 'ready' is the safer setting.");
 } else {
-  console.log("[seed] Everything is DRAFT. Publish in /admin, or set SEED_PUBLISH=1 for a demo.");
+  const c = db
+    .prepare(`UPDATE challenges SET status = 'published' WHERE status = 'draft' AND ${READY}`)
+    .run();
+  // Only the firms that ended up with something to show — a published firm
+  // with no published challenges is an empty page in the directory.
+  const f = db
+    .prepare(
+      `UPDATE firms SET status = 'published'
+        WHERE status = 'draft'
+          AND id IN (SELECT firm_id FROM challenges WHERE status = 'published')`,
+    )
+    .run();
+  const held = (
+    db.prepare(`SELECT COUNT(*) n FROM challenges WHERE status = 'draft'`).get() as { n: number }
+  ).n;
+  console.log(`[seed] Published ${c.changes} challenges across ${f.changes} firms.`);
+  console.log(`[seed] ${held} held back as draft — missing a price, drawdown, target or split.`);
+  console.log("[seed] Finish them in /admin, or set SEED_PUBLISH=all to publish them as they are.");
 }

@@ -297,7 +297,8 @@ ADMIN_PASSWORD=paste-a-generated-password-here
 ```
 
 Generate the password rather than inventing one — `openssl rand -base64 24`.
-Leave `SEED_PUBLISH` commented out.
+Leave `SEED_PUBLISH` commented out — its default publishes the 113 challenges
+that are complete enough to recommend, which is what you want for a launch.
 
 Then:
 
@@ -319,32 +320,28 @@ docker compose -f deploy/docker-compose.yml logs -f      # watch it come up
 
 1. The schema is created on the volume at `/data/app.db`.
 2. The catalogue is loaded: **38 firms, 324 challenges** across futures and CFDs.
-3. Everything lands as **draft**, so the public site shows an empty catalogue
-   until you publish challenges yourself in `/admin`.
+3. **113 challenges across 19 firms go live.** These are the ones carrying every
+   figure the engine scores on — price, max drawdown, drawdown type, profit
+   target, profit split. The other 211 stay as drafts.
 
-That last point is deliberate, and it means **your site will look empty the
-first time you open it.** That is the app working, not a broken deploy. The
-figures are unverified research, and publishing all 324 at once puts numbers in
-front of traders that nobody has checked against the firm's own page.
+You do not have to do anything for this. It is the default, and it is the
+setting to launch with.
 
-You have three honest ways forward. Pick one before you share the link:
+**Why not all 324?** A challenge with no price and no profit split still gets a
+match score, and that score looks exactly as confident as a real one. Holding
+those back is the difference between a thin catalogue and a misleading one.
+Six firms are complete as they stand — TradeDay, Blueberry Futures, Topstep,
+Take Profit Trader, Traders Launch and Hola Prime Futures — and the matcher
+works the same on 113 as on 324, because the value is in the matching, not the
+row count.
 
-- **Publish a handful you have checked.** Open `/admin/challenges`, verify a
-  few against the firm's own pricing and rules pages, publish those. The
-  questionnaire works fine with a small catalogue — it just has less to choose
-  from.
-- **Publish everything, and say so.** One command:
+**Nothing claims to be verified.** No figure in the catalogue has been read on
+the firm's own page. The results page and every challenge page say so in a
+sentence, and that notice reads the live count — it shrinks as you verify
+things in `/admin` and disappears when everything shown has been checked.
 
-  ```bash
-  docker compose -f deploy/docker-compose.yml exec app ./node_modules/.bin/tsx db/publish-all.ts
-  ```
-
-  If you do this, put a visible line on the site saying the figures are
-  unverified and traders should confirm on the firm's own page. Publishing
-  unchecked numbers silently is the one version of this that is not defensible.
-- **Fill the gaps first.** `docs/DATA-GAPS.md` ranks what is missing and
-  `npm run db:gaps` writes the worksheets. This is the slowest route and the
-  only one that makes the site genuinely better than a comparison table.
+To finish the held-back rows, `docs/DATA-GAPS.md` ranks what is missing and
+`npm run db:gaps` writes the worksheets.
 
 Every boot after the first finds an existing database and leaves it alone, so
 restarting and redeploying never overwrite work done in `/admin`.
