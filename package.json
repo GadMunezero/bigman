@@ -28,6 +28,7 @@
     "db:research:rules": "tsx db/build-rules-research.ts",
     "db:firm-profiles": "tsx db/apply-firm-profile.ts",
     "db:publish:all": "tsx db/publish-all.ts",
+    "db:publish:ready": "tsx db/publish-ready.ts",
     "db:template": "tsx db/import.ts --template",
     "db:futures": "tsx db/build-futures-catalogue.ts",
     "build:standalone": "bash tools/standalone/build.sh"

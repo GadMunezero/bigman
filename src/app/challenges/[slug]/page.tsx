@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AffiliateCta } from "@/components/AffiliateCta";
+import { DataNotice } from "@/components/DataNotice";
 import { SaveButton } from "@/components/SaveButton";
 import { TrackEvent } from "@/components/TrackEvent";
 import {
@@ -66,6 +67,9 @@ export default async function ChallengeDetailPage({
         <Link href="/challenges">Challenges</Link> ·{" "}
         <Link href={`/firms/${challenge.firm.slug}`}>{challenge.firm.name}</Link>
       </nav>
+
+      {/* This page is one click from an outbound link to a paid product. */}
+      <DataNotice />
 
       <header
         style={{

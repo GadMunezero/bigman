@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AffiliateCta } from "@/components/AffiliateCta";
+import { DataNotice } from "@/components/DataNotice";
 import { SaveButton } from "@/components/SaveButton";
 import {
   AccountSize,
@@ -147,6 +148,9 @@ export default async function ResultsPage() {
           {result.total_considered} challenges are compatible with your requirements.
         </p>
       </header>
+
+      {/* Above the ranking, because this is where someone decides to spend. */}
+      <DataNotice />
 
       {/* The reading of the trader comes before the ranking derived from it. */}
       <FitProfile profile={result.fit_profile} />

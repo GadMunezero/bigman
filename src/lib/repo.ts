@@ -827,6 +827,23 @@ export function listSubscribers(status?: Subscriber["status"]): Subscriber[] {
   return rows.map(mapSubscriber);
 }
 
+/**
+ * How much of the published catalogue has actually been checked.
+ *
+ * `last_verified_at` is stamped only when a row claims `verified` with a source
+ * URL, so this is a count of challenges someone read on the firm's own page —
+ * not of challenges that merely have figures in them.
+ */
+export function countVerifiedChallenges(): { verified: number; total: number } {
+  const row = getDb()
+    .prepare(
+      `SELECT COUNT(*) total, SUM(CASE WHEN last_verified_at IS NOT NULL THEN 1 ELSE 0 END) verified
+         FROM challenges WHERE status = 'published'`,
+    )
+    .get() as { total: number; verified: number | null };
+  return { verified: row.verified ?? 0, total: row.total };
+}
+
 export function countSubscribers(): Record<Subscriber["status"], number> {
   const rows = getDb()
     .prepare(`SELECT status, COUNT(*) n FROM newsletter_subscribers GROUP BY status`)
