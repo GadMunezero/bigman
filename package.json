@@ -25,6 +25,7 @@
     "db:rules": "tsx db/apply-rules-table.ts",
     "db:platforms": "tsx db/apply-platforms.ts",
     "db:gaps": "tsx db/export-gaps.ts",
+    "db:research:rules": "tsx db/build-rules-research.ts",
     "db:firm-profiles": "tsx db/apply-firm-profile.ts",
     "db:publish:all": "tsx db/publish-all.ts",
     "db:template": "tsx db/import.ts --template",

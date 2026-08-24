@@ -504,11 +504,26 @@ export function planImport(csv: string): ImportPlan {
       .prepare(`SELECT * FROM challenges WHERE id = ?`)
       .get(existing.id) as Record<string, unknown>;
 
+    // Rules are diffed alongside the challenge columns because applyImport
+    // writes both. Previewing only the challenge half meant a file that
+    // changed nothing but trading rules reported "0 changed" and then queued
+    // hundreds of them — and rules are the fields that hard-filter a trader's
+    // results, so those are the last ones that should land unannounced.
+    const currentRules = (db
+      .prepare(`SELECT * FROM challenge_rules WHERE challenge_id = ?`)
+      .get(existing.id) ?? {}) as Record<string, unknown>;
+
     const changes: string[] = [];
     for (const [field, value] of Object.entries(row.challenge)) {
       if (value === null) continue; // A blank cell never erases a stored value.
       if (String(current[field] ?? "") !== String(value)) {
         changes.push(`${field}: ${current[field] ?? "—"} → ${value}`);
+      }
+    }
+    for (const [field, value] of Object.entries(row.rules)) {
+      if (value === null) continue;
+      if (String(currentRules[field] ?? "") !== String(value)) {
+        changes.push(`${field}: ${currentRules[field] ?? "—"} → ${value}`);
       }
     }
 

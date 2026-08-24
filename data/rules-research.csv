@@ -1,0 +1,151 @@
+firm_name,challenge_name,news_trading,overnight,weekend,ea_allowed,copy_trading,scalping,hedging,consistency_rule,consistency_pct,source_url,source_type,confidence
+Apex Trader Funding,Evaluation 100K,,,,,allowed,,,required,30,https://apextraderfunding.com/help-center/getting-started/prohibited-activities/,aggregator_unverified,needs_review
+Apex Trader Funding,Evaluation 150K,,,,,allowed,,,required,30,https://apextraderfunding.com/help-center/getting-started/prohibited-activities/,aggregator_unverified,needs_review
+Apex Trader Funding,Evaluation 250K,,,,,allowed,,,required,30,https://apextraderfunding.com/help-center/getting-started/prohibited-activities/,aggregator_unverified,needs_review
+Apex Trader Funding,Evaluation 25K,,,,,allowed,,,required,30,https://apextraderfunding.com/help-center/getting-started/prohibited-activities/,aggregator_unverified,needs_review
+Apex Trader Funding,Evaluation 300K,,,,,allowed,,,required,30,https://apextraderfunding.com/help-center/getting-started/prohibited-activities/,aggregator_unverified,needs_review
+Apex Trader Funding,Evaluation 50K,,,,,allowed,,,required,30,https://apextraderfunding.com/help-center/getting-started/prohibited-activities/,aggregator_unverified,needs_review
+Apex Trader Funding,Evaluation 75K,,,,,allowed,,,required,30,https://apextraderfunding.com/help-center/getting-started/prohibited-activities/,aggregator_unverified,needs_review
+Blue Guardian Futures,Direct 100K,allowed,,,,,,,,,https://helpfutures.blueguardian.com/,aggregator_unverified,needs_review
+Blue Guardian Futures,Direct 150K,allowed,,,,,,,,,https://helpfutures.blueguardian.com/,aggregator_unverified,needs_review
+Blue Guardian Futures,Direct 25K,allowed,,,,,,,,,https://helpfutures.blueguardian.com/,aggregator_unverified,needs_review
+Blue Guardian Futures,Direct 50K,allowed,,,,,,,,,https://helpfutures.blueguardian.com/,aggregator_unverified,needs_review
+Blue Guardian Futures,Express 100K,allowed,,,,,,,,,https://helpfutures.blueguardian.com/,aggregator_unverified,needs_review
+Blue Guardian Futures,Express 150K,allowed,,,,,,,,,https://helpfutures.blueguardian.com/,aggregator_unverified,needs_review
+Blue Guardian Futures,Express 25K,allowed,,,,,,,,,https://helpfutures.blueguardian.com/,aggregator_unverified,needs_review
+Blue Guardian Futures,Express 50K,allowed,,,,,,,,,https://helpfutures.blueguardian.com/,aggregator_unverified,needs_review
+Blue Guardian Futures,Reserve 100K,allowed,,,,,,,,,https://helpfutures.blueguardian.com/,aggregator_unverified,needs_review
+Blue Guardian Futures,Reserve 150K,allowed,,,,,,,,,https://helpfutures.blueguardian.com/,aggregator_unverified,needs_review
+Blue Guardian Futures,Reserve 25K,allowed,,,,,,,,,https://helpfutures.blueguardian.com/,aggregator_unverified,needs_review
+Blue Guardian Futures,Reserve 50K,allowed,,,,,,,,,https://helpfutures.blueguardian.com/,aggregator_unverified,needs_review
+Blue Guardian Futures,Standard 100K,,,,,,,,,40,https://helpfutures.blueguardian.com/,aggregator_unverified,needs_review
+Blue Guardian Futures,Standard 150K,,,,,,,,,40,https://helpfutures.blueguardian.com/,aggregator_unverified,needs_review
+Blue Guardian Futures,Standard 25K,,,,,,,,,40,https://helpfutures.blueguardian.com/,aggregator_unverified,needs_review
+Blue Guardian Futures,Standard 50K,,,,,,,,,40,https://helpfutures.blueguardian.com/,aggregator_unverified,needs_review
+Blueberry Futures,Accelerated Trailing 100K,restricted,allowed,allowed,,,,,,,https://blueberryfutures.com/,aggregator_unverified,needs_review
+Blueberry Futures,Accelerated Trailing 150K,restricted,allowed,allowed,,,,,,,https://blueberryfutures.com/,aggregator_unverified,needs_review
+Blueberry Futures,Accelerated Trailing 25K,restricted,allowed,allowed,,,,,,,https://blueberryfutures.com/,aggregator_unverified,needs_review
+Blueberry Futures,Accelerated Trailing 50K,restricted,allowed,allowed,,,,,,,https://blueberryfutures.com/,aggregator_unverified,needs_review
+Blueberry Futures,Ascent EOD 100K,restricted,allowed,allowed,,,,,,,https://blueberryfutures.com/,aggregator_unverified,needs_review
+Blueberry Futures,Ascent EOD 150K,restricted,allowed,allowed,,,,,,,https://blueberryfutures.com/,aggregator_unverified,needs_review
+Blueberry Futures,Ascent EOD 25K,restricted,allowed,allowed,,,,,,,https://blueberryfutures.com/,aggregator_unverified,needs_review
+Blueberry Futures,Ascent EOD 50K,restricted,allowed,allowed,,,,,,,https://blueberryfutures.com/,aggregator_unverified,needs_review
+Earn2Trade,Gauntlet Mini 100K,allowed,prohibited,,allowed,,allowed,,,,https://help.earn2trade.com/en/articles/3849975-what-is-the-maintain-consistency-rule,aggregator_unverified,needs_review
+Earn2Trade,Gauntlet Mini 150K,allowed,prohibited,,allowed,,allowed,,,,https://help.earn2trade.com/en/articles/3849975-what-is-the-maintain-consistency-rule,aggregator_unverified,needs_review
+Earn2Trade,Gauntlet Mini 25K,allowed,prohibited,,allowed,,allowed,,,,https://help.earn2trade.com/en/articles/3849975-what-is-the-maintain-consistency-rule,aggregator_unverified,needs_review
+Earn2Trade,Gauntlet Mini 50K,allowed,prohibited,,allowed,,allowed,,,,https://help.earn2trade.com/en/articles/3849975-what-is-the-maintain-consistency-rule,aggregator_unverified,needs_review
+Earn2Trade,Trader Career Path 100K,allowed,prohibited,,allowed,,allowed,,,,https://help.earn2trade.com/en/articles/3849975-what-is-the-maintain-consistency-rule,aggregator_unverified,needs_review
+Earn2Trade,Trader Career Path 150K,allowed,prohibited,,allowed,,allowed,,,,https://help.earn2trade.com/en/articles/3849975-what-is-the-maintain-consistency-rule,aggregator_unverified,needs_review
+Earn2Trade,Trader Career Path 25K,allowed,prohibited,,allowed,,allowed,,,,https://help.earn2trade.com/en/articles/3849975-what-is-the-maintain-consistency-rule,aggregator_unverified,needs_review
+Earn2Trade,Trader Career Path 50K,allowed,prohibited,,allowed,,allowed,,,,https://help.earn2trade.com/en/articles/3849975-what-is-the-maintain-consistency-rule,aggregator_unverified,needs_review
+Funded Futures Family,Premier Plus 100K,allowed,allowed,,,,,,required,,https://intercom.help/funded-futures-family/en/articles/15892353-news-trading-policy,aggregator_unverified,needs_review
+Funded Futures Family,Premier Plus 150K,allowed,allowed,,,,,,required,,https://intercom.help/funded-futures-family/en/articles/15892353-news-trading-policy,aggregator_unverified,needs_review
+Funded Futures Family,Premier Plus 25K,allowed,allowed,,,,,,required,,https://intercom.help/funded-futures-family/en/articles/15892353-news-trading-policy,aggregator_unverified,needs_review
+Funded Futures Family,Premier Plus 50K,allowed,allowed,,,,,,required,,https://intercom.help/funded-futures-family/en/articles/15892353-news-trading-policy,aggregator_unverified,needs_review
+Funded Futures Family,S2F 100K,allowed,allowed,,,,,,required,,https://intercom.help/funded-futures-family/en/articles/15892353-news-trading-policy,aggregator_unverified,needs_review
+Funded Futures Family,S2F 50K,allowed,allowed,,,,,,required,,https://intercom.help/funded-futures-family/en/articles/15892353-news-trading-policy,aggregator_unverified,needs_review
+Funded Futures Family,Velocity 100K,allowed,allowed,,,,,,,,https://intercom.help/funded-futures-family/en/articles/15892353-news-trading-policy,aggregator_unverified,needs_review
+Funded Futures Family,Velocity 150K,allowed,allowed,,,,,,,,https://intercom.help/funded-futures-family/en/articles/15892353-news-trading-policy,aggregator_unverified,needs_review
+Funded Futures Family,Velocity 25K,allowed,allowed,,,,,,,,https://intercom.help/funded-futures-family/en/articles/15892353-news-trading-policy,aggregator_unverified,needs_review
+Funded Futures Family,Velocity 50K,allowed,allowed,,,,,,,,https://intercom.help/funded-futures-family/en/articles/15892353-news-trading-policy,aggregator_unverified,needs_review
+FuturesElite,Elite 100K,allowed,allowed,allowed,,,allowed,,required,,https://futureselite.com/faq,aggregator_unverified,needs_review
+FuturesElite,Elite 150K,allowed,allowed,allowed,,,allowed,,required,,https://futureselite.com/faq,aggregator_unverified,needs_review
+FuturesElite,Elite 50K,allowed,allowed,allowed,,,allowed,,required,,https://futureselite.com/faq,aggregator_unverified,needs_review
+FuturesElite,Instant Challenge 100K,allowed,allowed,allowed,,,allowed,,,,https://futureselite.com/faq,aggregator_unverified,needs_review
+FuturesElite,Instant Challenge 150K,allowed,allowed,allowed,,,allowed,,,,https://futureselite.com/faq,aggregator_unverified,needs_review
+FuturesElite,Instant Challenge 25K,allowed,allowed,allowed,,,allowed,,,,https://futureselite.com/faq,aggregator_unverified,needs_review
+FuturesElite,Instant Challenge 50K,allowed,allowed,allowed,,,allowed,,,,https://futureselite.com/faq,aggregator_unverified,needs_review
+FuturesElite,Prime 100K,allowed,allowed,allowed,,,allowed,,required,,https://futureselite.com/faq,aggregator_unverified,needs_review
+FuturesElite,Prime 150K,allowed,allowed,allowed,,,allowed,,required,,https://futureselite.com/faq,aggregator_unverified,needs_review
+FuturesElite,Prime 50K,allowed,allowed,allowed,,,allowed,,required,,https://futureselite.com/faq,aggregator_unverified,needs_review
+Goat Funded Futures,EOD Challenge 100K,restricted,,,restricted,,,,,,https://help.goatfundedfutures.com/en/articles/14095672-what-is-the-consistency-rule-and-how-does-it-affect-my-payout,aggregator_unverified,needs_review
+Goat Funded Futures,EOD Challenge 150K,restricted,,,restricted,,,,,,https://help.goatfundedfutures.com/en/articles/14095672-what-is-the-consistency-rule-and-how-does-it-affect-my-payout,aggregator_unverified,needs_review
+Goat Funded Futures,EOD Challenge 50K,restricted,,,restricted,,,,,,https://help.goatfundedfutures.com/en/articles/14095672-what-is-the-consistency-rule-and-how-does-it-affect-my-payout,aggregator_unverified,needs_review
+Goat Funded Futures,Flex Challenge 100K,restricted,,,restricted,,,,,50,https://help.goatfundedfutures.com/en/articles/14095672-what-is-the-consistency-rule-and-how-does-it-affect-my-payout,aggregator_unverified,needs_review
+Goat Funded Futures,Flex Challenge 150K,restricted,,,restricted,,,,,50,https://help.goatfundedfutures.com/en/articles/14095672-what-is-the-consistency-rule-and-how-does-it-affect-my-payout,aggregator_unverified,needs_review
+Goat Funded Futures,Flex Challenge 50K,restricted,,,restricted,,,,,50,https://help.goatfundedfutures.com/en/articles/14095672-what-is-the-consistency-rule-and-how-does-it-affect-my-payout,aggregator_unverified,needs_review
+Goat Funded Futures,Instant Funded 100K,restricted,prohibited,,restricted,,,,,,https://help.goatfundedfutures.com/en/articles/14095672-what-is-the-consistency-rule-and-how-does-it-affect-my-payout,aggregator_unverified,needs_review
+Goat Funded Futures,Instant Funded 150K,restricted,prohibited,,restricted,,,,,,https://help.goatfundedfutures.com/en/articles/14095672-what-is-the-consistency-rule-and-how-does-it-affect-my-payout,aggregator_unverified,needs_review
+Goat Funded Futures,Instant Funded 25K,restricted,prohibited,,restricted,,,,,,https://help.goatfundedfutures.com/en/articles/14095672-what-is-the-consistency-rule-and-how-does-it-affect-my-payout,aggregator_unverified,needs_review
+Goat Funded Futures,Instant Funded 50K,restricted,prohibited,,restricted,,,,,,https://help.goatfundedfutures.com/en/articles/14095672-what-is-the-consistency-rule-and-how-does-it-affect-my-payout,aggregator_unverified,needs_review
+Goat Funded Futures,Instant Funded 75K,restricted,prohibited,,restricted,,,,,,https://help.goatfundedfutures.com/en/articles/14095672-what-is-the-consistency-rule-and-how-does-it-affect-my-payout,aggregator_unverified,needs_review
+Goat Funded Futures,Sprint Challenge 100K,restricted,,,restricted,,,,,,https://help.goatfundedfutures.com/en/articles/14095672-what-is-the-consistency-rule-and-how-does-it-affect-my-payout,aggregator_unverified,needs_review
+Goat Funded Futures,Sprint Challenge 25K,restricted,,,restricted,,,,,,https://help.goatfundedfutures.com/en/articles/14095672-what-is-the-consistency-rule-and-how-does-it-affect-my-payout,aggregator_unverified,needs_review
+Goat Funded Futures,Sprint Challenge 50K,restricted,,,restricted,,,,,,https://help.goatfundedfutures.com/en/articles/14095672-what-is-the-consistency-rule-and-how-does-it-affect-my-payout,aggregator_unverified,needs_review
+Lucid Trading,LucidDaily EOD DLL 50K,allowed,prohibited,prohibited,,,,,,,https://lucidtrading.com/general-faq/,aggregator_unverified,needs_review
+Lucid Trading,LucidDaily Intraday DLL 50K,allowed,prohibited,prohibited,,,,,,,https://lucidtrading.com/general-faq/,aggregator_unverified,needs_review
+Lucid Trading,LucidDirect 50K,allowed,prohibited,prohibited,,,,,required,20,https://lucidtrading.com/general-faq/,aggregator_unverified,needs_review
+Lucid Trading,LucidFlex 100K,allowed,prohibited,prohibited,,,,,,,https://lucidtrading.com/general-faq/,aggregator_unverified,needs_review
+Lucid Trading,LucidFlex 150K,allowed,prohibited,prohibited,,,,,,,https://lucidtrading.com/general-faq/,aggregator_unverified,needs_review
+Lucid Trading,LucidFlex 25K,allowed,prohibited,prohibited,,,,,,,https://lucidtrading.com/general-faq/,aggregator_unverified,needs_review
+Lucid Trading,LucidFlex 50K,allowed,prohibited,prohibited,,,,,,,https://lucidtrading.com/general-faq/,aggregator_unverified,needs_review
+Lucid Trading,LucidPro 100K,allowed,prohibited,prohibited,,,,,,,https://lucidtrading.com/general-faq/,aggregator_unverified,needs_review
+Lucid Trading,LucidPro 150K,allowed,prohibited,prohibited,,,,,,,https://lucidtrading.com/general-faq/,aggregator_unverified,needs_review
+Lucid Trading,LucidPro 25K,allowed,prohibited,prohibited,,,,,,,https://lucidtrading.com/general-faq/,aggregator_unverified,needs_review
+Lucid Trading,LucidPro 50K,allowed,prohibited,prohibited,,,,,,,https://lucidtrading.com/general-faq/,aggregator_unverified,needs_review
+My Funded Futures,Builder 100K,,,prohibited,allowed,,,,,,https://myfundedfutures.com/faq,aggregator_unverified,needs_review
+My Funded Futures,Builder 150K,,,prohibited,allowed,,,,,,https://myfundedfutures.com/faq,aggregator_unverified,needs_review
+My Funded Futures,Builder 25K,,,prohibited,allowed,,,,,,https://myfundedfutures.com/faq,aggregator_unverified,needs_review
+My Funded Futures,Builder 50K,,,prohibited,allowed,,,,,,https://myfundedfutures.com/faq,aggregator_unverified,needs_review
+My Funded Futures,Flex 50K,,,prohibited,allowed,,,,,,https://myfundedfutures.com/faq,aggregator_unverified,needs_review
+My Funded Futures,Pro 100K,,,prohibited,allowed,,,,,,https://myfundedfutures.com/faq,aggregator_unverified,needs_review
+My Funded Futures,Pro 150K,,,prohibited,allowed,,,,,,https://myfundedfutures.com/faq,aggregator_unverified,needs_review
+My Funded Futures,Pro 50K,,,prohibited,allowed,,,,,,https://myfundedfutures.com/faq,aggregator_unverified,needs_review
+My Funded Futures,Rapid 100K,,,prohibited,allowed,,,,,,https://myfundedfutures.com/faq,aggregator_unverified,needs_review
+My Funded Futures,Rapid 150K,,,prohibited,allowed,,,,,,https://myfundedfutures.com/faq,aggregator_unverified,needs_review
+My Funded Futures,Rapid 25K,,,prohibited,allowed,,,,,,https://myfundedfutures.com/faq,aggregator_unverified,needs_review
+My Funded Futures,Rapid 25K Trailing 25K,,,prohibited,allowed,,,,,,https://myfundedfutures.com/faq,aggregator_unverified,needs_review
+My Funded Futures,Rapid 50K,,,prohibited,allowed,,,,,,https://myfundedfutures.com/faq,aggregator_unverified,needs_review
+My Funded Futures,Rapid EOD 50K,,,prohibited,allowed,,,,,,https://myfundedfutures.com/faq,aggregator_unverified,needs_review
+Take Profit Trader,Evaluation 100K,restricted,prohibited,,,,allowed,,,,https://takeprofittraderhelp.zendesk.com/,aggregator_unverified,needs_review
+Take Profit Trader,Evaluation 150K,restricted,prohibited,,,,allowed,,,,https://takeprofittraderhelp.zendesk.com/,aggregator_unverified,needs_review
+Take Profit Trader,Evaluation 50K,restricted,prohibited,,,,allowed,,,,https://takeprofittraderhelp.zendesk.com/,aggregator_unverified,needs_review
+Take Profit Trader,Evaluation 75K,restricted,prohibited,,,,allowed,,,,https://takeprofittraderhelp.zendesk.com/,aggregator_unverified,needs_review
+Top One Futures,Elite Access 100K,allowed,,,,,,,,,https://toponefutures.com/faq,aggregator_unverified,needs_review
+Top One Futures,Elite Access 150K,allowed,,,,,,,,,https://toponefutures.com/faq,aggregator_unverified,needs_review
+Top One Futures,Elite Access 25K,allowed,,,,,,,,,https://toponefutures.com/faq,aggregator_unverified,needs_review
+Top One Futures,Elite Access 50K,allowed,,,,,,,,,https://toponefutures.com/faq,aggregator_unverified,needs_review
+Top One Futures,Elite Daily 100K,allowed,,,,,,,,,https://toponefutures.com/faq,aggregator_unverified,needs_review
+Top One Futures,Elite Daily 150K,allowed,,,,,,,,,https://toponefutures.com/faq,aggregator_unverified,needs_review
+Top One Futures,Elite Daily 25K,allowed,,,,,,,,,https://toponefutures.com/faq,aggregator_unverified,needs_review
+Top One Futures,Elite Daily 50K,allowed,,,,,,,,,https://toponefutures.com/faq,aggregator_unverified,needs_review
+Top One Futures,Elite Evaluation 100K,allowed,,,,,,,,,https://toponefutures.com/faq,aggregator_unverified,needs_review
+Top One Futures,Elite Evaluation 150K,allowed,,,,,,,,,https://toponefutures.com/faq,aggregator_unverified,needs_review
+Top One Futures,Elite Evaluation 25K,allowed,,,,,,,,,https://toponefutures.com/faq,aggregator_unverified,needs_review
+Top One Futures,Elite Evaluation 50K,allowed,,,,,,,,,https://toponefutures.com/faq,aggregator_unverified,needs_review
+Top One Futures,Ignite 100K,allowed,,,,,,,,,https://toponefutures.com/faq,aggregator_unverified,needs_review
+Top One Futures,Ignite 150K,allowed,,,,,,,,,https://toponefutures.com/faq,aggregator_unverified,needs_review
+Top One Futures,Ignite 50K,allowed,,,,,,,,,https://toponefutures.com/faq,aggregator_unverified,needs_review
+Top One Futures,Instant 25K,allowed,,,,,,,,,https://toponefutures.com/faq,aggregator_unverified,needs_review
+Top One Futures,Instant 50K,allowed,,,,,,,,,https://toponefutures.com/faq,aggregator_unverified,needs_review
+Top One Futures,Instant Sim Funded 100K,allowed,,,,,,,,,https://toponefutures.com/faq,aggregator_unverified,needs_review
+Top One Futures,Instant Sim Funded 150K,allowed,,,,,,,,,https://toponefutures.com/faq,aggregator_unverified,needs_review
+Top One Futures,Instant Sim Funded 25K,allowed,,,,,,,,,https://toponefutures.com/faq,aggregator_unverified,needs_review
+Top One Futures,Instant Sim Funded 50K,allowed,,,,,,,,,https://toponefutures.com/faq,aggregator_unverified,needs_review
+Topstep,Trading Combine 100K,allowed,,,,,allowed,,,,https://help.topstep.com/,aggregator_unverified,needs_review
+Topstep,Trading Combine 150K,allowed,,,,,allowed,,,,https://help.topstep.com/,aggregator_unverified,needs_review
+Topstep,Trading Combine 50K,allowed,,,,,allowed,,,,https://help.topstep.com/,aggregator_unverified,needs_review
+Topstep,Trading Combine No Activation Fee 100K,allowed,,,,,allowed,,,,https://help.topstep.com/,aggregator_unverified,needs_review
+Topstep,Trading Combine No Activation Fee 150K,allowed,,,,,allowed,,,,https://help.topstep.com/,aggregator_unverified,needs_review
+Topstep,Trading Combine No Activation Fee 50K,allowed,,,,,allowed,,,,https://help.topstep.com/,aggregator_unverified,needs_review
+TradeDay,Fast Pass 100K,,prohibited,,allowed,,,,,,https://tradeday.com/faq/,aggregator_unverified,needs_review
+TradeDay,Fast Pass 150K,,prohibited,,allowed,,,,,,https://tradeday.com/faq/,aggregator_unverified,needs_review
+TradeDay,Fast Pass 50K,,prohibited,,allowed,,,,,,https://tradeday.com/faq/,aggregator_unverified,needs_review
+TradeDay,Quick Pay EOD 100K,,prohibited,,allowed,,,,,,https://tradeday.com/faq/,aggregator_unverified,needs_review
+TradeDay,Quick Pay EOD 150K,,prohibited,,allowed,,,,,,https://tradeday.com/faq/,aggregator_unverified,needs_review
+TradeDay,Quick Pay EOD 50K,,prohibited,,allowed,,,,,,https://tradeday.com/faq/,aggregator_unverified,needs_review
+TradeDay,Quick Pay Intraday 100K,,prohibited,,allowed,,,,,,https://tradeday.com/faq/,aggregator_unverified,needs_review
+TradeDay,Quick Pay Intraday 150K,,prohibited,,allowed,,,,,,https://tradeday.com/faq/,aggregator_unverified,needs_review
+TradeDay,Quick Pay Intraday 50K,,prohibited,,allowed,,,,,,https://tradeday.com/faq/,aggregator_unverified,needs_review
+Tradeify,Growth 100K,allowed,prohibited,prohibited,,,,,,,https://help.tradeify.co/en/collections/15250320-trading-rules,aggregator_unverified,needs_review
+Tradeify,Growth 150K,allowed,prohibited,prohibited,,,,,,,https://help.tradeify.co/en/collections/15250320-trading-rules,aggregator_unverified,needs_review
+Tradeify,Growth 25K,allowed,prohibited,prohibited,,,,,,,https://help.tradeify.co/en/collections/15250320-trading-rules,aggregator_unverified,needs_review
+Tradeify,Growth 50K,allowed,prohibited,prohibited,,,,,,,https://help.tradeify.co/en/collections/15250320-trading-rules,aggregator_unverified,needs_review
+Tradeify,Lightning Funded 100K,allowed,prohibited,prohibited,,,,,,,https://help.tradeify.co/en/collections/15250320-trading-rules,aggregator_unverified,needs_review
+Tradeify,Lightning Funded 150K,allowed,prohibited,prohibited,,,,,,,https://help.tradeify.co/en/collections/15250320-trading-rules,aggregator_unverified,needs_review
+Tradeify,Lightning Funded 25K,allowed,prohibited,prohibited,,,,,,,https://help.tradeify.co/en/collections/15250320-trading-rules,aggregator_unverified,needs_review
+Tradeify,Lightning Funded 50K,allowed,prohibited,prohibited,,,,,,,https://help.tradeify.co/en/collections/15250320-trading-rules,aggregator_unverified,needs_review
+Tradeify,Select 100K,allowed,prohibited,prohibited,,,,,,,https://help.tradeify.co/en/collections/15250320-trading-rules,aggregator_unverified,needs_review
+Tradeify,Select 150K,allowed,prohibited,prohibited,,,,,,,https://help.tradeify.co/en/collections/15250320-trading-rules,aggregator_unverified,needs_review
+Tradeify,Select 25K,allowed,prohibited,prohibited,,,,,,,https://help.tradeify.co/en/collections/15250320-trading-rules,aggregator_unverified,needs_review
+Tradeify,Select 50K,allowed,prohibited,prohibited,,,,,,,https://help.tradeify.co/en/collections/15250320-trading-rules,aggregator_unverified,needs_review

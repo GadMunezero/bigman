@@ -285,6 +285,30 @@ describe("applying", () => {
     expect(rules.scalping).toBe("unknown");
   });
 
+  /**
+   * A dry run that under-reports is worse than no dry run: it is read as
+   * reassurance. Rules are the fields that hard-filter a trader's results, so
+   * a file that changes only rules must say so before it is applied.
+   */
+  it("previews trading-rule changes, not just challenge-column changes", () => {
+    applyImport(
+      planImport(
+        csv(row({ firm_name: "Preview Co", challenge_name: "$30K", news_trading: "allowed" })),
+      ),
+    );
+
+    const plan = planImport(
+      "firm_name,challenge_name,news_trading,consistency_rule\nPreview Co,$30K,prohibited,required",
+    );
+
+    expect(plan.changedChallenges).toHaveLength(1);
+    expect(plan.changedChallenges[0].changes).toEqual([
+      "news_trading: allowed → prohibited",
+      "consistency_rule: not_required → required",
+    ]);
+    expect(plan.unchanged).toBe(0);
+  });
+
   it("reports an unchanged re-import as unchanged", () => {
     applyImport(planImport(csv(row({ firm_name: "Same Co", challenge_name: "$1K" }))));
     const second = applyImport(planImport(csv(row({ firm_name: "Same Co", challenge_name: "$1K" }))));

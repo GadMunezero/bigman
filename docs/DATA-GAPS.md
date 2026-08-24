@@ -32,6 +32,27 @@ typically cover ten to twenty challenge rows.
 `consistency_rule`. Leave a cell empty if you could not find out — an empty
 cell changes nothing, and a guess is worse than a gap.
 
+### A research pass is queued and waiting for your approval
+
+`npm run db:research:rules` writes `data/rules-research.csv` covering 14
+futures firms — 363 proposed values across 150 challenges. Importing it queues
+every one at `/admin/rules`. **None of it is live**, and none of it should go
+live unread.
+
+Read the header of `db/build-rules-research.ts` before approving any of it,
+because what those values are worth is less than you would like. No prop firm
+domain or help centre was reachable from the environment that assembled them —
+not `topstep.com`, not `help.tradeify.co`, none of them — so nothing was read
+on the page that governs it. They come from review sites and comparison blogs,
+several of which contradict each other and one of which contradicted itself
+inside a single paragraph. Six disagreements were left unresolved rather than
+settled by majority vote, and the script prints them on every run.
+
+Rule values hard-filter results: `news_trading = 'prohibited'` removes a
+challenge from a trader's matches entirely. Approving here is a decision about
+what people get shown, not data entry. Every row carries the page to check it
+against, which turns "research 324 rows" into "open 14 pages".
+
 ## 2. The fifteen CFD firms — prices only, nothing else
 
 These came in through a price table and have no rules, no drawdown figures, no
