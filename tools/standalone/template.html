@@ -537,9 +537,11 @@ __GLOBALS__
       "<div><span>Price</span><b>" + (money(c.price) || '<i class="unknown">—</i>') + "</b></div>" +
       "<div><span>Max drawdown</span><b>" + (pct(c.max_drawdown_pct) || '<i class="unknown">—</i>') + "</b></div>" +
       "<div><span>Profit target</span><b>" + (pct(c.profit_target_pct) || '<i class="unknown">—</i>') + "</b></div>" +
-      '</div><div class="foot"><span class="pill ' + ruleTone(c.rules.news_trading) + '">News: ' +
-      titleCase(c.rules.news_trading) + '</span><span class="pill ' + ruleTone(c.rules.overnight) + '">Overnight: ' +
-      titleCase(c.rules.overnight) + "</span></div></article>";
+      // Consistency only, matching the server build. On a futures catalogue
+      // News and Overnight said the same thing on every card and distinguished
+      // nothing; the full rule table is still on the challenge detail view.
+      '</div><div class="foot"><span class="pill ' + ruleTone(c.rules.consistency_rule) +
+      '">Consistency: ' + titleCase(c.rules.consistency_rule) + "</span></div></article>";
   }
 
   // ---- Challenge detail -------------------------------------------------

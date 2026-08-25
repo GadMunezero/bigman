@@ -109,16 +109,24 @@
   text-transform: uppercase;
 }
 
+/*
+ * Two rows of two, inside a ruled box.
+ *
+ * The row gap has to clear the LABEL of the row below, not just its value. At
+ * 0.5rem the "MAX DRAWDOWN" caption sat hard under "$25K" with no daylight
+ * between them, so the drawdown row read as spillage rather than as part of
+ * the box — which is exactly how it was reported.
+ */
 .specs {
   display: grid;
-  gap: 0.5rem 1rem;
+  gap: 0.95rem 1rem;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  padding: 0.75rem 0;
+  padding: 0.9rem 0;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
 }
 
-.spec { display: grid; gap: 0.15rem; }
+.spec { display: grid; gap: 0.2rem; }
 
 .specLabel {
   color: var(--muted);
@@ -132,8 +140,13 @@
 
 .cardRules { display: flex; flex-wrap: wrap; gap: 0.35rem; }
 
+/*
+ * Equal halves made "View challenge" wrap to two lines while "Compare" stayed
+ * on one, so every card ended on a lopsided pair of buttons. Sizing to content
+ * and sharing the remainder keeps both on a single line at card width.
+ */
 .cardActions { display: flex; gap: 0.5rem; margin-top: auto; }
-.cardActions > * { flex: 1; }
+.cardActions > * { flex: 1 1 auto; white-space: nowrap; }
 
 /* ------------------------------------------------------------- reason list */
 

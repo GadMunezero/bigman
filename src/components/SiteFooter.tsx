@@ -40,14 +40,13 @@ export function SiteFooter() {
   return (
     <footer style={{ borderTop: "1px solid var(--line)", marginTop: "4rem" }}>
       <div className="shell" style={{ padding: "3rem 1.5rem 2rem" }}>
-        <div
-          style={{
-            display: "grid",
-            gap: "2rem",
-            gridTemplateColumns: "minmax(220px, 1.4fr) repeat(3, minmax(0, 1fr))",
-          }}
-          className="footer-grid"
-        >
+        {/*
+          The column template lives in globals.css, not inline, because it has
+          to change on a narrow screen — an inline style cannot carry a media
+          query, and this one demanded a 220px first column plus three more on
+          a 390px phone, which pushed the whole page sideways.
+        */}
+        <div className="footer-grid">
           <div className="stack-sm">
             <strong style={{ fontSize: "1rem" }}>
               {BRAND.name}{" "}

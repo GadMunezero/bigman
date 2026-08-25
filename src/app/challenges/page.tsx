@@ -19,9 +19,23 @@ function first(value: string | string[] | undefined): string {
   return Array.isArray(value) ? (value[0] ?? "") : (value ?? "");
 }
 
+/**
+ * News trading and overnight holding are deliberately not filters here.
+ *
+ * This catalogue is futures, and a futures evaluation is a day-trading
+ * product — positions are flat by the session close. Offering "overnight
+ * allowed" as a filter on a page where it is not a real axis of choice
+ * suggests a distinction that does not exist, and a trader who ticks it and
+ * gets an empty list learns nothing true. News trading goes for the same
+ * reason: it is not what separates one futures evaluation from another.
+ *
+ * Both fields are still stored, still shown on the challenge page where a
+ * firm's own policy is worth reading, and still read by the engine — a firm
+ * that genuinely prohibits something should still rule itself out for the
+ * trader who needs it. What changes is that they no longer front the browse
+ * page as though they were the decisive question.
+ */
 const RULE_FILTERS = [
-  { key: "news", label: "News trading", field: "news_trading" },
-  { key: "overnight", label: "Overnight", field: "overnight" },
   { key: "weekend", label: "Weekend", field: "weekend" },
   // The word "allowed" is appended by the label renderer, so it must not be
   // baked into the label here — that produced "EA allowed allowed".

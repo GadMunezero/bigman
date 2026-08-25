@@ -218,9 +218,20 @@ export function ChallengeCard({
         </div>
       </div>
 
+      {/*
+        Only the consistency rule earns a badge here.
+
+        News and overnight used to sit alongside it, and on a futures catalogue
+        they said nothing: these are day-trading products, flat by the session
+        close, so "Overnight: Not confirmed" on every card was three lines of
+        chrome that never distinguished one challenge from another. The
+        consistency rule genuinely does — it is the one that decides whether a
+        trader who makes their month in a single session can get paid.
+
+        The full rule table is still on the challenge page, where someone
+        comparing two firms in detail will actually read it.
+      */}
       <div className={styles.cardRules}>
-        <RuleBadge label="News" status={challenge.rules.news_trading} />
-        <RuleBadge label="Overnight" status={challenge.rules.overnight} />
         <RuleBadge label="Consistency" status={challenge.rules.consistency_rule} />
       </div>
 
