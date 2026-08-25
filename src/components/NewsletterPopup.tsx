@@ -6,22 +6,23 @@ import { NewsletterSignup } from "./NewsletterSignup";
 import styles from "./NewsletterPopup.module.css";
 
 const STORAGE_KEY = "ppf_newsletter";
-const VIEW_KEY = "ppf_views";
 
-/** How long a dismissal lasts before the card may appear again. */
-const DISMISS_DAYS = 60;
+/** How long a dismissal lasts before the modal may appear again. */
+const DISMISS_DAYS = 45;
 /** Someone who signs up is never asked again on this device. */
 const SUBSCRIBED_DAYS = 3650;
+/** Time on the site before it appears, in milliseconds. */
+const DELAY_MS = 15_000;
 
 /**
- * Routes where the card must never appear.
+ * Routes where the modal must never appear.
  *
- * The questionnaire is the product. Interrupting someone halfway through
- * answering seven questions about their trading to ask for their email is the
- * exact behaviour that makes people close a tab, and it costs a recommendation
- * to gain a subscriber — a bad trade in both directions. The legal pages are
- * excluded for the same reason in reverse: someone reading the privacy policy
- * is checking whether we are trustworthy, and a pop-up is not the answer.
+ * The questionnaire is the product, and it is the one place a blocking overlay
+ * genuinely costs something: interrupting someone halfway through answering
+ * questions about their trading trades a recommendation for a subscriber,
+ * which is a bad deal in both directions. The legal pages are excluded for the
+ * mirror-image reason — someone reading the privacy policy is deciding whether
+ * to trust us, and a pop-up is not the answer to that question.
  */
 const SUPPRESSED = [
   "/find-my-challenge",
@@ -41,9 +42,9 @@ function read(): Stored | null {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     return raw ? (JSON.parse(raw) as Stored) : null;
   } catch {
-    // Private windows and blocked site data both throw here. A reader whose
-    // browser refuses to remember the dismissal should still not be nagged, so
-    // failing to read is treated as "do not show".
+    // Private windows and blocked site data both throw here. A browser that
+    // refuses to remember a dismissal must not be shown the modal on every
+    // page, so failing to read is treated as "do not show".
     return null;
   }
 }
@@ -52,7 +53,7 @@ function write(state: Stored["state"]): void {
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ state, at: Date.now() }));
   } catch {
-    /* nothing to do — the card closes for this page view either way */
+    /* nothing to do — it closes for this page view either way */
   }
 }
 
@@ -64,123 +65,132 @@ function suppressedByHistory(): boolean {
 }
 
 /**
- * Newsletter card, shown once a visitor has actually looked around.
+ * The newsletter modal, in the shape most sites use: a centred card over a
+ * dimmed backdrop, a short while after someone arrives.
  *
- * Two gates before it can appear: at least a second page view this session,
- * and either 45 seconds on the page or two thirds of it scrolled. A first-time
- * arrival who is still deciding whether the site is any use gets nothing.
+ * There is no account system here, so there is no login to hang it off — it
+ * fires on arrival instead, which is what "on login" means on a site nobody
+ * signs into.
+ *
+ * Because it blocks, it is dismissible four ways (×, "No thanks", the
+ * backdrop, Escape), it traps focus while open so a keyboard user cannot tab
+ * into a page they cannot see, and it puts focus back where it was on close.
  */
 export function NewsletterPopup() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const dismissed = useRef(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const returnFocusTo = useRef<HTMLElement | null>(null);
 
-  const close = useCallback(
-    (state: Stored["state"] = "dismissed") => {
-      dismissed.current = true;
-      setOpen(false);
-      write(state);
-    },
-    [],
-  );
-
-  // Count page views per session so the gate below can require more than one.
-  useEffect(() => {
-    try {
-      const n = Number(window.sessionStorage.getItem(VIEW_KEY) ?? "0") + 1;
-      window.sessionStorage.setItem(VIEW_KEY, String(n));
-    } catch {
-      /* ignore */
-    }
-  }, [pathname]);
+  const close = useCallback((state: Stored["state"] = "dismissed") => {
+    dismissed.current = true;
+    setOpen(false);
+    write(state);
+    returnFocusTo.current?.focus?.();
+  }, []);
 
   useEffect(() => {
     if (dismissed.current) return;
     if (SUPPRESSED.some((prefix) => pathname?.startsWith(prefix))) return;
     if (suppressedByHistory()) return;
 
-    let views = 0;
-    try {
-      views = Number(window.sessionStorage.getItem(VIEW_KEY) ?? "0");
-    } catch {
-      /* ignore */
-    }
-    if (views < 2) return;
-
-    const show = () => {
+    const timer = window.setTimeout(() => {
       if (dismissed.current) return;
+      returnFocusTo.current = document.activeElement as HTMLElement | null;
       setOpen(true);
-    };
+    }, DELAY_MS);
 
-    const timer = window.setTimeout(show, 45_000);
-
-    const scrolledFarEnough = () => {
-      const height = document.body.scrollHeight;
-      // A page that barely fills the viewport is already "two thirds scrolled"
-      // the moment it paints, which would turn the scroll trigger into an
-      // on-arrival trigger. Only pages with real content to get through count.
-      if (height < window.innerHeight * 1.5) return false;
-      return window.scrollY + window.innerHeight > height * 0.66;
-    };
-
-    const onScroll = () => {
-      if (scrolledFarEnough()) show();
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-
-    // A scroll listener only ever hears about the NEXT scroll. Someone who
-    // arrives at a restored scroll position, or who scrolls hard while the page
-    // is still hydrating, is already past the mark and would never trigger it —
-    // so check where they actually are, once, a few seconds in.
-    const settle = window.setTimeout(onScroll, 4_000);
-
-    return () => {
-      window.clearTimeout(timer);
-      window.clearTimeout(settle);
-      window.removeEventListener("scroll", onScroll);
-    };
+    return () => window.clearTimeout(timer);
   }, [pathname]);
 
-  // Escape closes it. The card takes no focus, so this listens on the document
-  // rather than trapping focus inside a dialog — nothing is being blocked, so
-  // nothing needs to be trapped.
+  // While a modal is open the page behind it must not scroll, or dismissing it
+  // drops the reader somewhere they did not choose.
   useEffect(() => {
     if (!open) return;
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") close();
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
     };
+  }, [open]);
+
+  // Escape closes; Tab is kept inside the dialog.
+  useEffect(() => {
+    if (!open) return;
+
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        close();
+        return;
+      }
+      if (event.key !== "Tab") return;
+
+      const focusable = modalRef.current?.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input:not([disabled]), textarea, select, [tabindex]:not([tabindex="-1"])',
+      );
+      if (!focusable || focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
     window.addEventListener("keydown", onKey);
+    // Focus the dialog itself rather than the email box: opening straight into
+    // a text field on a phone throws the keyboard up over the whole thing.
+    modalRef.current?.focus();
     return () => window.removeEventListener("keydown", onKey);
   }, [open, close]);
 
   if (!open) return null;
 
   return (
-    <aside className={styles.wrap} role="complementary" aria-label="Newsletter signup">
-      <div className={styles.head}>
-        <p className={styles.title}>Before you go back to it —</p>
-        <button
-          type="button"
-          className={styles.close}
-          onClick={() => close()}
-          aria-label="Close newsletter signup"
-        >
-          ×
-        </button>
-      </div>
+    <div
+      className={styles.backdrop}
+      onClick={(event) => {
+        if (event.target === event.currentTarget) close();
+      }}
+    >
+      <div
+        ref={modalRef}
+        className={styles.modal}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="newsletter-modal-title"
+        tabIndex={-1}
+      >
+        <div className={styles.head}>
+          <h2 className={styles.title} id="newsletter-modal-title">
+            The parts that don&apos;t fit in a comparison table
+          </h2>
+          <button
+            type="button"
+            className={styles.close}
+            onClick={() => close()}
+            aria-label="Close"
+          >
+            ×
+          </button>
+        </div>
 
-      <NewsletterSignup
-        source={`popup:${pathname ?? "/"}`}
-        compact
-        blurb="Psychology, rule changes and discounts — the things that change after you have picked a challenge. Close this and carry on; it will not ask again for a couple of months."
-        onDone={() => write("subscribed")}
-      />
+        <NewsletterSignup
+          source={`modal:${pathname ?? "/"}`}
+          compact
+          blurb="Trading psychology, prop firm rule changes, and the occasional discount. No schedule — it goes out when there is something worth saying."
+          onDone={() => write("subscribed")}
+        />
 
-      <p style={{ marginTop: "0.75rem" }}>
         <button type="button" className={styles.later} onClick={() => close()}>
           No thanks — back to finding a challenge
         </button>
-      </p>
-    </aside>
+      </div>
+    </div>
   );
 }

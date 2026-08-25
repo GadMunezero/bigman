@@ -121,13 +121,28 @@ export function NewsletterSignup({
       <fieldset style={{ border: 0, padding: 0, margin: 0 }}>
         <legend className="field-label">What do you want to hear about?</legend>
         <div className="stack-sm" style={{ marginTop: "0.5rem" }}>
+          {/*
+            Each row is a two-column grid rather than a flex row: `.row` wraps,
+            and in a narrow container — the modal, a phone — the hint text
+            pushed the checkbox onto a line of its own, above the label it
+            belonged to.
+          */}
           {NEWSLETTER_TOPICS.map((topic) => (
-            <label key={topic} className="row" style={{ alignItems: "flex-start", gap: "0.6rem" }}>
+            <label
+              key={topic}
+              style={{
+                display: "grid",
+                gridTemplateColumns: "auto minmax(0, 1fr)",
+                gap: "0.6rem",
+                alignItems: "start",
+                cursor: "pointer",
+              }}
+            >
               <input
                 type="checkbox"
                 checked={topics.includes(topic)}
                 onChange={() => toggle(topic)}
-                style={{ marginTop: "0.25rem" }}
+                style={{ marginTop: "0.3rem", width: 16, height: 16, minHeight: "auto" }}
               />
               <span>
                 <span>{NEWSLETTER_TOPIC_LABELS[topic]}</span>

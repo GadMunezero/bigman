@@ -1,33 +1,55 @@
 /*
- * A corner card, deliberately not a modal.
+ * A centred modal, the shape most sites use.
  *
- * The whole point of this site is that someone arrives with a question and
- * leaves with a challenge that fits. A full-screen overlay that has to be
- * dismissed before the page can be read puts the newsletter ahead of that,
- * which is backwards. This sits in the corner, takes no focus, blocks no
- * clicks, and closes on Escape or the × — the page underneath keeps working
- * the entire time it is open.
+ * This one does block the page while it is open, so everything below is about
+ * making it cheap to get rid of: a backdrop that closes on click, an Escape
+ * handler, and a close button big enough to hit on a phone without aiming.
+ * A modal that is hard to dismiss is the reason people leave.
  */
-.wrap {
+.backdrop {
   position: fixed;
-  right: clamp(0.75rem, 3vw, 1.5rem);
-  bottom: clamp(0.75rem, 3vw, 1.5rem);
-  z-index: 60;
-  width: min(24rem, calc(100vw - 1.5rem));
-  max-height: min(32rem, calc(100vh - 2rem));
+  inset: 0;
+  z-index: 80;
+  background: rgba(0, 0, 0, 0.62);
+  backdrop-filter: blur(2px);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  animation: fade 180ms ease-out;
+}
+
+.modal {
+  position: relative;
+  width: min(30rem, 100%);
+  max-height: min(38rem, calc(100vh - 2rem));
   overflow-y: auto;
   background: var(--bg-2);
   border: 1px solid var(--line-2);
-  border-radius: 14px;
-  padding: 1.1rem;
-  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
-  animation: rise 260ms ease-out;
+  border-radius: 16px;
+  padding: clamp(1.25rem, 4vw, 1.9rem);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+  animation: rise 220ms ease-out;
+}
+
+/*
+ * The dialog is focused on open so a keyboard user lands inside it rather than
+ * on the page behind. That focus is programmatic, not a keyboard action, and
+ * the global focus ring drawn around the whole modal reads as a stray border.
+ * Controls inside it keep their own rings, which is where they matter.
+ */
+.modal:focus {
+  outline: none;
+}
+
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(14px) scale(0.985);
   }
   to {
     opacity: 1;
@@ -36,7 +58,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .wrap {
+  .backdrop,
+  .modal {
     animation: none;
   }
 }
@@ -46,28 +69,28 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 0.75rem;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.75rem;
 }
 
 .title {
-  font-size: 15px;
-  font-weight: 600;
+  font-size: clamp(1.15rem, 3vw, 1.4rem);
+  font-weight: 640;
+  line-height: 1.2;
   margin: 0;
+  text-wrap: balance;
 }
 
-/* Big enough to hit on a phone without aiming — a dismiss control that is hard
-   to press is the same as no dismiss control. */
 .close {
   flex: none;
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 38px;
   display: grid;
   place-items: center;
-  border-radius: 9px;
+  border-radius: 10px;
   border: 1px solid var(--line);
   background: transparent;
   color: var(--muted);
-  font-size: 18px;
+  font-size: 20px;
   line-height: 1;
   cursor: pointer;
 }
@@ -78,11 +101,18 @@
 }
 
 .later {
+  display: block;
+  width: 100%;
+  margin-top: 0.9rem;
   background: none;
   border: 0;
-  padding: 0;
+  padding: 0.4rem;
   color: var(--muted);
-  font-size: 12.5px;
+  font-size: 13px;
   text-decoration: underline;
   cursor: pointer;
+}
+
+.later:hover {
+  color: var(--ink-2);
 }

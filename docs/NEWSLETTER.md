@@ -71,27 +71,43 @@ chat or caught in a server log does not say whose it is.
 | `/newsletter` | all three | The page someone arrived at on purpose |
 | `/psychology` | psychology | They came for the behavioural material, not a discount |
 | `/learn` | rule changes, psychology | Guides go stale when a firm moves a rule |
-| Corner card (site-wide) | all three | Passive, dismissible, described below |
+| Modal (site-wide) | all three | The pop-up most sites use, described below |
 
-### The corner card
+### The modal
 
-`src/components/NewsletterPopup.tsx`. It is a card in the bottom corner, not a
-modal — the page underneath keeps working the whole time it is open, it takes
-no focus, and it blocks no clicks. Closing it takes one press of the ×, the
-"No thanks" link, or Escape.
+`src/components/NewsletterPopup.tsx`. A centred card over a dimmed backdrop,
+**15 seconds after someone arrives** — the shape and timing most sites use.
 
-It appears only after someone has actually looked around: at least a second
-page view in the session, and then either 45 seconds on the page or two thirds
-of it scrolled. Dismissing it silences it for 60 days; signing up silences it
-for ten years. Both are stored in `localStorage` under `ppf_newsletter`, and a
-browser that refuses to store it is treated as "do not show" rather than
-"show every time".
+There is no account system here, so there is no login event to hang it off.
+Arrival is what "on login" means on a site nobody signs into.
 
-It never appears on `/find-my-challenge`. Interrupting someone halfway through
-the questionnaire costs a recommendation to gain a subscriber, which is a bad
-trade in both directions. It is also suppressed on `/admin` and on the legal
-pages, where a reader checking whether we are trustworthy should not be sold
-to.
+Because it blocks the page, everything about it is built to make leaving cheap:
+
+- Four ways out — the ×, "No thanks", clicking the backdrop, and Escape.
+- Focus is trapped while it is open, so a keyboard user cannot tab into a page
+  they cannot see, and it goes back where it was on close.
+- It focuses the dialog, not the email field. Opening straight into a text
+  input throws the keyboard up over the whole thing on a phone.
+- Page scroll is locked while open and restored on close, so dismissing it
+  never drops the reader somewhere they did not choose.
+
+Dismissing silences it for 45 days; signing up silences it for ten years. Both
+live in `localStorage` under `ppf_newsletter`, and a browser that refuses to
+store it is treated as "do not show" rather than "show every time" — a private
+window should not get the modal on every page.
+
+It never appears on `/find-my-challenge`. That is the one place a blocking
+overlay genuinely costs something: interrupting someone halfway through
+answering questions about their trading trades a recommendation for a
+subscriber, which is a bad deal in both directions. It is also suppressed on
+`/admin` and on the legal pages, where a reader deciding whether to trust us
+should not be sold to.
+
+**To make it less intrusive**, the knobs are at the top of the file:
+`DELAY_MS` (how long before it appears) and `DISMISS_DAYS` (how long a "no"
+lasts). Raising the delay to 30–45 seconds, or gating it behind a second page
+view, both cost signups and annoy fewer people. That is a judgement call about
+your audience, not a technical one.
 
 ## Admin
 
