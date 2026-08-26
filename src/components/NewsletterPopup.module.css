@@ -64,24 +64,16 @@
   }
 }
 
-.head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.75rem;
-  margin-bottom: 0.75rem;
-}
-
-.title {
-  font-size: clamp(1.15rem, 3vw, 1.4rem);
-  font-weight: 640;
-  line-height: 1.2;
-  margin: 0;
-  text-wrap: balance;
-}
-
+/*
+ * The close button floats over the top-right corner rather than sitting in a
+ * header row, because the content underneath is centred — a flex header would
+ * push the headline off-centre to make room for it.
+ */
 .close {
-  flex: none;
+  position: absolute;
+  top: 0.7rem;
+  right: 0.7rem;
+  z-index: 1;
   width: 38px;
   height: 38px;
   display: grid;

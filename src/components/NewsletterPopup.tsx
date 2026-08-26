@@ -163,27 +163,23 @@ export function NewsletterPopup() {
         className={styles.modal}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="newsletter-modal-title"
+        aria-label="Newsletter signup"
         tabIndex={-1}
       >
-        <div className={styles.head}>
-          <h2 className={styles.title} id="newsletter-modal-title">
-            The parts that don&apos;t fit in a comparison table
-          </h2>
-          <button
-            type="button"
-            className={styles.close}
-            onClick={() => close()}
-            aria-label="Close"
-          >
-            ×
-          </button>
-        </div>
+        <button
+          type="button"
+          className={styles.close}
+          onClick={() => close()}
+          aria-label="Close"
+        >
+          ×
+        </button>
 
         <NewsletterSignup
           source={`modal:${pathname ?? "/"}`}
-          compact
-          blurb="Trading psychology, prop firm rule changes, and the occasional discount. No schedule — it goes out when there is something worth saying."
+          layout="hero"
+          heading="Stay Sharp"
+          blurb="Prop firm rule changes, trading psychology and the occasional discount — sent only when there is something worth knowing."
           onDone={() => write("subscribed")}
         />
 

@@ -27,6 +27,7 @@ export function NewsletterSignup({
   heading = "Get the parts that don't fit in a table",
   blurb = "Trading psychology, prop firm rule changes, and the occasional discount. No fixed schedule — it goes out when there is something worth saying.",
   compact = false,
+  layout = "stacked",
   onDone,
 }: {
   source: string;
@@ -34,6 +35,12 @@ export function NewsletterSignup({
   heading?: string;
   blurb?: string;
   compact?: boolean;
+  /**
+   * "stacked" is the in-page form: a labelled heading, three described topic
+   * checkboxes, then the field. "hero" is the pop-up: headline, one line, the
+   * field, the button, and the topics reduced to chips underneath.
+   */
+  layout?: "stacked" | "hero";
   onDone?: () => void;
 }) {
   const formId = useId();
@@ -105,6 +112,117 @@ export function NewsletterSignup({
     );
   }
 
+  /* Honeypot: hidden from people, irresistible to form-filling bots. */
+  const honeypot = (
+    <div aria-hidden="true" style={{ position: "absolute", left: "-9999px" }}>
+      <label htmlFor={`${formId}-website`}>Website</label>
+      <input
+        id={`${formId}-website`}
+        type="text"
+        tabIndex={-1}
+        autoComplete="off"
+        value={website}
+        onChange={(event) => setWebsite(event.target.value)}
+      />
+    </div>
+  );
+
+  /**
+   * The pop-up layout: a short headline, one line of what you get, then the
+   * field and the button. Nothing else above the fold.
+   *
+   * The topic choice survives as a row of chips rather than three labelled
+   * checkboxes with hint text. It has to survive in some form — "discounts"
+   * is the one that can earn a commission, and bundling it invisibly into a
+   * psychology signup is consent by ambush — but on a modal it belongs under
+   * the button, not in front of it.
+   */
+  if (layout === "hero") {
+    return (
+      <form onSubmit={submit} style={{ display: "grid", gap: "0.85rem", textAlign: "center" }}>
+        <div style={{ display: "grid", gap: "0.4rem" }}>
+          <h2 style={{ fontSize: "clamp(1.6rem, 5vw, 2.1rem)", lineHeight: 1.1, margin: 0 }}>
+            {heading}
+          </h2>
+          <p className="muted small" style={{ margin: "0 auto", maxWidth: "42ch" }}>
+            {blurb}
+          </p>
+        </div>
+
+        <label className="field-label" htmlFor={`${formId}-email`} style={{ display: "none" }}>
+          Email
+        </label>
+        <input
+          id={`${formId}-email`}
+          className="input"
+          type="email"
+          required
+          autoComplete="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          style={{ textAlign: "center" }}
+        />
+
+        {honeypot}
+
+        <button
+          className="btn btn-primary btn-lg"
+          type="submit"
+          disabled={state === "sending"}
+          style={{ width: "100%" }}
+        >
+          {state === "sending" ? "Sending…" : "Subscribe"}
+        </button>
+
+        {message ? (
+          <p className="field-error" role="alert" style={{ margin: 0 }}>
+            {message}
+          </p>
+        ) : null}
+
+        <div style={{ display: "grid", gap: "0.45rem" }}>
+          <span className="field-label" style={{ fontSize: "10px" }}>
+            Send me
+          </span>
+          <div
+            style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem", justifyContent: "center" }}
+          >
+            {NEWSLETTER_TOPICS.map((topic) => {
+              const on = topics.includes(topic);
+              return (
+                <button
+                  key={topic}
+                  type="button"
+                  className={on ? "pill pill-accent" : "pill"}
+                  aria-pressed={on}
+                  onClick={() => toggle(topic)}
+                  style={{ cursor: "pointer", border: "1px solid" }}
+                >
+                  {on ? "✓ " : ""}
+                  {NEWSLETTER_TOPIC_LABELS[topic]}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/*
+          Four sentences was a wall of grey under a clean form. One line each
+          for the three things a reader actually needs: nothing arrives until
+          you confirm, leaving is easy, and the discount emails can pay us.
+          The last one stays however short this gets — a chip labelled
+          "Discounts and offers" is not consent to be marketed at for money
+          unless it says so.
+        */}
+        <p className="muted" style={{ fontSize: "11.5px", margin: 0, lineHeight: 1.55 }}>
+          Confirmation link first — nobody is added until you click it. One-click unsubscribe, never
+          sold. Discount emails may earn us a commission; it never affects the rankings.
+        </p>
+      </form>
+    );
+  }
+
   return (
     <form className="stack" onSubmit={submit}>
       {!compact ? (
@@ -170,18 +288,7 @@ export function NewsletterSignup({
         />
       </div>
 
-      {/* Honeypot: hidden from people, irresistible to form-filling bots. */}
-      <div aria-hidden="true" style={{ position: "absolute", left: "-9999px" }}>
-        <label htmlFor={`${formId}-website`}>Website</label>
-        <input
-          id={`${formId}-website`}
-          type="text"
-          tabIndex={-1}
-          autoComplete="off"
-          value={website}
-          onChange={(event) => setWebsite(event.target.value)}
-        />
-      </div>
+      {honeypot}
 
       {message ? (
         <p className="field-error" role="alert">
