@@ -133,6 +133,18 @@ __GLOBALS__
 
   .empty { text-align:center; padding:3rem 1rem; color:var(--ink-3); }
   footer { margin-top:3rem; padding:1.25rem 0 0; border-top:1px solid var(--line); font-size:0.8rem; color:var(--ink-3); }
+  /* Newsletter modal — mirrors the hosted site's component. */
+  .nl-backdrop { position:fixed; inset:0; z-index:80; background:rgba(0,0,0,0.62); display:grid; place-items:center; padding:1rem; }
+  .nl-modal { width:min(30rem,100%); max-height:min(38rem,calc(100vh - 2rem)); overflow-y:auto; background:var(--bg-2); border:1px solid var(--line-2); border-radius:16px; padding:clamp(1.25rem,4vw,1.9rem); box-shadow:0 24px 70px rgba(0,0,0,0.55); }
+  .nl-head { display:flex; align-items:flex-start; justify-content:space-between; gap:0.75rem; margin-bottom:0.6rem; }
+  .nl-head h2 { font-size:clamp(1.1rem,3vw,1.35rem); line-height:1.2; margin:0; }
+  .nl-close { flex:none; width:38px; height:38px; border-radius:10px; border:1px solid var(--line); background:transparent; color:var(--ink-3); font-size:20px; line-height:1; cursor:pointer; }
+  .nl-close:hover { color:var(--ink); }
+  .nl-list { margin:0.9rem 0; padding-left:1.1rem; display:grid; gap:0.4rem; }
+  .nl-list b { color:var(--ink); font-weight:600; }
+  .nl-note { margin-top:0.7rem; }
+  .nl-later { display:block; width:100%; margin-top:0.9rem; background:none; border:0; padding:0.4rem; color:var(--ink-3); font-size:13px; text-decoration:underline; cursor:pointer; }
+
   @media (prefers-reduced-motion: reduce) { * { transition:none !important; } }
 </style>
 
@@ -811,5 +823,60 @@ __GLOBALS__
 
   window.addEventListener("hashchange", render);
   render();
+
+  // ---- Newsletter modal --------------------------------------------------
+  // The same modal the real site shows, so this preview represents the whole
+  // product rather than most of it. The one thing it cannot do is submit:
+  // there is no server behind a file, so the button says so instead of
+  // pretending to sign anyone up.
+  (function newsletterModal() {
+    var KEY = "ppf_newsletter_preview";
+    try { if (sessionStorage.getItem(KEY)) return; } catch (e) {}
+
+    function close() {
+      try { sessionStorage.setItem(KEY, "1"); } catch (e) {}
+      var el = document.getElementById("nl-modal");
+      if (el) el.remove();
+      document.body.style.overflow = "";
+      document.removeEventListener("keydown", onKey);
+    }
+    function onKey(e) { if (e.key === "Escape") close(); }
+
+    window.setTimeout(function () {
+      if (location.hash.indexOf("#/find") === 0) return;
+      var wrap = document.createElement("div");
+      wrap.id = "nl-modal";
+      wrap.className = "nl-backdrop";
+      wrap.innerHTML =
+        '<div class="nl-modal" role="dialog" aria-modal="true" aria-label="Newsletter">' +
+        '<div class="nl-head"><h2>The parts that don\'t fit in a comparison table</h2>' +
+        '<button type="button" class="nl-close" aria-label="Close">&times;</button></div>' +
+        "<p class=\"small muted\">Trading psychology, prop firm rule changes, and the occasional " +
+        "discount. No schedule — it goes out when there is something worth saying.</p>" +
+        '<ul class="small muted nl-list"><li><b>Trading psychology</b> — the behavioural half of ' +
+        "passing a challenge.</li><li><b>Prop firm rule changes</b> — when a firm moves a drawdown " +
+        "or a payout rule.</li><li><b>Discounts and offers</b> — we may earn a commission; it never " +
+        "affects the ranking.</li></ul>" +
+        '<input class="input" type="email" placeholder="you@example.com" aria-label="Email">' +
+        '<button type="button" class="btn btn-primary nl-submit" style="width:100%;margin-top:0.6rem">' +
+        "Send me the confirmation link</button>" +
+        '<p class="small muted nl-note">Preview only — signing up needs the hosted site. On the ' +
+        "live version this emails a confirmation link and adds nobody until it is clicked.</p>" +
+        '<button type="button" class="nl-later">No thanks — back to finding a challenge</button></div>';
+      document.body.appendChild(wrap);
+      document.body.style.overflow = "hidden";
+
+      wrap.addEventListener("click", function (e) { if (e.target === wrap) close(); });
+      wrap.querySelector(".nl-close").addEventListener("click", close);
+      wrap.querySelector(".nl-later").addEventListener("click", close);
+      wrap.querySelector(".nl-submit").addEventListener("click", function () {
+        var note = wrap.querySelector(".nl-note");
+        note.textContent = "This is the offline preview, so nothing was sent. On the hosted site " +
+          "this is where the confirmation email goes out.";
+        note.style.color = "var(--accent)";
+      });
+      document.addEventListener("keydown", onKey);
+    }, 15000);
+  })();
 })();
 </script>

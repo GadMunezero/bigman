@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!--
+    Browser tab icon. The same mark as the header — a yellow disc with a black
+    open book — redrawn with literal colours rather than CSS variables, because
+    a favicon is fetched on its own and inherits none of the site's stylesheet.
+  -->
+  <circle cx="16" cy="16" r="16" fill="#ffd400"/>
+  <path
+    d="M16 10.6c-2.1-1.5-4.6-2.2-7.1-2.1-.6 0-1 .5-1 1.1v11.2c0 .6.5 1.1 1.1 1.1 2.4-.1 4.8.6 6.8 2 .1.1.3.1.4 0 2-1.4 4.4-2.1 6.8-2 .6 0 1.1-.5 1.1-1.1V9.6c0-.6-.4-1.1-1-1.1-2.5-.1-5 .6-7.1 2.1Z"
+    fill="#000"/>
+  <path d="M15.1 11.4h1.8v11.6h-1.8z" fill="#ffd400"/>
+</svg>
