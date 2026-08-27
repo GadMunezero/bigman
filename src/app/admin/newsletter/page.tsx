@@ -1,3 +1,4 @@
+import { emailConfigured } from "@/lib/email";
 import { countSubscribers, listSubscribers } from "@/lib/repo";
 import { NEWSLETTER_TOPIC_LABELS, type NewsletterTopic } from "@/lib/types";
 
@@ -25,6 +26,32 @@ export default async function AdminNewsletterPage() {
 
   return (
     <div className="stack-lg">
+      {/*
+        The single most useful fact on this page. Without a provider every
+        signup sits at `pending` forever, because the confirmation link never
+        reaches anybody — and a growing pending column looks like success.
+      */}
+      {emailConfigured() ? (
+        <div className="panel panel-quiet">
+          <strong>Confirmation emails are being sent.</strong>
+          <p className="small muted" style={{ marginTop: "0.4rem" }}>
+            New signups get a link automatically. If people report never receiving it, check the
+            sending domain is verified with your provider — an unverified domain is accepted at
+            signup and then silently dropped.
+          </p>
+        </div>
+      ) : (
+        <div className="panel panel-warn">
+          <strong>No email provider is configured, so nobody can confirm.</strong>
+          <p className="small muted" style={{ marginTop: "0.4rem" }}>
+            Signups are recorded as <code>pending</code> and the confirmation link is never sent, so
+            the confirmed column will stay at zero however many people sign up. Set{" "}
+            <code>RESEND_API_KEY</code> and <code>EMAIL_FROM</code> — see{" "}
+            <code>docs/NEWSLETTER.md</code>.
+          </p>
+        </div>
+      )}
+
       <div className="panel panel-quiet">
         <strong>Only the confirmed list is mailable.</strong>
         <p className="small muted" style={{ marginTop: "0.4rem" }}>

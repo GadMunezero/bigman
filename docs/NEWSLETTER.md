@@ -4,7 +4,42 @@ People sign up to get trading psychology tips, prop firm rule changes and
 discounts. This document covers what exists, what does not, and the one thing
 you must do before mailing anybody.
 
-## Read this first: no email is sent yet
+## Turning on email (15 minutes, free, no card)
+
+The sending code is wired up. It needs two environment variables and a verified
+domain, and then signups confirm themselves.
+
+1. **Sign up at resend.com.** Free tier: 3,000 emails a month, 100 a day, no
+   card. That is more than a newsletter this size needs for a long time.
+2. **Domains → Add domain**, enter your domain. Resend shows three DNS records
+   (DKIM, SPF, and a return-path CNAME).
+3. **Add them in Namecheap** under *Domain List → Manage → Advanced DNS*, then
+   click **Verify** in Resend. Usually a few minutes.
+4. **API Keys → Create**, copy it.
+5. Put both in `deploy/.env`:
+
+   ```ini
+   RESEND_API_KEY=re_xxxxxxxxxxxx
+   EMAIL_FROM=PropFirm <hello@your-domain.com>
+   ```
+
+   `EMAIL_FROM` **must** be on the domain you verified in step 2.
+
+6. `docker compose -f deploy/docker-compose.yml up -d` to pick them up.
+
+`/admin/newsletter` says at the top whether email is actually configured, so
+you never have to guess.
+
+**The failure mode worth knowing:** sending from a domain Resend has not
+verified is accepted at signup and then silently dropped. It looks exactly like
+the email working, except nobody ever confirms. If the confirmed count stays at
+zero while pending climbs, check the domain first.
+
+Until this is done, everything below applies.
+
+---
+
+## Without a provider: no email is sent
 
 The signup, the double opt-in flow, the database and the admin list are all
 built and working. **There is no email provider wired in.** Nothing on this
