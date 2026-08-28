@@ -4,7 +4,7 @@
 #
 #   curl -fsSL https://raw.githubusercontent.com/GadMunezero/bigman/claude/prop-firm-challenge-finder-frpvmc/deploy/bootstrap.sh | bash
 #
-# It installs Docker, clones the repo, asks four questions, and brings the
+# It installs Docker, clones the repo, asks two questions, and brings the
 # stack up. Everything it does is in docs/HOSTING-FREE.md as separate steps —
 # this is the same sequence with the typing removed.
 #
@@ -48,7 +48,9 @@ ENV_FILE="deploy/.env"
 if [ -f "$ENV_FILE" ]; then
   say "deploy/.env already exists — leaving it alone"
 else
-  say "Four questions"
+  # Two questions, four values: the site URL is derived from the domain and the
+  # admin password is generated below, because neither is worth a prompt.
+  say "Two questions"
   read -rp "  Your domain, no https:// and no www (e.g. propfirm.com): " DOMAIN
   [ -z "$DOMAIN" ] && die "A domain is required — Caddy needs it to get an HTTPS certificate."
   read -rp "  Email for certificate expiry warnings: " EMAIL
