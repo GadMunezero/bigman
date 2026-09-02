@@ -1,0 +1,205 @@
+/* -------------------------------------------------------------- match ring */
+
+.ring {
+  display: grid;
+  place-items: center;
+  width: var(--size, 92px);
+  height: var(--size, 92px);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at center, var(--bg-1) 63%, transparent 64%),
+    conic-gradient(var(--ring-color) calc(var(--pct) * 1%), rgba(255, 255, 255, 0.08) 0);
+}
+
+.ringInner {
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.ringValue {
+  color: var(--ring-color);
+  font-family: var(--font-mono);
+  font-size: calc(var(--size, 92px) * 0.27);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.ringUnit {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ------------------------------------------------------------ rule badges */
+
+.ruleBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.18rem 0.55rem;
+  border: 1px solid var(--line-2);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.allowed { border-color: var(--accent-line); background: var(--accent-dim); color: var(--accent); }
+.restricted { border-color: rgba(255, 159, 28, 0.3); background: rgba(255, 159, 28, 0.09); color: var(--warn); }
+.prohibited { border-color: rgba(255, 90, 90, 0.3); background: rgba(255, 90, 90, 0.09); color: var(--danger); }
+.unknown { color: var(--faint); }
+
+/* --------------------------------------------------------- challenge card */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1.15rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--bg-1);
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.card:hover { border-color: var(--line-2); background: var(--bg-2); }
+
+.cardHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.cardTitle { font-size: 1.05rem; font-weight: 600; letter-spacing: -0.015em; }
+
+.cardFirm {
+  margin-top: 0.15rem;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.cardScore {
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--accent-line);
+  border-radius: 9px;
+  background: var(--accent-dim);
+  text-align: center;
+}
+
+.cardScoreValue {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.cardScoreLabel {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/*
+ * Two rows of two, inside a ruled box.
+ *
+ * The row gap has to clear the LABEL of the row below, not just its value. At
+ * 0.5rem the "MAX DRAWDOWN" caption sat hard under "$25K" with no daylight
+ * between them, so the drawdown row read as spillage rather than as part of
+ * the box — which is exactly how it was reported.
+ */
+.specs {
+  display: grid;
+  gap: 0.95rem 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: 0.9rem 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.spec { display: grid; gap: 0.2rem; }
+
+.specLabel {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.specValue { font-family: var(--font-mono); font-size: 13.5px; }
+
+.cardRules { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+
+/*
+ * Equal halves made "View challenge" wrap to two lines while "Compare" stayed
+ * on one, so every card ended on a lopsided pair of buttons. Sizing to content
+ * and sharing the remainder keeps both on a single line at card width.
+ */
+.cardActions { display: flex; gap: 0.5rem; margin-top: auto; }
+.cardActions > * { flex: 1 1 auto; white-space: nowrap; }
+
+/* ------------------------------------------------------------- reason list */
+
+.reasons { display: grid; gap: 0.45rem; }
+
+.reason {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.reasonIcon {
+  flex: 0 0 auto;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.warnIcon { color: var(--warn); }
+
+/* --------------------------------------------------------- score breakdown */
+
+.breakdownRow {
+  display: grid;
+  grid-template-columns: minmax(120px, 1.1fr) minmax(80px, 2fr) auto;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.breakdownRow:last-child { border-bottom: 0; }
+
+.bar {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.barFill { height: 100%; border-radius: inherit; background: var(--accent); }
+
+.breakdownValue {
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+  .breakdownRow { grid-template-columns: 1fr auto; }
+  .bar { display: none; }
+}

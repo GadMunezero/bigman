@@ -1,0 +1,166 @@
+.hero {
+  display: grid;
+  gap: 3rem;
+  align-items: center;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  padding: clamp(3rem, 7vw, 6rem) 0 clamp(2.5rem, 5vw, 4rem);
+}
+
+.heroTitle {
+  margin: 1rem 0 1.25rem;
+  max-width: 15ch;
+}
+
+.heroCtas { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2rem; }
+
+.heroNote { margin-top: 1.25rem; color: var(--faint); font-size: 13px; }
+
+/* ---------------------------------------------------------- hero preview */
+
+.preview {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.035), transparent 60%), var(--bg-1);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+}
+
+.previewCard {
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--bg-2);
+}
+
+.previewRows { display: grid; gap: 0.4rem; margin-top: 0.75rem; }
+
+.previewRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 13px;
+}
+
+.previewRow dt { color: var(--muted); }
+.previewRow dd { font-family: var(--font-mono); font-size: 12.5px; }
+
+.arrow {
+  justify-self: center;
+  color: var(--faint);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  line-height: 1;
+}
+
+.matchCard {
+  display: grid;
+  gap: 0.9rem;
+  padding: 1.15rem;
+  border: 1px solid var(--accent-line);
+  border-radius: var(--r);
+  background: linear-gradient(150deg, var(--accent-dim), transparent 65%), var(--bg-2);
+}
+
+.matchHead { display: flex; align-items: center; gap: 1rem; }
+
+.matchWhy { display: grid; gap: 0.35rem; }
+
+.matchWhy li {
+  display: flex;
+  gap: 0.5rem;
+  color: var(--ink-2);
+  font-size: 13px;
+  list-style: none;
+}
+
+.matchWhy span { color: var(--accent); }
+
+/* --------------------------------------------------------------- generic */
+
+.steps { counter-reset: step; }
+
+.step {
+  position: relative;
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--bg-1);
+}
+
+.stepNum {
+  display: block;
+  margin-bottom: 0.75rem;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+}
+
+.styleCard {
+  display: grid;
+  gap: 0.5rem;
+  align-content: start;
+  padding: 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--bg-1);
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.styleCard:hover { border-color: var(--accent-line); background: var(--bg-2); }
+
+.ruleChips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+.chip {
+  padding: 0.45rem 0.85rem;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+}
+
+.faqItem {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.faqItem summary {
+  cursor: pointer;
+  font-size: 15.5px;
+  font-weight: 550;
+  list-style: none;
+}
+
+.faqItem summary::-webkit-details-marker { display: none; }
+
+.faqItem summary::before {
+  content: "+";
+  display: inline-block;
+  width: 1.4em;
+  color: var(--accent);
+  font-family: var(--font-mono);
+}
+
+.faqItem[open] summary::before { content: "−"; }
+
+.faqItem p { margin: 0.6rem 0 0 1.4em; font-size: 14px; }
+
+.finalCta {
+  display: grid;
+  gap: 1.5rem;
+  justify-items: center;
+  padding: clamp(3rem, 7vw, 5rem) 1.5rem;
+  border: 1px solid var(--accent-line);
+  border-radius: var(--r-xl);
+  background: linear-gradient(160deg, var(--accent-dim), transparent 70%), var(--bg-1);
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; gap: 2.5rem; padding-top: 2.5rem; }
+  .heroTitle { max-width: none; }
+}

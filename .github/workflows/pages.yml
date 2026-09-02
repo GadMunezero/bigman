@@ -1,0 +1,86 @@
+# Publishes the single-file build to GitHub Pages.
+#
+# WHAT THIS HOSTS, AND WHAT IT DOES NOT
+#
+# The standalone build: the questionnaire, the real matching engine, the
+# catalogue, comparison, firm pages and the psychology tools, compiled into one
+# HTML file. Pages serves static files, so everything that needs a server is
+# absent — no /admin, no newsletter signup, no saved challenges, no outcome
+# tracking. Those need the Docker deployment in docs/HOSTING-FREE.md.
+#
+# It is a real, shareable, public version of the product, and it costs nothing.
+# It is not the whole product.
+#
+# TO TURN IT ON: Settings -> Pages -> Source: "GitHub Actions". That is the
+# only manual step; every push to main redeploys automatically after that.
+name: Deploy preview to Pages
+
+on:
+  push:
+    branches: [main]
+  # So it can be published before the branch is merged, and re-run on demand.
+  workflow_dispatch:
+
+# The Pages deployment needs these; the default token is read-only.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never let two deploys race. In-progress runs finish rather than being
+# cancelled, so a half-written site is never what gets served.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Rebuilds the catalogue from the committed specs and CSVs, so the
+      # published site always matches what is in the repo rather than whatever
+      # database happened to be lying around.
+      - name: Build the catalogue
+        run: npm run catalogue:build
+
+      # Publish only the challenges carrying every figure the engine scores on,
+      # matching what a real deployment shows. catalogue:build ends with
+      # publish:all, so this narrows it back down.
+      - name: Keep only the launch-ready challenges
+        run: npx tsx db/publish-ready.ts --apply --demote
+
+      - run: npm run build:standalone
+
+      # Pages serves index.html from the root of the uploaded directory.
+      - name: Lay out the site
+        run: |
+          mkdir -p _site
+          cp dist/propfirm-standalone.html _site/index.html
+          cp src/app/icon.svg _site/favicon.svg
+          # Without this, Pages runs the output through Jekyll, which strips
+          # files and directories beginning with an underscore.
+          touch _site/.nojekyll
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

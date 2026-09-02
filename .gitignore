@@ -1,0 +1,26 @@
+node_modules/
+.next/
+out/
+build/
+dist/
+
+# Local database files — the schema lives in db/schema.sql, the data does not belong in git.
+data/*.db
+data/*.db-journal
+data/*.db-wal
+data/*.db-shm
+
+.env
+.env.local
+.env*.local
+# Real secrets for the deployment stack. deploy/.env.example is the template
+# that IS committed.
+deploy/.env
+
+*.tsbuildinfo
+next-env.d.ts
+
+.DS_Store
+*.log
+npm-debug.log*
+coverage/

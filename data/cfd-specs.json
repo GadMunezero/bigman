@@ -1,0 +1,689 @@
+{
+  "market": "cfd",
+  "_comment": [
+    "CFD products, built from a supplied price table.",
+    "",
+    "PRICES ONLY. Unlike data/futures-specs.json, these rows carry no profit",
+    "target, drawdown, daily loss limit, profit split or trading rules, because",
+    "the supplied table did not contain any. Every one of those fields renders",
+    "as \"Not confirmed\" rather than being filled with a plausible guess, and the",
+    "engine scores them accordingly — which means CFD rows will rank below",
+    "futures rows until somebody adds the rules. That is correct behaviour, not",
+    "a bug to tune away.",
+    "",
+    "Special-offer prices ($3 and $5 one-step deals at AquaFunded, Atmos Funded",
+    "and FundedElite) are deliberately absent. A promotional price is a",
+    "marketing event, not what the challenge costs, and recording one would",
+    "make those firms permanently top the price ranking on a number nobody can",
+    "still buy.",
+    "",
+    "These are CFD arms of separate companies from the futures firms with",
+    "similar names: Blue Guardian is not Blue Guardian Futures, E8 Markets is",
+    "not E8 Futures, Goat Funded Trader is not Goat Funded Futures, and",
+    "AquaFunded is not AquaFutures. They are different products with different",
+    "rules and they stay separate rows."
+  ],
+  "products": [
+    {
+      "firm": "FundedNext",
+      "product": "1-Step",
+      "program": "evaluation",
+      "phases_override": 1,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed.",
+      "secondhand": true,
+      "sizes": {
+        "6000": {
+          "price": 49.49
+        },
+        "15000": {
+          "price": 97.49
+        },
+        "25000": {
+          "price": 164.99
+        },
+        "50000": {
+          "price": 247.49
+        }
+      }
+    },
+    {
+      "firm": "FundedNext",
+      "product": "2-Step",
+      "program": "evaluation",
+      "phases_override": 2,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed. Published as ranges rather than single figures, so not recorded as prices: $100K at 467.49–549.99; $200K at 934.99–1099.99.",
+      "secondhand": true,
+      "sizes": {
+        "100000": {},
+        "200000": {}
+      }
+    },
+    {
+      "firm": "FundingPips",
+      "product": "2-Step Flex",
+      "program": "evaluation",
+      "phases_override": 2,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed.",
+      "secondhand": true,
+      "sizes": {
+        "5000": {
+          "price": 25.6
+        }
+      }
+    },
+    {
+      "firm": "FundingPips",
+      "product": "2-Step",
+      "program": "evaluation",
+      "phases_override": 2,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed. Published as ranges rather than single figures, so not recorded as prices: $10K at 44–50.40; $25K at 107.20+; $50K at 228+.",
+      "secondhand": true,
+      "sizes": {
+        "10000": {},
+        "25000": {},
+        "50000": {},
+        "100000": {
+          "price": 417.6
+        }
+      }
+    },
+    {
+      "firm": "FundingPips",
+      "product": "1-Step",
+      "program": "evaluation",
+      "phases_override": 1,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed.",
+      "secondhand": true,
+      "sizes": {
+        "100000": {
+          "price": 469.04
+        }
+      }
+    },
+    {
+      "firm": "The5ers",
+      "product": "2-Step",
+      "program": "evaluation",
+      "phases_override": 2,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed.",
+      "secondhand": true,
+      "sizes": {
+        "5000": {
+          "price": 35.1
+        },
+        "10000": {
+          "price": 70.2
+        },
+        "25000": {
+          "price": 175.5
+        },
+        "50000": {
+          "price": 278.1
+        },
+        "100000": {
+          "price": 490.5
+        }
+      }
+    },
+    {
+      "firm": "The5ers",
+      "product": "1-Step",
+      "program": "evaluation",
+      "phases_override": 1,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed.",
+      "secondhand": true,
+      "sizes": {
+        "5000": {
+          "price": 234
+        },
+        "10000": {
+          "price": 405
+        },
+        "20000": {
+          "price": 765
+        }
+      }
+    },
+    {
+      "firm": "The5ers",
+      "product": "3-Step",
+      "program": "evaluation",
+      "phases_override": 3,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed.",
+      "secondhand": true,
+      "sizes": {
+        "100000": {
+          "price": 85.5
+        },
+        "250000": {
+          "price": 202.5
+        }
+      }
+    },
+    {
+      "firm": "E8 Markets",
+      "product": "1-Step Static",
+      "program": "evaluation",
+      "phases_override": 1,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed.",
+      "secondhand": true,
+      "sizes": {
+        "10000": {
+          "price": 61.2
+        },
+        "25000": {
+          "price": 133.2
+        },
+        "50000": {
+          "price": 205.2
+        },
+        "100000": {
+          "price": 439.2
+        }
+      }
+    },
+    {
+      "firm": "E8 Markets",
+      "product": "1-Step Trailing",
+      "program": "evaluation",
+      "phases_override": 1,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed.",
+      "secondhand": true,
+      "sizes": {
+        "5000": {
+          "price": 43.2
+        },
+        "200000": {
+          "price": 718.2
+        }
+      }
+    },
+    {
+      "firm": "BrightFunded",
+      "product": "2-Step",
+      "program": "evaluation",
+      "phases_override": 2,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed. Prices are quoted in EUR.",
+      "secondhand": true,
+      "sizes": {
+        "5000": {
+          "price": 41.65
+        },
+        "10000": {
+          "price": 82.45
+        },
+        "25000": {
+          "price": 167.45
+        },
+        "50000": {
+          "price": 252.45
+        },
+        "100000": {
+          "price": 422.45
+        },
+        "200000": {
+          "price": 847.45
+        }
+      },
+      "currency": "EUR"
+    },
+    {
+      "firm": "BrightFunded",
+      "product": "1-Step",
+      "program": "evaluation",
+      "phases_override": 1,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed. Prices are quoted in EUR.",
+      "secondhand": true,
+      "sizes": {
+        "10000": {
+          "price": 67.9
+        }
+      },
+      "currency": "EUR"
+    },
+    {
+      "firm": "Alpha Capital",
+      "product": "2-Step",
+      "program": "evaluation",
+      "phases_override": 2,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed. Published as ranges rather than single figures, so not recorded as prices: $5K at 19.80+; $10K at 40+; $25K at 106.20+; $50K at 160.20+; $100K at 268.20+; $200K at 538.20+.",
+      "secondhand": true,
+      "sizes": {
+        "5000": {},
+        "10000": {},
+        "25000": {},
+        "50000": {},
+        "100000": {},
+        "200000": {}
+      }
+    },
+    {
+      "firm": "Alpha Capital",
+      "product": "Alpha One 1-Step",
+      "program": "evaluation",
+      "phases_override": 1,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed.",
+      "secondhand": true,
+      "sizes": {
+        "50000": {
+          "price": 166.2
+        },
+        "100000": {
+          "price": 352.2
+        }
+      }
+    },
+    {
+      "firm": "Alpha Capital",
+      "product": "Alpha Pro 2-Step",
+      "program": "evaluation",
+      "phases_override": 2,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed.",
+      "secondhand": true,
+      "sizes": {
+        "100000": {
+          "price": 316.2
+        }
+      }
+    },
+    {
+      "firm": "Crypto Fund Trader",
+      "product": "2-Step",
+      "program": "evaluation",
+      "phases_override": 2,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed.",
+      "secondhand": true,
+      "sizes": {
+        "5000": {
+          "price": 45.24
+        },
+        "10000": {
+          "price": 85.8
+        },
+        "25000": {
+          "price": 187.2
+        },
+        "50000": {
+          "price": 303.42
+        },
+        "100000": {
+          "price": 514.8
+        },
+        "200000": {
+          "price": 975
+        }
+      }
+    },
+    {
+      "firm": "Crypto Fund Trader",
+      "product": "1-Step",
+      "program": "evaluation",
+      "phases_override": 1,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed.",
+      "secondhand": true,
+      "sizes": {
+        "5000": {
+          "price": 31.2
+        },
+        "25000": {
+          "price": 170.82
+        },
+        "100000": {
+          "price": 482.82
+        },
+        "200000": {
+          "price": 935.22
+        }
+      }
+    },
+    {
+      "firm": "Hola Prime",
+      "product": "2-Step",
+      "program": "evaluation",
+      "phases_override": 2,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed. Published as ranges rather than single figures, so not recorded as prices: $2K at 9–17; $5K at 31.20–47.20.",
+      "secondhand": true,
+      "sizes": {
+        "2000": {},
+        "5000": {},
+        "10000": {
+          "price": 87.2
+        },
+        "25000": {
+          "price": 183.2
+        }
+      }
+    },
+    {
+      "firm": "Hola Prime",
+      "product": "1-Step",
+      "program": "evaluation",
+      "phases_override": 1,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed.",
+      "secondhand": true,
+      "sizes": {
+        "50000": {
+          "price": 263.2
+        }
+      }
+    },
+    {
+      "firm": "Hola Prime",
+      "product": "Instant",
+      "program": "instant_funding",
+      "phases_override": 0,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed.",
+      "secondhand": true,
+      "sizes": {
+        "25000": {
+          "price": 295.2
+        },
+        "50000": {
+          "price": 551.2
+        }
+      }
+    },
+    {
+      "firm": "Goat Funded Trader",
+      "product": "Instant",
+      "program": "instant_funding",
+      "phases_override": 0,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed.",
+      "secondhand": true,
+      "sizes": {
+        "5000": {
+          "price": 29
+        },
+        "10000": {
+          "price": 57
+        }
+      }
+    },
+    {
+      "firm": "Goat Funded Trader",
+      "product": "2-Step",
+      "program": "evaluation",
+      "phases_override": 2,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed. Published as ranges rather than single figures, so not recorded as prices: $100K at 239–314.",
+      "secondhand": true,
+      "sizes": {
+        "25000": {
+          "price": 79
+        },
+        "50000": {
+          "price": 179
+        },
+        "100000": {}
+      }
+    },
+    {
+      "firm": "AquaFunded",
+      "product": "2-Step",
+      "program": "evaluation",
+      "phases_override": 2,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed. Published as ranges rather than single figures, so not recorded as prices: $25K at 44.50–64.50.",
+      "secondhand": true,
+      "sizes": {
+        "10000": {
+          "price": 44.5
+        },
+        "25000": {},
+        "100000": {
+          "price": 234.5
+        }
+      }
+    },
+    {
+      "firm": "Blue Guardian",
+      "product": "1-Step",
+      "program": "evaluation",
+      "phases_override": 1,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed.",
+      "secondhand": true,
+      "sizes": {
+        "5000": {
+          "price": 30
+        },
+        "10000": {
+          "price": 49.5
+        },
+        "25000": {
+          "price": 100.5
+        },
+        "50000": {
+          "price": 150
+        },
+        "100000": {
+          "price": 298.5
+        }
+      }
+    },
+    {
+      "firm": "Blue Guardian",
+      "product": "Instant",
+      "program": "instant_funding",
+      "phases_override": 0,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed.",
+      "secondhand": true,
+      "sizes": {
+        "5000": {
+          "price": 54
+        },
+        "10000": {
+          "price": 75
+        },
+        "50000": {
+          "price": 243
+        },
+        "100000": {
+          "price": 467.25
+        },
+        "200000": {
+          "price": 715.5
+        }
+      }
+    },
+    {
+      "firm": "Atmos Funded",
+      "product": "2-Step",
+      "program": "evaluation",
+      "phases_override": 2,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed.",
+      "secondhand": true,
+      "sizes": {
+        "5000": {
+          "price": 18.2
+        },
+        "10000": {
+          "price": 33.15
+        },
+        "25000": {
+          "price": 61.75
+        },
+        "100000": {
+          "price": 246.35
+        }
+      }
+    },
+    {
+      "firm": "Moneta Funded",
+      "product": "1-Step",
+      "program": "evaluation",
+      "phases_override": 1,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed.",
+      "secondhand": true,
+      "sizes": {
+        "10000": {
+          "price": 45
+        }
+      }
+    },
+    {
+      "firm": "Moneta Funded",
+      "product": "2-Step",
+      "program": "evaluation",
+      "phases_override": 2,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed.",
+      "secondhand": true,
+      "sizes": {
+        "25000": {
+          "price": 84.5
+        },
+        "50000": {
+          "price": 182.5
+        },
+        "100000": {
+          "price": 330
+        }
+      }
+    },
+    {
+      "firm": "Moneta Funded",
+      "product": "Instant",
+      "program": "instant_funding",
+      "phases_override": 0,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed.",
+      "secondhand": true,
+      "sizes": {
+        "10000": {
+          "price": 40
+        },
+        "25000": {
+          "price": 97.5
+        }
+      }
+    },
+    {
+      "firm": "Maven",
+      "product": "1-Step",
+      "program": "evaluation",
+      "phases_override": 1,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed.",
+      "secondhand": true,
+      "sizes": {
+        "5000": {
+          "price": 17.1
+        },
+        "10000": {
+          "price": 33.3
+        },
+        "20000": {
+          "price": 61.2
+        },
+        "50000": {
+          "price": 153
+        },
+        "100000": {
+          "price": 342
+        }
+      }
+    },
+    {
+      "firm": "Maven",
+      "product": "2-Step",
+      "program": "evaluation",
+      "phases_override": 2,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed.",
+      "secondhand": true,
+      "sizes": {
+        "5000": {
+          "price": 19.8
+        },
+        "10000": {
+          "price": 39.6
+        },
+        "20000": {
+          "price": 79.2
+        },
+        "50000": {
+          "price": 198
+        },
+        "100000": {
+          "price": 396
+        }
+      }
+    },
+    {
+      "firm": "FundedElite",
+      "product": "1-Step",
+      "program": "evaluation",
+      "phases_override": 1,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed.",
+      "secondhand": true,
+      "sizes": {
+        "5000": {
+          "price": 29.4
+        }
+      }
+    },
+    {
+      "firm": "FundedElite",
+      "product": "2-Step",
+      "program": "evaluation",
+      "phases_override": 2,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed.",
+      "secondhand": true,
+      "sizes": {
+        "5000": {
+          "price": 23.4
+        },
+        "15000": {
+          "price": 35.4
+        },
+        "25000": {
+          "price": 53.4
+        },
+        "100000": {
+          "price": 179.4
+        }
+      }
+    },
+    {
+      "firm": "FundedElite",
+      "product": "Instant",
+      "program": "instant_funding",
+      "phases_override": 0,
+      "billing": "one_time",
+      "notes": "Price only. This firm entered the catalogue through a supplied price table; its profit target, drawdown, daily loss limit, profit split and trading rules are NOT on file and are shown as unconfirmed rather than guessed.",
+      "secondhand": true,
+      "sizes": {
+        "25000": {
+          "price": 114
+        }
+      }
+    }
+  ]
+}

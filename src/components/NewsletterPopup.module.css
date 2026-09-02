@@ -1,0 +1,110 @@
+/*
+ * A centred modal, the shape most sites use.
+ *
+ * This one does block the page while it is open, so everything below is about
+ * making it cheap to get rid of: a backdrop that closes on click, an Escape
+ * handler, and a close button big enough to hit on a phone without aiming.
+ * A modal that is hard to dismiss is the reason people leave.
+ */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(0, 0, 0, 0.62);
+  backdrop-filter: blur(2px);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  animation: fade 180ms ease-out;
+}
+
+.modal {
+  position: relative;
+  width: min(30rem, 100%);
+  max-height: min(38rem, calc(100vh - 2rem));
+  overflow-y: auto;
+  background: var(--bg-2);
+  border: 1px solid var(--line-2);
+  border-radius: 16px;
+  padding: clamp(1.25rem, 4vw, 1.9rem);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+  animation: rise 220ms ease-out;
+}
+
+/*
+ * The dialog is focused on open so a keyboard user lands inside it rather than
+ * on the page behind. That focus is programmatic, not a keyboard action, and
+ * the global focus ring drawn around the whole modal reads as a stray border.
+ * Controls inside it keep their own rings, which is where they matter.
+ */
+.modal:focus {
+  outline: none;
+}
+
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop,
+  .modal {
+    animation: none;
+  }
+}
+
+/*
+ * The close button floats over the top-right corner rather than sitting in a
+ * header row, because the content underneath is centred — a flex header would
+ * push the headline off-centre to make room for it.
+ */
+.close {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.7rem;
+  z-index: 1;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: var(--ink);
+  background: var(--bg-3);
+}
+
+.later {
+  display: block;
+  width: 100%;
+  margin-top: 0.9rem;
+  background: none;
+  border: 0;
+  padding: 0.4rem;
+  color: var(--muted);
+  font-size: 13px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.later:hover {
+  color: var(--ink-2);
+}
