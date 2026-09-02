@@ -101,10 +101,13 @@ export default async function ReviewsPage({ searchParams }: { searchParams: Sear
 
       {reviews.length === 0 ? (
         <div className="panel panel-quiet">
-          <h3>No verified trader experiences yet.</h3>
+          {/* Leads with the ask rather than the absence. The fact is the same
+              either way; a heading that opens on "No..." makes the page read
+              as broken rather than new. */}
+          <h3>Traded one of these? Tell the next person how it went.</h3>
           <p className="small muted" style={{ marginTop: "0.5rem" }}>
-            We don&apos;t seed this page with anything. When traders submit experiences and a
-            moderator approves them, they appear here.
+            Nothing on this page is seeded, bought or written by us — every entry comes from a
+            trader and is checked before it appears. That is why it starts empty.
           </p>
           <Link href="/reviews/submit" className="btn btn-primary" style={{ marginTop: "1.25rem" }}>
             Be the first

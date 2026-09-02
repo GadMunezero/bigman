@@ -37,7 +37,11 @@ const NAV = [
   { href: "/compare", label: "Compare" },
   { href: "/firms", label: "Firms" },
   { href: "/psychology", label: "Psychology" },
-  { href: "/reviews", label: "Reviews" },
+  // Reviews is deliberately not in the nav. There are none yet, and a
+  // top-level tab leading to "no verified trader experiences yet" advertises
+  // a gap. The page is still reachable from every challenge, which is where
+  // someone with something to say actually is; it earns a tab once it has
+  // reviews in it.
   { href: "/tools", label: "Tools" },
   { href: "/learn", label: "Learn" },
 ];

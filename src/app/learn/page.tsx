@@ -44,16 +44,14 @@ export default function LearnPage() {
         </div>
       </section>
 
-      <section style={{ marginTop: "3rem" }}>
-        <h2 className="section-heading">Articles</h2>
-        {articles.length === 0 ? (
-          <div className="panel panel-quiet">
-            <p className="small muted">
-              No articles have been published on this installation yet. Articles are created in the
-              admin area — we don&apos;t ship placeholder content.
-            </p>
-          </div>
-        ) : (
+      {/*
+        The heading only appears once there is something under it. An
+        "Articles" section whose content is a note explaining that there are no
+        articles is worse than no section — it draws the eye to the gap.
+      */}
+      {articles.length > 0 ? (
+        <section style={{ marginTop: "3rem" }}>
+          <h2 className="section-heading">Articles</h2>
           <div className="grid-3">
             {articles.map((article) => (
               <Link
@@ -67,8 +65,8 @@ export default function LearnPage() {
               </Link>
             ))}
           </div>
-        )}
-      </section>
+        </section>
+      ) : null}
 
       {/* Rule changes lead here: the guides on this page go stale the moment a
           firm moves a drawdown, and this is how a reader hears about it. */}

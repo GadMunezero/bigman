@@ -92,6 +92,15 @@ if (apply) {
     if (demote) {
       const draft = db.prepare(`UPDATE challenges SET status = 'draft' WHERE id = ?`);
       for (const c of toDemote) draft.run(c.id);
+
+      // A firm with nothing left to show is a dead page: it appears in the
+      // directory, someone clicks it, and there is nothing there. Publishing
+      // the firm is only meaningful alongside a challenge of its own.
+      db.prepare(
+        `UPDATE firms SET status = 'draft'
+          WHERE status = 'published'
+            AND id NOT IN (SELECT firm_id FROM challenges WHERE status = 'published')`,
+      ).run();
     }
   })();
 }

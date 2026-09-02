@@ -8,31 +8,34 @@ export const metadata = {
     "Answer a few questions about your trading style, budget and the rules that matter. We remove the challenges that cannot work for you, score the rest, and show you exactly why each one fits.",
 };
 
+/**
+ * Each of these has to land somewhere with real results behind it.
+ *
+ * The scalper, swing and news-trader entries used to point at pages filtered
+ * on rule flags that are almost entirely unrecorded, so every one of them
+ * opened on an empty list — an invitation to a dead end. They come back when
+ * the rules data does.
+ */
 const STYLES = [
-  {
-    href: "/best-prop-firm-challenges-for-scalping",
-    title: "Scalper",
-    body: "You need execution rules that don't punish frequent trades, and no consistency rule quietly capping your best day.",
-  },
   {
     href: "/best-prop-firm-challenges-for-day-trading",
     title: "Day trader",
     body: "The daily loss limit and the drawdown type matter more to you than the headline account size.",
   },
   {
-    href: "/best-prop-firm-challenges-for-swing-trading",
-    title: "Swing trader",
-    body: "Overnight and weekend rules decide this for you. A challenge that prohibits them is not a lower score — it's out.",
+    href: "/prop-firm-challenges-with-no-consistency-rule",
+    title: "One big day",
+    body: "If your month is made in a session or two, a consistency rule is the thing most likely to stop you being paid.",
   },
   {
-    href: "/prop-firm-challenges-allowing-news-trading",
-    title: "News trader",
-    body: "Firms treat news windows very differently. Some allow it, some restrict it to certain instruments, some prohibit it outright.",
+    href: "/best-prop-firm-challenges-under-100",
+    title: "Testing the water",
+    body: "A first evaluation is a tuition fee. Keep it small enough that failing one teaches you something instead of hurting.",
   },
   {
-    href: "/challenges",
-    title: "Algorithmic trader",
-    body: "EA, API and copy trading permissions vary firm to firm, and are often buried in the rules page rather than the sales page.",
+    href: "/best-100k-prop-firm-challenges",
+    title: "Scaling up",
+    body: "At $100K the drawdown mechanic decides how much of the account you can actually use, not the number on the label.",
   },
   {
     href: "/psychology",

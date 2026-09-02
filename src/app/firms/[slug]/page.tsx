@@ -73,6 +73,50 @@ export default async function FirmPage({ params }: { params: Promise<{ slug: str
     firm.ceo || keyPeople.length > 0 || firm.headquarters || firm.founded_year,
   );
 
+  /**
+   * The terms that actually differ between firms, gathered across everything
+   * this one sells.
+   *
+   * Every value is counted from the catalogue rather than written by hand, so
+   * a firm we know little about shows a short list rather than a paragraph of
+   * filler — and a row appears only when at least one challenge has that field
+   * on file. Nothing here can claim knowledge we do not have.
+   */
+  const distinct = <T,>(values: (T | null | undefined)[]): T[] =>
+    [...new Set(values.filter((v): v is T => v !== null && v !== undefined && v !== ("" as T)))];
+
+  const splits = challenges
+    .map((c) => c.payout_split_pct)
+    .filter((n): n is number => typeof n === "number");
+  const cadences = distinct(challenges.map((c) => c.payout_frequency_days));
+  const drawdownTypes = distinct(challenges.map((c) => c.drawdown_type));
+  const targets = challenges
+    .map((c) => c.profit_target_pct)
+    .filter((n): n is number => typeof n === "number");
+
+  const range = (nums: number[], suffix: string) =>
+    nums.length === 0
+      ? null
+      : Math.min(...nums) === Math.max(...nums)
+        ? `${Math.min(...nums)}${suffix}`
+        : `${Math.min(...nums)}${suffix} – ${Math.max(...nums)}${suffix}`;
+
+  const terms: { label: string; value: string }[] = [
+    { label: "Account sizes", value: sizes.length ? distinct(sizes.map(fmtSize)).join(", ") : "" },
+    { label: "Entry price", value: range(prices, "") ? `$${range(prices, "")}` : "" },
+    { label: "Profit target", value: range(targets, "%") ?? "" },
+    { label: "Profit split", value: range(splits, "%") ?? "" },
+    {
+      label: "Drawdown type",
+      value: drawdownTypes.map((t) => String(t).replace(/_/g, " ")).join(", "),
+    },
+    {
+      label: "Payouts",
+      value: cadences.length ? cadences.map((d) => `every ${d} days`).join(", ") : "",
+    },
+    { label: "Platforms", value: platforms.join(", ") },
+  ].filter((row) => row.value.trim() !== "");
+
   return (
     <div className="shell section">
       <nav className="small muted" style={{ marginBottom: "1.5rem" }}>
@@ -129,9 +173,34 @@ export default async function FirmPage({ params }: { params: Promise<{ slug: str
         </div>
       )}
 
-      <section style={{ marginTop: "3rem" }}>
-        <h2 className="section-heading">Who runs this firm</h2>
-        {hasLeadership ? (
+      {/*
+        What the firm sells, counted from the catalogue. This replaced a
+        section that existed only to say we had no company details — a heading
+        followed by an apology on every page, which reads worse than not asking
+        the question. Rows appear only where there is something on file.
+      */}
+      {terms.length > 0 ? (
+        <section style={{ marginTop: "3rem" }}>
+          <h2 className="section-heading">What {firm.name} offers</h2>
+          <dl className="panel" style={{ margin: 0 }}>
+            {terms.map((row) => (
+              <div key={row.label} className="kv">
+                <dt>{row.label}</dt>
+                <dd style={{ textAlign: "right", maxWidth: "34ch" }}>{row.value}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="small muted" style={{ marginTop: "0.75rem" }}>
+            Counted across this firm&apos;s {challenges.length} published challenge
+            {challenges.length === 1 ? "" : "s"}. Anything not on file is left out rather than
+            guessed.
+          </p>
+        </section>
+      ) : null}
+
+      {hasLeadership ? (
+        <section style={{ marginTop: "3rem" }}>
+          <h2 className="section-heading">Who runs this firm</h2>
           <div className="panel stack">
             <dl className="stack-sm" style={{ margin: 0 }}>
               {firm.ceo ? (
@@ -175,19 +244,8 @@ export default async function FirmPage({ params }: { params: Promise<{ slug: str
               </p>
             )}
           </div>
-        ) : (
-          <div className="panel">
-            <p className="small">
-              This firm has not been recorded as publicly naming the people who run it.
-            </p>
-            <p className="small muted" style={{ marginTop: "0.5rem" }}>
-              That is not an accusation — plenty of legitimate firms keep a low profile, and we may
-              simply not have researched it yet. But when you are sending money to a company, who
-              stands behind it is worth knowing, so we show the gap rather than hiding it.
-            </p>
-          </div>
-        )}
-      </section>
+        </section>
+      ) : null}
 
       <section style={{ marginTop: "3rem" }}>
         <h2 className="section-heading">Available challenges</h2>

@@ -139,8 +139,9 @@ if (mode === "none") {
   const c = db
     .prepare(`UPDATE challenges SET status = 'published' WHERE status = 'draft' AND ${READY}`)
     .run();
-  // Only the firms that ended up with something to show — a published firm
-  // with no published challenges is an empty page in the directory.
+  // Only the firms that ended up with something to show. A published firm with
+  // no published challenges is a dead page: it appears in the directory,
+  // someone clicks it, and there is nothing there.
   const f = db
     .prepare(
       `UPDATE firms SET status = 'published'
